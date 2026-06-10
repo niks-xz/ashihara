@@ -1,0 +1,73 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import RequirementsTable from '../../components/methodology/RequirementsTable.astro';
+import KataVideoGrid from '../../components/methodology/KataVideoGrid.astro';
+import BeltVisual from '../../components/methodology/BeltVisual.astro';
+import { beltLevels, kataVideos } from '../../data/content';
+import { getBeltDescription } from '../../lib/belts';
+import { withBase } from '../../lib/utils';
+import type { BeltLevel, KataVideo } from '../../lib/types';
+
+export async function getStaticPaths() {
+  return beltLevels.map((belt) => ({
+    params: { slug: belt.slug },
+    props: {
+      belt,
+      videos: kataVideos.filter((v) => v.beltLevel?.id === belt.id),
+    },
+  }));
+}
+
+interface Props {
+  belt: BeltLevel;
+  videos: KataVideo[];
+}
+
+const { belt, videos } = Astro.props;
+const beltDescription = getBeltDescription(belt);
+
+const sections = [
+  { title: 'Силовые тесты', rows: belt.strengthTests ?? [] },
+  { title: 'Кихон', rows: belt.kihon ?? [] },
+  { title: 'Идо кихон', rows: belt.idoKihon ?? [] },
+  { title: 'Ката', rows: belt.kata ?? [] },
+  { title: 'Кумитэ', rows: belt.kumite ?? [] },
+  { title: 'Сабаки', rows: belt.sabaki ?? [] },
+  { title: 'Тамэши вари', rows: belt.tameshiWari ?? [] },
+];
+---
+
+<PageLayout
+  title={`${belt.name} — Экзаменационные требования`}
+  description={`Экзаменационные требования для ${belt.name} (${belt.beltColor} пояс) по Ашихара-каратэ. Кихон, ката, кумитэ, сабаки.`}
+>
+  <section class="py-16 md:py-20">
+    <div class="max-w-3xl mx-auto px-4">
+      <div class="mb-8">
+        <a href={withBase('/methodology')} class="text-sm text-primary hover:underline">&larr; Все уровни</a>
+      </div>
+
+      <div class="flex items-center gap-4 mb-8">
+        <BeltVisual belt={belt} class="w-24 h-9" stripeClass="w-[5px]" />
+        <div>
+          <h1 class="text-3xl font-bold text-dark">{belt.name}</h1>
+          <p class="text-neutral-600">{beltDescription}</p>
+        </div>
+      </div>
+
+      {belt.description && (
+        <p class="text-neutral-600 mb-8">{belt.description}</p>
+      )}
+
+      {sections.map(({ title, rows }) => (
+        <RequirementsTable title={title} rows={rows} />
+      ))}
+
+      <KataVideoGrid videos={videos} />
+
+      <div class="mt-12 pt-8 border-t border-neutral-200">
+        <a href={withBase('/methodology')} class="text-primary hover:underline font-medium">&larr; Все уровни</a>
+      </div>
+    </div>
+  </section>
+</PageLayout>

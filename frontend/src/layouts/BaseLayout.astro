@@ -1,0 +1,33 @@
+---
+import BaseHead from '../components/seo/BaseHead.astro';
+import SchemaOrg from '../components/seo/SchemaOrg.astro';
+import YandexMetrika from '../components/seo/YandexMetrika.astro';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  ogImage?: string;
+  schemaType?: 'organization' | 'event';
+  eventData?: {
+    name: string;
+    startDate: string;
+    location?: string;
+    description?: string;
+  };
+}
+
+const { title, description, ogImage, schemaType, eventData } = Astro.props;
+---
+
+<!doctype html>
+<html lang="ru">
+  <head>
+    <BaseHead title={title} description={description} ogImage={ogImage} />
+    <SchemaOrg type={schemaType} eventData={eventData} />
+    <YandexMetrika />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

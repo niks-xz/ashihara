@@ -1,0 +1,45 @@
+---
+import Navigation from './Navigation.astro';
+import { withBase } from '../../lib/utils';
+---
+
+<header class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-neutral-200" style="--header-height: 4rem;">
+  <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+    <a href={withBase('/')} class="flex items-center gap-3 group">
+      <div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-white font-bold text-lg">
+        A
+      </div>
+      <div class="hidden sm:block lg:hidden xl:block">
+        <div class="text-sm font-bold text-dark leading-tight">Ашихара-каратэ</div>
+        <div class="text-xs text-neutral-600 leading-tight">Краснодарский край</div>
+      </div>
+    </a>
+
+    <Navigation />
+
+    <div class="flex items-center gap-3">
+      <a
+        href={withBase('/contacts')}
+        class="hidden lg:inline-flex items-center px-3 py-2 bg-primary text-white text-xs xl:text-sm font-semibold rounded-lg hover:bg-primary-dark transition-colors"
+      >
+        Записаться
+      </a>
+      <div class="lg:hidden">
+        <button
+          id="mobile-menu-toggle"
+          type="button"
+          class="p-2 rounded-md text-neutral-700 hover:text-primary hover:bg-neutral-100"
+          aria-label="Открыть меню"
+          aria-expanded="false"
+        >
+          <svg id="menu-icon-open" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+          </svg>
+          <svg id="menu-icon-close" class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>

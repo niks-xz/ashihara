@@ -1,0 +1,26 @@
+---
+import Card from '../ui/Card.astro';
+import BeltVisual from './BeltVisual.astro';
+import { getBeltDescription } from '../../lib/belts';
+import type { BeltLevel } from '../../lib/types';
+
+interface Props {
+  belt: BeltLevel;
+}
+
+const { belt } = Astro.props;
+const description = getBeltDescription(belt);
+---
+
+<Card href={`/methodology/${belt.slug}`}>
+  <div class="flex items-center gap-4 p-5">
+    <BeltVisual belt={belt} />
+    <div>
+      <h3 class="text-lg font-bold text-dark">{belt.name}</h3>
+      <p class="text-sm text-neutral-600">{description}</p>
+    </div>
+    <svg class="w-5 h-5 text-neutral-400 ml-auto" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+    </svg>
+  </div>
+</Card>

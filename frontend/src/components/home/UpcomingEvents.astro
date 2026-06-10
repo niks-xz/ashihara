@@ -1,0 +1,86 @@
+---
+import SectionHeading from '../ui/SectionHeading.astro';
+import Card from '../ui/Card.astro';
+import Button from '../ui/Button.astro';
+import { formatDate, eventTypeLabel } from '../../lib/utils';
+import type { Event } from '../../lib/types';
+
+interface Props {
+  events: Event[];
+  archiveEventCount?: number;
+  latestArchiveYear?: number;
+}
+
+const { events, archiveEventCount = 0, latestArchiveYear } = Astro.props;
+const hasUpcomingEvents = events.length > 0;
+const currentYear = new Date().getFullYear();
+const title = hasUpcomingEvents ? 'Ближайшие события' : 'Календарный план';
+const subtitle = hasUpcomingEvents
+  ? 'Соревнования, семинары, аттестации и другие мероприятия федерации'
+  : `План мероприятий на ${currentYear} год формируется`;
+const archiveText = latestArchiveYear
+  ? `Архив событий ${latestArchiveYear} года доступен в разделе событий.`
+  : 'Архив прошедших событий доступен в разделе событий.';
+---
+
+<section class="py-16 md:py-20">
+  <div class="max-w-7xl mx-auto px-4">
+    <SectionHeading
+      title={title}
+      subtitle={subtitle}
+    />
+
+    {hasUpcomingEvents ? (
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {events.map((event) => (
+          <Card href={`/events/${event.slug}`}>
+            {event.coverImage && (
+              <div class="aspect-video bg-neutral-100 overflow-hidden">
+                <img
+                  src={event.coverImage.url}
+                  alt={event.title}
+                  class="w-full h-full object-cover"
+                  loading="lazy"
+                />
+              </div>
+            )}
+            <div class="p-5">
+              <div class="flex items-center gap-2 mb-3">
+                <span class="text-xs font-medium text-primary bg-primary/10 px-2 py-1 rounded">
+                  {eventTypeLabel(event.eventType)}
+                </span>
+                {event.eventDate && (
+                  <span class="text-xs text-neutral-600">{formatDate(event.eventDate)}</span>
+                )}
+              </div>
+              <h3 class="text-lg font-bold text-dark mb-2 line-clamp-2">{event.title}</h3>
+              {event.excerpt && (
+                <p class="text-sm text-neutral-700 line-clamp-3">{event.excerpt}</p>
+              )}
+            </div>
+          </Card>
+        ))}
+      </div>
+    ) : (
+      <div class="max-w-3xl mx-auto rounded-xl border border-neutral-200 bg-white p-6 md:p-8 text-center shadow-sm">
+        <p class="text-lg font-semibold text-dark mb-3">
+          План мероприятий на {currentYear} год формируется
+        </p>
+        <p class="text-neutral-700 leading-relaxed mb-6">
+          После утверждения календаря здесь появятся ближайшие соревнования,
+          семинары и аттестации. {archiveEventCount > 0 ? archiveText : ''}
+        </p>
+        <div class="flex flex-col sm:flex-row gap-3 justify-center">
+          <Button href="/calendar">Календарный план</Button>
+          <Button href="/events" variant="outline">Архив событий</Button>
+        </div>
+      </div>
+    )}
+
+    {hasUpcomingEvents && (
+      <div class="mt-10 text-center">
+        <Button href="/events" variant="outline">Все события</Button>
+      </div>
+    )}
+  </div>
+</section>

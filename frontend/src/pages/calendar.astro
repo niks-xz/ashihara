@@ -1,0 +1,134 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import SectionHeading from '../components/ui/SectionHeading.astro';
+import Button from '../components/ui/Button.astro';
+import { events } from '../data/content';
+import { eventTypeLabel, withBase } from '../lib/utils';
+import type { Event } from '../lib/types';
+
+const calendarYear = new Date().getFullYear();
+let latestArchiveYear: number | undefined;
+
+const months = [
+  'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
+  'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь',
+];
+
+// Group events by month (only for the calendar year)
+const eventsByMonth = new Map<number, Event[]>();
+for (const event of events) {
+  if (!event.eventDate) {
+    continue;
+  }
+
+  const d = new Date(event.eventDate);
+  const eventYear = d.getFullYear();
+
+  if (latestArchiveYear === undefined || eventYear > latestArchiveYear) {
+    latestArchiveYear = eventYear;
+  }
+
+  if (eventYear !== calendarYear) {
+    continue;
+  }
+
+  const month = d.getMonth();
+  const arr = eventsByMonth.get(month) ?? [];
+  arr.push(event);
+  eventsByMonth.set(month, arr);
+}
+
+const hasCalendarEvents = eventsByMonth.size > 0;
+const archiveText = latestArchiveYear
+  ? `Архив событий ${latestArchiveYear} года доступен в разделе событий.`
+  : 'Архив прошедших событий доступен в разделе событий.';
+
+const typeColors: Record<string, string> = {
+  competition: 'bg-primary/10 text-primary',
+  event: 'bg-blue-50 text-blue-700',
+  exam: 'bg-amber-50 text-amber-700',
+  news: 'bg-neutral-100 text-neutral-700',
+  other: 'bg-neutral-100 text-neutral-700',
+};
+---
+
+<PageLayout
+  title="Календарный план"
+  description={`Календарный план мероприятий Федерации Ашихара-каратэ Краснодарского края на ${calendarYear} год. Соревнования, семинары, аттестации.`}
+>
+  <section class="py-16 md:py-20">
+    <div class="max-w-4xl mx-auto px-4">
+      <SectionHeading
+        title="Календарный план"
+        subtitle={`Мероприятия федерации на ${calendarYear} год`}
+      />
+
+      {hasCalendarEvents ? (
+        <div class="space-y-2">
+          {months.map((monthName, monthIndex) => {
+            const monthEvents = eventsByMonth.get(monthIndex) ?? [];
+            const hasEvents = monthEvents.length > 0;
+            if (!hasEvents) {
+              return (
+                <div class="flex items-center gap-3 px-5 py-2 rounded-lg bg-neutral-50 border border-neutral-100">
+                  <span class="text-sm text-neutral-400">{monthName}</span>
+                  <div class="flex-1 h-px bg-neutral-200" />
+                </div>
+              );
+            }
+            return (
+              <div class="rounded-xl border border-neutral-200 bg-white overflow-hidden">
+                <div class="px-5 py-3 flex items-center justify-between bg-dark text-white">
+                  <span class="font-semibold">{monthName}</span>
+                  <span class="text-xs bg-white/20 px-2 py-0.5 rounded-full">
+                    {monthEvents.length}
+                  </span>
+                </div>
+                <div class="divide-y divide-neutral-100">
+                  {monthEvents.map((event) => (
+                    <a href={withBase(`/events/${event.slug}`)} class="flex items-center gap-4 px-5 py-3 hover:bg-neutral-50 transition-colors">
+                      <div class="text-center shrink-0 w-12">
+                        <div class="text-2xl font-bold text-dark leading-none">
+                          {new Date(event.eventDate).getDate()}
+                        </div>
+                      </div>
+                      <div class="min-w-0 flex-1">
+                        <div class="font-medium text-dark truncate">{event.title}</div>
+                        {event.excerpt && (
+                          <div class="text-sm text-neutral-700 truncate">{event.excerpt}</div>
+                        )}
+                      </div>
+                      <span class:list={[
+                        'text-xs font-medium px-2.5 py-1 rounded shrink-0 hidden sm:inline',
+                        typeColors[event.eventType] ?? typeColors.other,
+                      ]}>
+                        {eventTypeLabel(event.eventType)}
+                      </span>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <div class="rounded-xl border border-neutral-200 bg-white p-6 md:p-8 text-center shadow-sm">
+          <p class="text-lg font-semibold text-dark mb-3">
+            План мероприятий на {calendarYear} год формируется
+          </p>
+          <p class="text-neutral-700 leading-relaxed mb-6">
+            После утверждения календаря здесь появятся соревнования, семинары
+            и аттестации текущего года. {events.length > 0 ? archiveText : ''}
+          </p>
+          <Button href="/events" variant="outline">Смотреть архив событий</Button>
+        </div>
+      )}
+
+      {hasCalendarEvents && (
+        <p class="mt-8 text-center text-sm text-neutral-600">
+          Даты мероприятий могут быть изменены или добавлены
+        </p>
+      )}
+    </div>
+  </section>
+</PageLayout>

@@ -1,0 +1,38 @@
+---
+import Card from '../ui/Card.astro';
+import { formatDate, eventTypeLabel, withBase } from '../../lib/utils';
+import type { Event } from '../../lib/types';
+
+interface Props {
+  event: Event;
+}
+
+const { event } = Astro.props;
+---
+
+<Card href={`/events/${event.slug}`}>
+  {event.coverImage && (
+    <div class="aspect-video bg-neutral-100 overflow-hidden">
+      <img
+        src={withBase(event.coverImage.url)}
+        alt={event.title}
+        class="w-full h-full object-cover"
+        loading="lazy"
+      />
+    </div>
+  )}
+  <div class="p-5">
+    <div class="flex items-center gap-2 mb-3">
+      <span class="text-xs font-medium text-primary bg-primary/10 px-2 py-1 rounded">
+        {eventTypeLabel(event.eventType)}
+      </span>
+      {event.eventDate && (
+        <span class="text-xs text-neutral-600">{formatDate(event.eventDate)}</span>
+      )}
+    </div>
+    <h3 class="text-lg font-bold text-dark mb-2 line-clamp-2">{event.title}</h3>
+    {event.excerpt && (
+      <p class="text-sm text-neutral-700 line-clamp-3">{event.excerpt}</p>
+    )}
+  </div>
+</Card>

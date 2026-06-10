@@ -1,0 +1,106 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import SectionHeading from '../components/ui/SectionHeading.astro';
+import Card from '../components/ui/Card.astro';
+---
+
+<PageLayout
+  title="О федерации"
+  description="Федерация Ашихара-каратэ Краснодарского края - официальный представитель организации NIKO в регионе. История, руководство, достижения."
+>
+  <section class="py-16 md:py-20">
+    <div class="max-w-4xl mx-auto px-4">
+      <SectionHeading
+        title="О федерации"
+        subtitle="Федерация Ашихара-каратэ Краснодарского края"
+      />
+
+      <div class="space-y-8">
+        <div class="rounded-xl border border-neutral-200 bg-white p-6 md:p-8 shadow-sm">
+          <p class="text-lg md:text-xl leading-relaxed text-neutral-800">
+            Федерация Ашихара-каратэ Краснодарского края является официальным представителем организации
+            <span class="font-semibold text-dark">NIKO</span>
+            в регионе.
+          </p>
+        </div>
+
+        <div class="rounded-xl border border-neutral-200 bg-white overflow-hidden">
+          <article class="grid items-start gap-3 p-6 md:grid-cols-[13rem_1fr] md:gap-8 md:p-7">
+            <h3 class="text-lg font-semibold text-dark">Наша миссия</h3>
+            <p class="text-base leading-relaxed text-neutral-700">
+              Развитие и популяризация Ашихара-каратэ в Краснодарском крае. Мы проводим регулярные тренировки
+              для детей и взрослых, организуем соревнования различного уровня, семинары с приглашёнными мастерами
+              и аттестационные экзамены.
+            </p>
+          </article>
+
+          <article class="grid items-start gap-3 border-t border-neutral-200 p-6 md:grid-cols-[13rem_1fr] md:gap-8 md:p-7">
+            <h3 class="text-lg font-semibold text-dark">Об Ашихара-каратэ</h3>
+            <p class="text-base leading-relaxed text-neutral-700">
+              Ашихара-каратэ - стиль контактного каратэ, основанный Хидэюки Ашихарой. Отличается практичностью
+              техники, использованием принципов сабаки (управление дистанцией и позицией) и реалистичным подходом
+              к поединкам.
+            </p>
+          </article>
+
+          <article class="grid items-start gap-3 border-t border-neutral-200 p-6 md:grid-cols-[13rem_1fr] md:gap-8 md:p-7">
+            <h3 class="text-lg font-semibold text-dark">NIKO</h3>
+            <p class="text-base leading-relaxed text-neutral-700">
+              Новая Международная Организация Ашихара Каратэ Кайкан (NIKO) объединяет федерации Ашихара-каратэ
+              по всему миру и координирует международные соревнования, семинары и аттестации.
+            </p>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-16 bg-neutral-100">
+    <div class="max-w-7xl mx-auto px-4">
+      <SectionHeading
+        title="Руководство и структура"
+        subtitle="Ключевые направления работы региональной федерации"
+      />
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <Card>
+          <div class="p-6">
+            <div class="w-12 h-12 mb-5 rounded-lg bg-primary/10 text-primary flex items-center justify-center font-bold">
+              01
+            </div>
+            <h3 class="text-xl font-bold text-dark mb-3">Президент федерации</h3>
+            <p class="text-neutral-700 leading-relaxed">
+              Стратегическое развитие регионального представительства, официальный статус федерации
+              и взаимодействие с международной структурой NIKO.
+            </p>
+          </div>
+        </Card>
+
+        <Card>
+          <div class="p-6">
+            <div class="w-12 h-12 mb-5 rounded-lg bg-primary/10 text-primary flex items-center justify-center font-bold">
+              02
+            </div>
+            <h3 class="text-xl font-bold text-dark mb-3">Тренерский совет</h3>
+            <p class="text-neutral-700 leading-relaxed">
+              Единые требования к подготовке спортсменов, методическая работа, аттестации
+              и контроль качества тренировочного процесса.
+            </p>
+          </div>
+        </Card>
+
+        <Card>
+          <div class="p-6">
+            <div class="w-12 h-12 mb-5 rounded-lg bg-primary/10 text-primary flex items-center justify-center font-bold">
+              03
+            </div>
+            <h3 class="text-xl font-bold text-dark mb-3">Организационное направление</h3>
+            <p class="text-neutral-700 leading-relaxed">
+              Календарный план, соревнования, семинары, работа с клубами края
+              и коммуникация с родителями и спортсменами.
+            </p>
+          </div>
+        </Card>
+      </div>
+    </div>
+  </section>
+</PageLayout>

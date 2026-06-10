@@ -1,0 +1,23 @@
+---
+import { withBase } from '../../lib/utils';
+
+interface Props {
+  class?: string;
+  href?: string;
+}
+
+const { class: className, href } = Astro.props;
+const Tag = href ? 'a' : 'div';
+const safeHref = href ? withBase(href) : undefined;
+---
+
+<Tag
+  href={safeHref}
+  class:list={[
+    'bg-white rounded-xl shadow-sm border border-neutral-200 overflow-hidden transition-shadow hover:shadow-md',
+    href && 'block',
+    className,
+  ]}
+>
+  <slot />
+</Tag>

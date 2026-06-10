@@ -1,0 +1,59 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import Button from '../../components/ui/Button.astro';
+import { events } from '../../data/content';
+import { formatDate, eventTypeLabel, withBase } from '../../lib/utils';
+import type { Event } from '../../lib/types';
+
+export async function getStaticPaths() {
+  return events.map((event) => ({
+    params: { slug: event.slug },
+    props: { event },
+  }));
+}
+
+interface Props {
+  event: Event;
+}
+
+const { event } = Astro.props;
+---
+
+<PageLayout
+  title={event.title}
+  description={event.excerpt || `${event.title} — Федерация Ашихара-каратэ Краснодарского края`}
+  schemaType="event"
+  eventData={{
+    name: event.title,
+    startDate: event.eventDate,
+    location: 'Краснодар',
+    description: event.excerpt,
+  }}
+>
+  <article class="py-16 md:py-20">
+    <div class="max-w-3xl mx-auto px-4">
+      <div class="mb-8">
+        <a href={withBase('/events')} class="text-sm text-primary hover:underline">&larr; Все события</a>
+      </div>
+
+      <div class="flex items-center gap-3 mb-4">
+        <span class="text-sm font-medium text-primary bg-primary/10 px-3 py-1 rounded">
+          {eventTypeLabel(event.eventType)}
+        </span>
+        {event.eventDate && (
+          <time class="text-sm text-neutral-600" datetime={event.eventDate}>
+            {formatDate(event.eventDate)}
+          </time>
+        )}
+      </div>
+
+      <h1 class="text-3xl md:text-4xl font-bold text-dark mb-8">{event.title}</h1>
+
+      <div class="prose prose-lg max-w-none" set:html={event.content} />
+
+      <div class="mt-12 pt-8 border-t border-neutral-200">
+        <Button href="/events" variant="outline">&larr; Все события</Button>
+      </div>
+    </div>
+  </article>
+</PageLayout>

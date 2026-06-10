@@ -1,0 +1,27 @@
+---
+import VkVideo from '../ui/VkVideo.astro';
+import type { KataVideo } from '../../lib/types';
+
+interface Props {
+  videos: KataVideo[];
+}
+
+const { videos } = Astro.props;
+---
+
+{videos.length > 0 && (
+  <div class="mt-10">
+    <h3 class="text-lg font-bold text-dark mb-4">Видео ката</h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {videos.map((video) => (
+        <div>
+          <VkVideo url={video.vkVideoUrl} title={video.title} />
+          <p class="mt-2 text-sm font-medium text-neutral-700">{video.title}</p>
+          {video.description && (
+            <p class="text-sm text-neutral-600">{video.description}</p>
+          )}
+        </div>
+      ))}
+    </div>
+  </div>
+)}

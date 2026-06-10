@@ -1,0 +1,29 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import SectionHeading from '../components/ui/SectionHeading.astro';
+import GymCard from '../components/gyms/GymCard.astro';
+import { gyms as allGyms } from '../data/content';
+
+const gyms = [...allGyms].sort((a, b) => a.sortOrder - b.sortOrder);
+---
+
+<PageLayout
+  title="Адреса залов"
+  description="Адреса спортивных залов Федерации Ашихара-каратэ в Краснодаре. Расположение, контакты, карта."
+>
+  <section class="py-16 md:py-20">
+    <div class="max-w-7xl mx-auto px-4">
+      <SectionHeading
+        title="Адреса залов"
+        subtitle="Где проходят тренировки"
+      />
+      {gyms.length > 0 ? (
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {gyms.map((gym) => <GymCard gym={gym} />)}
+        </div>
+      ) : (
+        <p class="text-center text-neutral-600">Информация о залах скоро появится</p>
+      )}
+    </div>
+  </section>
+</PageLayout>

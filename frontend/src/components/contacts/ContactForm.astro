@@ -1,0 +1,146 @@
+---
+interface Props {
+  formType?: 'enrollment' | 'contact' | 'team-building';
+}
+
+const { formType = 'enrollment' } = Astro.props;
+---
+
+<form id="contact-form" class="space-y-5" novalidate>
+  <input type="hidden" name="formType" value={formType} />
+  <!-- Honeypot -->
+  <div class="absolute -left-[9999px]" aria-hidden="true">
+    <input type="text" name="website" tabindex="-1" autocomplete="off" />
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+    <div>
+      <label for="name" class="block text-sm font-medium text-neutral-700 mb-1.5">
+        Имя <span class="text-primary">*</span>
+      </label>
+      <input
+        type="text"
+        id="name"
+        name="name"
+        required
+        class="w-full px-4 py-3 border border-neutral-300 rounded-lg text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-primary focus:shadow-[0_0_0_1px_theme(colors.primary)] transition-colors"
+        placeholder="Ваше имя"
+      />
+    </div>
+    <div>
+      <label for="phone" class="block text-sm font-medium text-neutral-700 mb-1.5">
+        Телефон <span class="text-primary">*</span>
+      </label>
+      <input
+        type="tel"
+        id="phone"
+        name="phone"
+        required
+        class="w-full px-4 py-3 border border-neutral-300 rounded-lg text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-primary focus:shadow-[0_0_0_1px_theme(colors.primary)] transition-colors"
+        placeholder="+7 (___) ___-__-__"
+      />
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+    <div>
+      <label for="email" class="block text-sm font-medium text-neutral-700 mb-1.5">
+        Email
+      </label>
+      <input
+        type="email"
+        id="email"
+        name="email"
+        class="w-full px-4 py-3 border border-neutral-300 rounded-lg text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-primary focus:shadow-[0_0_0_1px_theme(colors.primary)] transition-colors"
+        placeholder="email@example.com"
+      />
+    </div>
+    <div>
+      <label for="childAge" class="block text-sm font-medium text-neutral-700 mb-1.5">
+        Возраст ребёнка
+      </label>
+      <input
+        type="text"
+        id="childAge"
+        name="childAge"
+        class="w-full px-4 py-3 border border-neutral-300 rounded-lg text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-primary focus:shadow-[0_0_0_1px_theme(colors.primary)] transition-colors"
+        placeholder="Если записываете ребёнка"
+      />
+    </div>
+  </div>
+
+  <div>
+    <label for="message" class="block text-sm font-medium text-neutral-700 mb-1.5">
+      Сообщение
+    </label>
+    <textarea
+      id="message"
+      name="message"
+      rows="4"
+      class="w-full px-4 py-3 border border-neutral-300 rounded-lg text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-primary focus:shadow-[0_0_0_1px_theme(colors.primary)] transition-colors resize-y"
+      placeholder="Дополнительная информация или вопросы"
+    ></textarea>
+  </div>
+
+  <button
+    type="submit"
+    class="w-full sm:w-auto px-8 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+  >
+    Отправить заявку
+  </button>
+
+  <div id="form-status" class="hidden rounded-lg p-4 text-sm font-medium" role="alert"></div>
+</form>
+
+<script is:inline>
+  document.getElementById('contact-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const status = document.getElementById('form-status');
+    const submitBtn = form.querySelector('button[type="submit"]');
+
+    // Honeypot check
+    if (form.website.value) return;
+
+    // Basic validation
+    const name = form.name.value.trim();
+    const phone = form.phone.value.trim();
+    if (!name || !phone) {
+      status.textContent = 'Пожалуйста, заполните обязательные поля (Имя и Телефон)';
+      status.className = 'rounded-lg p-4 text-sm font-medium bg-red-50 text-red-700 border border-red-200';
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Отправка...';
+
+    try {
+      const res = await fetch(`${window.location.origin.replace(':4321', ':1337')}/api/contact-submissions`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          data: {
+            name,
+            phone,
+            email: form.email.value.trim(),
+            childAge: form.childAge.value.trim(),
+            message: form.message.value.trim(),
+            formType: form.formType.value,
+          },
+        }),
+      });
+
+      if (!res.ok) throw new Error('API error');
+
+      status.textContent = 'Заявка отправлена! Мы свяжемся с вами в ближайшее время.';
+      status.className = 'rounded-lg p-4 text-sm font-medium bg-green-50 text-green-700 border border-green-200';
+      form.reset();
+    } catch {
+      status.textContent = 'Ошибка при отправке. Попробуйте позже или свяжитесь по телефону.';
+      status.className = 'rounded-lg p-4 text-sm font-medium bg-red-50 text-red-700 border border-red-200';
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Отправить заявку';
+    }
+  });
+</script>

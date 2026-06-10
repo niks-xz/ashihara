@@ -1,0 +1,30 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import SectionHeading from '../../components/ui/SectionHeading.astro';
+import BeltLevelCard from '../../components/methodology/BeltLevelCard.astro';
+import { beltLevels as allBeltLevels } from '../../data/content';
+
+const beltLevels = [...allBeltLevels].sort((a, b) => a.sortOrder - b.sortOrder);
+---
+
+<PageLayout
+  title="Методичка"
+  description="Экзаменационные требования Ашихара-каратэ от 10 кю (белый пояс) до 3 дана (чёрный пояс). Кихон, ката, кумитэ, сабаки."
+>
+  <section class="py-16 md:py-20">
+    <div class="max-w-3xl mx-auto px-4">
+      <SectionHeading
+        title="Экзаменационные требования"
+        subtitle="Выберите уровень для просмотра требований к аттестации"
+      />
+
+      {beltLevels.length > 0 ? (
+        <div class="space-y-3">
+          {beltLevels.map((belt) => <BeltLevelCard belt={belt} />)}
+        </div>
+      ) : (
+        <p class="text-center text-neutral-600">Экзаменационные требования скоро появятся</p>
+      )}
+    </div>
+  </section>
+</PageLayout>

@@ -1,0 +1,35 @@
+---
+import { withBase } from '../../lib/utils';
+
+interface Props {
+  href?: string;
+  variant?: 'primary' | 'secondary' | 'outline' | 'light-outline';
+  size?: 'sm' | 'md' | 'lg';
+  class?: string;
+}
+
+const { href, variant = 'primary', size = 'md', class: className } = Astro.props;
+
+const baseClasses = 'inline-flex items-center justify-center font-semibold rounded-lg transition-colors';
+
+const variants: Record<string, string> = {
+  primary: 'bg-primary text-white hover:bg-primary-dark',
+  secondary: 'bg-dark text-white hover:bg-dark-light',
+  outline: 'border-2 border-primary text-primary hover:bg-primary hover:text-white',
+  'light-outline': 'border-2 border-white text-white hover:bg-white hover:text-primary',
+};
+
+const sizes: Record<string, string> = {
+  sm: 'px-4 py-2 text-sm',
+  md: 'px-6 py-3 text-base',
+  lg: 'px-8 py-4 text-lg',
+};
+
+const classes = `${baseClasses} ${variants[variant]} ${sizes[size]} ${className ?? ''}`;
+const Tag = href ? 'a' : 'button';
+const safeHref = href ? withBase(href) : undefined;
+---
+
+<Tag href={safeHref} class={classes}>
+  <slot />
+</Tag>

@@ -1,0 +1,49 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import SectionHeading from '../components/ui/SectionHeading.astro';
+import ScheduleTable from '../components/schedule/ScheduleTable.astro';
+import { gyms, scheduleEntries as allEntries } from '../data/content';
+import { withBase } from '../lib/utils';
+import type { ScheduleEntry } from '../lib/types';
+
+const sortedGyms = [...gyms].sort((a, b) => a.sortOrder - b.sortOrder);
+
+// Group entries by gym
+function entriesForGym(gymId: number): ScheduleEntry[] {
+  return allEntries.filter(e => e.gym?.id === gymId);
+}
+---
+
+<PageLayout
+  title="Расписание"
+  description="Расписание тренировок по Ашихара-каратэ в Краснодаре. Детские и взрослые группы, дни и время занятий."
+>
+  <section class="py-16 md:py-20">
+    <div class="max-w-7xl mx-auto px-4">
+      <SectionHeading
+        title="Расписание тренировок"
+        subtitle="Выберите удобный зал и время для занятий"
+      />
+
+      {sortedGyms.length > 0 ? (
+        <div class="space-y-8">
+          {sortedGyms.map((gym) => {
+            const entries = entriesForGym(gym.id);
+            return entries.length > 0 ? <ScheduleTable entries={entries} gym={gym} /> : null;
+          })}
+        </div>
+      ) : (
+        <p class="text-center text-neutral-600">Расписание скоро появится</p>
+      )}
+
+      <div class="mt-10 bg-primary/5 border border-primary/20 rounded-xl p-6 text-center">
+        <p class="text-neutral-700 mb-2">
+          Хотите записаться или уточнить расписание?
+        </p>
+        <a href={withBase('/contacts')} class="text-primary font-semibold hover:underline">
+          Свяжитесь с нами
+        </a>
+      </div>
+    </div>
+  </section>
+</PageLayout>

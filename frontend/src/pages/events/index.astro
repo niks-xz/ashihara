@@ -1,0 +1,32 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import SectionHeading from '../../components/ui/SectionHeading.astro';
+import EventCard from '../../components/events/EventCard.astro';
+import { events as allEvents } from '../../data/content';
+
+const events = [...allEvents]
+  .sort((a, b) => b.eventDate.localeCompare(a.eventDate))
+  .slice(0, 12);
+---
+
+<PageLayout
+  title="События"
+  description="Соревнования, семинары, аттестации и другие мероприятия Федерации Ашихара-каратэ Краснодарского края."
+>
+  <section class="py-16 md:py-20">
+    <div class="max-w-7xl mx-auto px-4">
+      <SectionHeading
+        title="События и новости"
+        subtitle="Соревнования, семинары, аттестации и другие мероприятия федерации"
+      />
+
+      {events.length > 0 ? (
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {events.map((event) => <EventCard event={event} />)}
+        </div>
+      ) : (
+        <p class="text-center text-neutral-600">Скоро здесь появятся события</p>
+      )}
+    </div>
+  </section>
+</PageLayout>

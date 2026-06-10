@@ -1,0 +1,46 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import HeroSection from '../components/home/HeroSection.astro';
+import UpcomingEvents from '../components/home/UpcomingEvents.astro';
+import AboutPreview from '../components/home/AboutPreview.astro';
+import CtaSection from '../components/home/CtaSection.astro';
+import { events as allEvents } from '../data/content';
+import type { Event } from '../lib/types';
+
+const today = new Date();
+today.setHours(0, 0, 0, 0);
+
+const events: Event[] = [];
+let latestArchiveYear: number | undefined;
+
+for (const event of allEvents) {
+  if (!event.eventDate) {
+    continue;
+  }
+
+  const eventDate = new Date(event.eventDate);
+  const eventYear = eventDate.getFullYear();
+
+  if (latestArchiveYear === undefined || eventYear > latestArchiveYear) {
+    latestArchiveYear = eventYear;
+  }
+
+  if (eventDate >= today && events.length < 3) {
+    events.push(event);
+  }
+}
+---
+
+<PageLayout
+  title="Главная"
+  description="Федерация Ашихара-каратэ Краснодарского края. Тренировки для детей и взрослых, соревнования, аттестации. Организация NIKO."
+>
+  <HeroSection />
+  <UpcomingEvents
+    events={events}
+    archiveEventCount={allEvents.length}
+    latestArchiveYear={latestArchiveYear}
+  />
+  <AboutPreview />
+  <CtaSection />
+</PageLayout>

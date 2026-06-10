@@ -1,0 +1,40 @@
+---
+import { withBase } from '../../lib/utils';
+
+interface Props {
+  title: string;
+  description: string;
+  ogImage?: string;
+  canonicalUrl?: string;
+}
+
+const {
+  title,
+  description,
+  ogImage = '/og-image.jpg',
+  canonicalUrl = Astro.url.href,
+} = Astro.props;
+
+const fullTitle = title === 'Главная'
+  ? 'Федерация Ашихара-каратэ Краснодарского края'
+  : `${title} | Ашихара-каратэ Краснодар`;
+const resolvedOgImage = new URL(withBase(ogImage), Astro.site).href;
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="generator" content={Astro.generator} />
+
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonicalUrl} />
+
+<meta property="og:type" content="website" />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={resolvedOgImage} />
+<meta property="og:url" content={canonicalUrl} />
+<meta property="og:locale" content="ru_RU" />
+<meta property="og:site_name" content="Федерация Ашихара-каратэ Краснодарского края" />
+
+<link rel="icon" type="image/x-icon" href={withBase('/favicon.ico')} />

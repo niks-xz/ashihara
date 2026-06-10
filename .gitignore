@@ -1,0 +1,13 @@
+cms/
+
+.DS_Store
+.idea/
+.vscode/
+
+node_modules/
+dist/
+.astro/
+
+.env
+.env.*
+*.log

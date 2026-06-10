@@ -1,0 +1,41 @@
+---
+import { withBase } from '../../lib/utils';
+
+const navItems = [
+  { href: '/about', label: 'О федерации' },
+  { href: '/schedule', label: 'Расписание' },
+  { href: '/coaches', label: 'Тренеры' },
+  { href: '/gyms', label: 'Залы' },
+  { href: '/events', label: 'События' },
+  { href: '/calendar', label: 'Календарь' },
+  { href: '/methodology', label: 'Методичка' },
+  { href: '/contacts', label: 'Контакты' },
+];
+
+const currentPath = Astro.url.pathname;
+const basePath = import.meta.env.BASE_URL.endsWith('/')
+  ? import.meta.env.BASE_URL.slice(0, -1)
+  : import.meta.env.BASE_URL;
+const localPath = basePath && currentPath.startsWith(basePath)
+  ? currentPath.slice(basePath.length) || '/'
+  : currentPath;
+---
+
+<nav class="hidden lg:flex items-center gap-0">
+  {navItems.map(({ href, label }) => {
+    const isActive = localPath.startsWith(href);
+    return (
+      <a
+        href={withBase(href)}
+        class:list={[
+          'px-2 py-1.5 rounded-md text-xs xl:text-[13px] font-medium transition-colors whitespace-nowrap',
+          isActive
+            ? 'text-primary bg-primary/10'
+            : 'text-neutral-700 hover:text-primary hover:bg-neutral-100',
+        ]}
+      >
+        {label}
+      </a>
+    );
+  })}
+</nav>
