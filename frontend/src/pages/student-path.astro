@@ -1,0 +1,602 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import Button from '../components/ui/Button.astro';
+import SectionHeading from '../components/ui/SectionHeading.astro';
+import BeltVisual from '../components/methodology/BeltVisual.astro';
+import { beltLevels } from '../data/content';
+import { firstMonthSteps, practiceSequences, studentTerms } from '../data/marketing';
+import { withBase } from '../lib/utils';
+import type { BeltLevel, RequirementRow } from '../lib/types';
+
+const sortedBelts = [...beltLevels].sort((a, b) => a.sortOrder - b.sortOrder);
+
+function firstRow(rows: RequirementRow[]): RequirementRow | undefined {
+  return rows.find((row) => row.technique.trim().length > 0);
+}
+
+function uniqueChoices(correct: string, candidates: string[]): string[] {
+  const values = [correct];
+
+  for (const candidate of candidates) {
+    if (candidate && !values.includes(candidate)) {
+      values.push(candidate);
+    }
+
+    if (values.length === 4) {
+      break;
+    }
+  }
+
+  return values;
+}
+
+function buildQuiz(belt: BeltLevel, allBelts: BeltLevel[]) {
+  const questions = [];
+  const otherBelts = allBelts.filter((item) => item.slug !== belt.slug);
+  const firstKihon = firstRow(belt.kihon);
+  const firstStrength = firstRow(belt.strengthTests);
+  const firstKata = firstRow(belt.kata);
+  const firstKumite = firstRow(belt.kumite);
+
+  questions.push({
+    question: `Какой цвет пояса у уровня ${belt.name}?`,
+    answer: belt.beltColor,
+    options: uniqueChoices(belt.beltColor, otherBelts.map((item) => item.beltColor)),
+  });
+
+  if (firstStrength) {
+    questions.push({
+      question: `Сколько раз выполняется упражнение "${firstStrength.technique}"?`,
+      answer: firstStrength.repetitions,
+      options: uniqueChoices(firstStrength.repetitions, otherBelts.flatMap((item) => item.strengthTests.map((row) => row.repetitions))),
+    });
+  }
+
+  if (firstKihon) {
+    questions.push({
+      question: `Какая техника есть в разделе "Кихон" для ${belt.name}?`,
+      answer: firstKihon.technique,
+      options: uniqueChoices(firstKihon.technique, otherBelts.flatMap((item) => item.kihon.map((row) => row.technique))),
+    });
+  }
+
+  if (firstKata) {
+    questions.push({
+      question: `Какая ката указана для уровня ${belt.name}?`,
+      answer: firstKata.technique,
+      options: uniqueChoices(firstKata.technique, otherBelts.flatMap((item) => item.kata.map((row) => row.technique))),
+    });
+  }
+
+  if (firstKumite) {
+    questions.push({
+      question: `Какой формат кумитэ есть в требованиях ${belt.name}?`,
+      answer: firstKumite.technique,
+      options: uniqueChoices(firstKumite.technique, otherBelts.flatMap((item) => item.kumite.map((row) => row.technique))),
+    });
+  }
+
+  return {
+    slug: belt.slug,
+    name: belt.name,
+    questions,
+  };
+}
+
+const beltQuizzes = sortedBelts.map((belt) => buildQuiz(belt, sortedBelts));
+const termsJson = JSON.stringify(studentTerms);
+const sequencesJson = JSON.stringify(practiceSequences);
+const quizzesJson = JSON.stringify(beltQuizzes);
+---
+
+<PageLayout
+  title="Путь ученика"
+  description="Путь ученика Ашихара-каратэ: пояса, чек-лист первого месяца, японские термины, базовые связки и мини-квизы по требованиям."
+>
+  <section class="bg-dark text-white">
+    <div class="max-w-7xl mx-auto px-4 py-16 md:py-24">
+      <div class="grid gap-10 lg:grid-cols-[1fr_0.9fr] lg:items-center">
+        <div class="max-w-3xl">
+          <div class="inline-flex items-center rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-sm font-medium text-primary-light">
+            Юным спортсменам
+          </div>
+          <h1 class="mt-6 text-4xl md:text-5xl font-bold leading-tight">Путь ученика</h1>
+          <p class="mt-5 text-lg text-neutral-300">
+            Небольшой интерактивный раздел для повторения дома: путь по поясам, первые термины, чек-лист первого месяца и базовые последовательности.
+          </p>
+          <div class="mt-8 flex flex-col sm:flex-row gap-4">
+            <Button href="/kids" size="lg">Для родителей</Button>
+            <Button href="/methodology" variant="light-outline" size="lg">Методичка</Button>
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-3 lg:grid-cols-1">
+          <div class="rounded-lg border border-white/10 bg-white/8 p-5">
+            <div class="text-3xl font-bold text-primary-light">{sortedBelts.length}</div>
+            <p class="mt-2 text-sm text-neutral-300">уровней в карте поясов</p>
+          </div>
+          <div class="rounded-lg border border-white/10 bg-white/8 p-5">
+            <div class="text-3xl font-bold text-primary-light">{studentTerms.length}</div>
+            <p class="mt-2 text-sm text-neutral-300">терминов для первого повторения</p>
+          </div>
+          <div class="rounded-lg border border-white/10 bg-white/8 p-5">
+            <div class="text-3xl font-bold text-primary-light">локально</div>
+            <p class="mt-2 text-sm text-neutral-300">прогресс хранится только в браузере</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-16 md:py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4">
+      <SectionHeading
+        title="Карта поясов"
+        subtitle="Отмечайте уровни, которые уже прошли или сейчас повторяете. Прогресс сохраняется только в этом браузере."
+      />
+      <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        {sortedBelts.map((belt) => (
+          <article class="rounded-lg border border-neutral-200 bg-white p-5 shadow-sm transition-colors hover:border-primary">
+            <div class="flex items-start justify-between gap-4">
+              <div>
+                <div class="flex items-center gap-3">
+                  <BeltVisual belt={belt} class="w-20 h-7" />
+                  <h3 class="text-lg font-bold text-dark">{belt.name}</h3>
+                </div>
+                <p class="mt-3 text-sm text-neutral-600">{belt.description}</p>
+              </div>
+            </div>
+            <div class="mt-4 flex flex-wrap items-center gap-3">
+              <button
+                type="button"
+                data-progress-key={`belt:${belt.slug}`}
+                class="rounded-full bg-neutral-100 px-3 py-1 text-xs font-semibold text-neutral-600 transition-colors"
+                aria-pressed="false"
+              >
+                <span data-progress-status>Повторить</span>
+              </button>
+              <a
+                href={withBase(`/methodology/${belt.slug}`)}
+                class="inline-flex text-sm font-semibold text-primary hover:underline"
+              >
+                Требования
+              </a>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="py-16 md:py-20">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
+        <div>
+          <SectionHeading
+            title="Первый месяц"
+            subtitle="Короткий чек-лист, который помогает ребёнку и родителям спокойно войти в тренировочный режим."
+            centered={false}
+          />
+        </div>
+        <div class="rounded-lg border border-neutral-200 bg-white p-6 shadow-sm">
+          <div class="space-y-4">
+            {firstMonthSteps.map((step) => (
+              <label class="flex gap-4 rounded-lg border border-neutral-200 bg-neutral-50 p-4">
+                <input
+                  type="checkbox"
+                  data-progress-key={`month:${step.id}`}
+                  class="mt-1 h-5 w-5 rounded border-neutral-300 text-primary"
+                />
+                <span>
+                  <span class="block font-bold text-dark">{step.title}</span>
+                  <span class="mt-1 block text-sm text-neutral-600">{step.description}</span>
+                </span>
+              </label>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-16 md:py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4">
+      <SectionHeading
+        title="Тренажер терминов"
+        subtitle="Повторяйте японские названия маленькими блоками, без перегруза перед тренировкой."
+      />
+      <div
+        id="term-trainer"
+        data-terms={termsJson}
+        class="mx-auto max-w-3xl rounded-lg border border-neutral-200 bg-neutral-50 p-6 shadow-sm"
+      >
+        <div class="flex flex-wrap gap-2">
+          <button type="button" data-term-mode="term" class="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white">
+            Угадай перевод
+          </button>
+          <button type="button" data-term-mode="meaning" class="rounded-md border border-neutral-300 bg-white px-4 py-2 text-sm font-semibold text-neutral-700">
+            Найди термин
+          </button>
+          <button type="button" data-term-mode="repeat" class="rounded-md border border-neutral-300 bg-white px-4 py-2 text-sm font-semibold text-neutral-700">
+            Повтори 10
+          </button>
+        </div>
+
+        <div class="mt-6 rounded-lg bg-white p-6">
+          <div id="term-category" class="text-sm font-semibold uppercase tracking-wide text-primary"></div>
+          <div id="term-prompt" class="mt-3 text-3xl font-bold text-dark"></div>
+          <div id="term-hint" class="mt-3 text-neutral-600"></div>
+          <div id="term-answer" class="mt-5 hidden rounded-lg border border-primary/20 bg-primary/5 p-4 text-lg font-semibold text-dark"></div>
+        </div>
+
+        <div class="mt-5 flex flex-col sm:flex-row gap-3">
+          <button type="button" id="term-show-answer" class="rounded-lg bg-primary px-5 py-3 font-semibold text-white hover:bg-primary-dark transition-colors">
+            Показать ответ
+          </button>
+          <button type="button" id="term-next" class="rounded-lg border border-primary px-5 py-3 font-semibold text-primary hover:bg-primary hover:text-white transition-colors">
+            Следующий термин
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-16 md:py-20">
+    <div class="max-w-7xl mx-auto px-4">
+      <SectionHeading
+        title="Связки и последовательности"
+        subtitle="Сначала тренируем порядок простых связок из требований. Полные ката по шагам лучше добавлять после проверки тренером."
+      />
+      <div
+        id="sequence-trainer"
+        data-sequences={sequencesJson}
+        class="mx-auto max-w-4xl rounded-lg border border-neutral-200 bg-white p-6 shadow-sm"
+      >
+        <div class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+          <div>
+            <div id="sequence-level" class="text-sm font-semibold uppercase tracking-wide text-primary"></div>
+            <h3 id="sequence-title" class="mt-2 text-2xl font-bold text-dark"></h3>
+            <p id="sequence-note" class="mt-2 text-neutral-600"></p>
+          </div>
+          <select id="sequence-select" class="rounded-lg border border-neutral-300 bg-white px-4 py-3 text-sm font-semibold text-neutral-800"></select>
+        </div>
+
+        <div class="mt-6 grid gap-6 lg:grid-cols-2">
+          <div>
+            <div class="text-sm font-semibold text-dark">Выберите шаги в правильном порядке</div>
+            <div id="sequence-options" class="mt-3 flex flex-wrap gap-2"></div>
+          </div>
+          <div>
+            <div class="text-sm font-semibold text-dark">Ваш порядок</div>
+            <ol id="sequence-result" class="mt-3 min-h-32 space-y-2 rounded-lg border border-neutral-200 bg-neutral-50 p-4"></ol>
+          </div>
+        </div>
+
+        <div id="sequence-status" class="mt-5 rounded-lg bg-neutral-100 p-4 text-sm font-semibold text-neutral-700"></div>
+        <div class="mt-5 flex flex-col sm:flex-row gap-3">
+          <button type="button" id="sequence-check" class="rounded-lg bg-primary px-5 py-3 font-semibold text-white hover:bg-primary-dark transition-colors">
+            Проверить порядок
+          </button>
+          <button type="button" id="sequence-reset" class="rounded-lg border border-primary px-5 py-3 font-semibold text-primary hover:bg-primary hover:text-white transition-colors">
+            Сбросить
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-16 md:py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4">
+      <SectionHeading
+        title="Мини-квиз по требованиям"
+        subtitle="Небольшая самопроверка по поясам. Ответы строятся из текущей методички сайта."
+      />
+      <div
+        id="belt-quiz"
+        data-quizzes={quizzesJson}
+        class="mx-auto max-w-4xl rounded-lg border border-neutral-200 bg-neutral-50 p-6 shadow-sm"
+      >
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <h3 class="text-xl font-bold text-dark">Выберите пояс</h3>
+          <select id="quiz-belt-select" class="rounded-lg border border-neutral-300 bg-white px-4 py-3 text-sm font-semibold text-neutral-800"></select>
+        </div>
+        <form id="quiz-form" class="mt-6 space-y-5"></form>
+        <div id="quiz-status" class="mt-5 hidden rounded-lg p-4 text-sm font-semibold"></div>
+        <button type="button" id="quiz-check" class="mt-5 rounded-lg bg-primary px-5 py-3 font-semibold text-white hover:bg-primary-dark transition-colors">
+          Проверить ответы
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-16 md:py-20 bg-primary">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <h2 class="text-3xl md:text-4xl font-bold text-white">Тренировки остаются главным</h2>
+      <p class="mt-4 text-lg text-white/85">
+        Этот раздел помогает повторять материал дома, но технику, дистанцию и работу в паре нужно проверять с тренером.
+      </p>
+      <div class="mt-8 flex flex-col sm:flex-row justify-center gap-4">
+        <Button href="/kids" variant="secondary" size="lg">Тренировки для детей</Button>
+        <Button href="/contacts" variant="light-outline" size="lg">Записаться на пробное</Button>
+      </div>
+    </div>
+  </section>
+
+  <script is:inline>
+    const storagePrefix = 'ashihara:student-path:';
+
+    const storageKey = (key) => {
+      return `${storagePrefix}${key}`;
+    };
+
+    const readProgress = (key) => {
+      return localStorage.getItem(storageKey(key)) === 'done';
+    };
+
+    const writeProgress = (key, done) => {
+      if (done) {
+        localStorage.setItem(storageKey(key), 'done');
+      } else {
+        localStorage.removeItem(storageKey(key));
+      }
+    };
+
+    const updateProgressControl = (control, done) => {
+      if (control instanceof HTMLInputElement) {
+        control.checked = done;
+        return;
+      }
+
+      control.setAttribute('aria-pressed', String(done));
+      control.classList.toggle('bg-primary', done);
+      control.classList.toggle('text-white', done);
+      control.classList.toggle('bg-neutral-100', !done);
+      control.classList.toggle('text-neutral-600', !done);
+
+      const status = control.querySelector('[data-progress-status]');
+      if (status) {
+        status.textContent = done ? 'Отмечено' : 'Повторить';
+      }
+    };
+
+    document.querySelectorAll('[data-progress-key]').forEach((control) => {
+      const key = control.dataset.progressKey;
+      if (!key) {
+        return;
+      }
+
+      updateProgressControl(control, readProgress(key));
+
+      control.addEventListener('click', () => {
+        const nextValue = !readProgress(key);
+        writeProgress(key, nextValue);
+        updateProgressControl(control, nextValue);
+      });
+    });
+
+    const termTrainer = document.getElementById('term-trainer');
+    const terms = termTrainer ? JSON.parse(termTrainer.dataset.terms ?? '[]') : [];
+    let termIndex = 0;
+    let termMode = 'term';
+
+    const termCategory = document.getElementById('term-category');
+    const termPrompt = document.getElementById('term-prompt');
+    const termHint = document.getElementById('term-hint');
+    const termAnswer = document.getElementById('term-answer');
+
+    const renderTerm = () => {
+      if (!terms.length || !termPrompt || !termAnswer || !termHint || !termCategory) {
+        return;
+      }
+
+      const isMeaningMode = termMode === 'meaning';
+      const isRepeatMode = termMode === 'repeat';
+      const termPool = isRepeatMode ? terms.slice(0, 10) : terms;
+      const item = termPool[termIndex % termPool.length];
+
+      termCategory.textContent = isRepeatMode ? `Повтор ${termIndex % termPool.length + 1} из ${termPool.length}` : item.category;
+      termPrompt.textContent = isMeaningMode ? item.meaning : item.term;
+      termHint.textContent = isMeaningMode ? item.hint : 'Вспомните значение и нажмите "Показать ответ".';
+      termAnswer.textContent = isMeaningMode ? item.term : item.meaning;
+      termAnswer.classList.add('hidden');
+    };
+
+    document.querySelectorAll('[data-term-mode]').forEach((button) => {
+      button.addEventListener('click', () => {
+        termMode = button.dataset.termMode ?? 'term';
+        document.querySelectorAll('[data-term-mode]').forEach((item) => {
+          item.classList.remove('bg-primary', 'text-white');
+          item.classList.add('border', 'border-neutral-300', 'bg-white', 'text-neutral-700');
+        });
+        button.classList.add('bg-primary', 'text-white');
+        button.classList.remove('border', 'border-neutral-300', 'bg-white', 'text-neutral-700');
+        renderTerm();
+      });
+    });
+
+    document.getElementById('term-show-answer')?.addEventListener('click', () => {
+      termAnswer?.classList.remove('hidden');
+    });
+
+    document.getElementById('term-next')?.addEventListener('click', () => {
+      termIndex += 1;
+      renderTerm();
+    });
+
+    renderTerm();
+
+    const sequenceTrainer = document.getElementById('sequence-trainer');
+    const sequences = sequenceTrainer ? JSON.parse(sequenceTrainer.dataset.sequences ?? '[]') : [];
+    const sequenceSelect = document.getElementById('sequence-select');
+    const sequenceTitle = document.getElementById('sequence-title');
+    const sequenceLevel = document.getElementById('sequence-level');
+    const sequenceNote = document.getElementById('sequence-note');
+    const sequenceOptions = document.getElementById('sequence-options');
+    const sequenceResult = document.getElementById('sequence-result');
+    const sequenceStatus = document.getElementById('sequence-status');
+    let activeSequence = sequences[0];
+    let selectedSteps = [];
+
+    const shuffled = (items) => {
+      return [...items].sort(() => Math.random() - 0.5);
+    };
+
+    const renderSequence = () => {
+      if (!activeSequence || !sequenceTitle || !sequenceLevel || !sequenceNote || !sequenceOptions || !sequenceResult || !sequenceStatus) {
+        return;
+      }
+
+      selectedSteps = [];
+      sequenceTitle.textContent = activeSequence.title;
+      sequenceLevel.textContent = activeSequence.level;
+      sequenceNote.textContent = activeSequence.note;
+      sequenceOptions.innerHTML = '';
+      sequenceResult.innerHTML = '';
+      sequenceStatus.textContent = 'Соберите порядок шагов и нажмите "Проверить порядок".';
+      sequenceStatus.className = 'mt-5 rounded-lg bg-neutral-100 p-4 text-sm font-semibold text-neutral-700';
+
+      shuffled(activeSequence.steps).forEach((step) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.textContent = step;
+        button.className = 'rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm font-semibold text-neutral-700 hover:border-primary hover:text-primary transition-colors';
+        button.addEventListener('click', () => {
+          selectedSteps.push(step);
+          button.disabled = true;
+          button.classList.add('opacity-40');
+
+          const item = document.createElement('li');
+          item.className = 'rounded-md bg-white px-3 py-2 text-sm text-neutral-800';
+          item.textContent = `${selectedSteps.length}. ${step}`;
+          sequenceResult.append(item);
+        });
+        sequenceOptions.append(button);
+      });
+    };
+
+    if (sequenceSelect) {
+      sequences.forEach((sequence) => {
+        const option = document.createElement('option');
+        option.value = sequence.id;
+        option.textContent = sequence.title;
+        sequenceSelect.append(option);
+      });
+
+      sequenceSelect.addEventListener('change', () => {
+        activeSequence = sequences.find((sequence) => sequence.id === sequenceSelect.value) ?? sequences[0];
+        renderSequence();
+      });
+    }
+
+    document.getElementById('sequence-check')?.addEventListener('click', () => {
+      if (!activeSequence || !sequenceStatus) {
+        return;
+      }
+
+      const expected = activeSequence.steps.join('|');
+      const actual = selectedSteps.join('|');
+      const isComplete = selectedSteps.length === activeSequence.steps.length;
+      const isCorrect = isComplete && expected === actual;
+
+      if (isCorrect) {
+        sequenceStatus.textContent = 'Порядок собран правильно.';
+        sequenceStatus.className = 'mt-5 rounded-lg bg-green-50 p-4 text-sm font-semibold text-green-700 border border-green-200';
+      } else if (!isComplete) {
+        sequenceStatus.textContent = 'Выберите все шаги последовательности.';
+        sequenceStatus.className = 'mt-5 rounded-lg bg-yellow-50 p-4 text-sm font-semibold text-yellow-700 border border-yellow-200';
+      } else {
+        sequenceStatus.textContent = 'Порядок пока неверный. Сбросьте и попробуйте еще раз.';
+        sequenceStatus.className = 'mt-5 rounded-lg bg-red-50 p-4 text-sm font-semibold text-red-700 border border-red-200';
+      }
+    });
+
+    document.getElementById('sequence-reset')?.addEventListener('click', renderSequence);
+    renderSequence();
+
+    const quizRoot = document.getElementById('belt-quiz');
+    const quizzes = quizRoot ? JSON.parse(quizRoot.dataset.quizzes ?? '[]') : [];
+    const quizSelect = document.getElementById('quiz-belt-select');
+    const quizForm = document.getElementById('quiz-form');
+    const quizStatus = document.getElementById('quiz-status');
+
+    const renderQuiz = () => {
+      if (!quizSelect || !quizForm) {
+        return;
+      }
+
+      const quiz = quizzes.find((item) => item.slug === quizSelect.value) ?? quizzes[0];
+      quizForm.innerHTML = '';
+
+      quiz.questions.forEach((question, questionIndex) => {
+        const fieldset = document.createElement('fieldset');
+        fieldset.className = 'rounded-lg border border-neutral-200 bg-white p-4';
+
+        const legend = document.createElement('legend');
+        legend.className = 'font-bold text-dark';
+        legend.textContent = question.question;
+        fieldset.append(legend);
+
+        const options = document.createElement('div');
+        options.className = 'mt-3 grid gap-2 sm:grid-cols-2';
+
+        shuffled(question.options).forEach((option) => {
+          const label = document.createElement('label');
+          label.className = 'flex cursor-pointer items-start gap-3 rounded-md border border-neutral-200 bg-neutral-50 p-3 text-sm text-neutral-700 hover:border-primary';
+
+          const input = document.createElement('input');
+          input.type = 'radio';
+          input.name = `question-${questionIndex}`;
+          input.value = option;
+          input.className = 'mt-0.5';
+
+          const text = document.createElement('span');
+          text.textContent = option;
+
+          label.append(input, text);
+          options.append(label);
+        });
+
+        fieldset.append(options);
+        quizForm.append(fieldset);
+      });
+
+      if (quizStatus) {
+        quizStatus.classList.add('hidden');
+      }
+    };
+
+    if (quizSelect) {
+      quizzes.forEach((quiz) => {
+        const option = document.createElement('option');
+        option.value = quiz.slug;
+        option.textContent = quiz.name;
+        quizSelect.append(option);
+      });
+
+      quizSelect.addEventListener('change', renderQuiz);
+    }
+
+    document.getElementById('quiz-check')?.addEventListener('click', () => {
+      if (!quizSelect || !quizForm || !quizStatus) {
+        return;
+      }
+
+      const quiz = quizzes.find((item) => item.slug === quizSelect.value) ?? quizzes[0];
+      let correct = 0;
+
+      quiz.questions.forEach((question, questionIndex) => {
+        const selected = quizForm.querySelector(`input[name="question-${questionIndex}"]:checked`);
+        if (selected && selected.value === question.answer) {
+          correct += 1;
+        }
+      });
+
+      quizStatus.textContent = `Результат: ${correct} из ${quiz.questions.length}. Ошибки лучше разобрать вместе с тренером.`;
+      quizStatus.className = correct === quiz.questions.length
+        ? 'mt-5 rounded-lg p-4 text-sm font-semibold bg-green-50 text-green-700 border border-green-200'
+        : 'mt-5 rounded-lg p-4 text-sm font-semibold bg-yellow-50 text-yellow-700 border border-yellow-200';
+    });
+
+    renderQuiz();
+  </script>
+</PageLayout>

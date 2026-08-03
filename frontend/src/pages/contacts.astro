@@ -1,6 +1,5 @@
 ---
 import PageLayout from '../layouts/PageLayout.astro';
-import SectionHeading from '../components/ui/SectionHeading.astro';
 import ContactForm from '../components/contacts/ContactForm.astro';
 ---
 
@@ -10,10 +9,15 @@ import ContactForm from '../components/contacts/ContactForm.astro';
 >
   <section class="py-16 md:py-20">
     <div class="max-w-7xl mx-auto px-4">
-      <SectionHeading
-        title="Контакты"
-        subtitle="Свяжитесь с нами или запишитесь на тренировку"
-      />
+      <div class="mb-10 text-center">
+        <h1 class="text-3xl md:text-4xl font-bold text-dark">
+          Контакты
+        </h1>
+        <p class="mt-3 text-lg text-neutral-700 max-w-2xl mx-auto">
+          Свяжитесь с нами или запишитесь на тренировку
+        </p>
+        <div class="mt-4 h-1 w-16 bg-primary rounded-full mx-auto"></div>
+      </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
         <!-- Contact Form -->

@@ -2,6 +2,7 @@
 import PageLayout from '../../layouts/PageLayout.astro';
 import SectionHeading from '../../components/ui/SectionHeading.astro';
 import BeltLevelCard from '../../components/methodology/BeltLevelCard.astro';
+import Button from '../../components/ui/Button.astro';
 import { beltLevels as allBeltLevels } from '../../data/content';
 
 const beltLevels = [...allBeltLevels].sort((a, b) => a.sortOrder - b.sortOrder);
@@ -17,6 +18,16 @@ const beltLevels = [...allBeltLevels].sort((a, b) => a.sortOrder - b.sortOrder);
         title="Экзаменационные требования"
         subtitle="Выберите уровень для просмотра требований к аттестации"
       />
+
+      <div class="mb-8 rounded-lg border border-primary/20 bg-primary/5 p-5">
+        <h2 class="text-lg font-bold text-dark">Для самостоятельного повторения</h2>
+        <p class="mt-2 text-neutral-700">
+          Откройте путь ученика: чек-лист первого месяца, термины, базовые последовательности и мини-квизы по требованиям.
+        </p>
+        <div class="mt-4">
+          <Button href="/student-path" size="sm">Путь ученика</Button>
+        </div>
+      </div>
 
       {beltLevels.length > 0 ? (
         <div class="space-y-3">
