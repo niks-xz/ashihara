@@ -1,0 +1,34 @@
+name: 6 Кю
+sortOrder: 5
+beltColor: Жёлтый
+colorHex: '#EAB308'
+description: Жёлтый пояс.
+strengthTests:
+  - technique: Отжимания
+    repetitions: '45'
+  - technique: Пресс
+    repetitions: '45'
+  - technique: Приседания на одной ноге
+    repetitions: 20 каждой
+kihon:
+  - technique: Все базовые удары и блоки
+    repetitions: '30'
+    notes: Под счёт
+  - technique: Уширо гэри
+    repetitions: 10 каждой
+  - technique: Комбинации рук и ног
+    repetitions: '15'
+    notes: 3-4 техники
+idoKihon:
+  - technique: Комбинации из 4-5 техник
+    repetitions: '10'
+kata:
+  - technique: Ката Джиссэн-но ити
+    repetitions: '1'
+kumite:
+  - technique: Дзию кумитэ
+    repetitions: 5 раундов
+    notes: 2 минуты
+sabaki:
+  - technique: Сабаки №1-3
+    repetitions: 5 каждый

@@ -1,11 +1,11 @@
 ---
+import { getCollection } from 'astro:content';
 import PageLayout from '../../layouts/PageLayout.astro';
 import SectionHeading from '../../components/ui/SectionHeading.astro';
 import BeltLevelCard from '../../components/methodology/BeltLevelCard.astro';
 import Button from '../../components/ui/Button.astro';
-import { beltLevels as allBeltLevels } from '../../data/content';
 
-const beltLevels = [...allBeltLevels].sort((a, b) => a.sortOrder - b.sortOrder);
+const beltLevels = (await getCollection('belts')).sort((a, b) => a.data.sortOrder - b.data.sortOrder);
 ---
 
 <PageLayout

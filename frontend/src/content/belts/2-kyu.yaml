@@ -1,0 +1,36 @@
+name: 2 Кю
+sortOrder: 9
+beltColor: Коричневый
+colorHex: '#92400E'
+description: Коричневый пояс.
+strengthTests:
+  - technique: Отжимания
+    repetitions: '70'
+    notes: В т.ч. 20 на кулаках
+  - technique: Пресс
+    repetitions: '70'
+  - technique: Приседания на одной ноге
+    repetitions: 35 каждой
+kihon:
+  - technique: Полная программа
+    repetitions: '50'
+idoKihon:
+  - technique: Свободные комбинации
+    repetitions: Без ограничений
+kata:
+  - technique: Ката Кумитэ-но сан
+    repetitions: '1'
+  - technique: Все предыдущие ката
+    repetitions: По выбору
+kumite:
+  - technique: Дзию кумитэ
+    repetitions: 8 раундов
+    notes: 2 минуты
+sabaki:
+  - technique: Все сабаки
+    repetitions: ''
+    notes: Свободное исполнение
+tameshiWari:
+  - technique: Тамэши вари
+    repetitions: '2'
+    notes: Разные техники

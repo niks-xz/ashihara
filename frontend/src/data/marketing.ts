@@ -28,7 +28,7 @@ export interface PracticeSequence {
   steps: string[];
 }
 
-export const gymMarketingBySlug = {
+export const gymMarketingBySlug: Record<string, GymMarketing> = {
   'sk-olimp': {
     slug: 'sk-olimp',
     audience: 'Подойдёт семьям, которым удобно добираться к ул. Селезнёва. Это основной зал федерации с несколькими группами по возрасту и уровню.',
@@ -53,7 +53,7 @@ export const gymMarketingBySlug = {
     trialNote: 'Для младших детей лучше сначала согласовать пробное занятие с тренером, потому что по расписанию здесь идут средняя и старшая группы.',
     firstVisit: 'Возьмите спортивную форму, воду и приходите немного заранее, чтобы тренер успел познакомиться с ребёнком.',
   },
-} satisfies Record<string, GymMarketing>;
+};
 
 export const parentQuestions = [
   {

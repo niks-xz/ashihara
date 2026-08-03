@@ -1,9 +1,9 @@
 ---
+import type { CollectionEntry } from 'astro:content';
 import VkVideo from '../ui/VkVideo.astro';
-import type { KataVideo } from '../../lib/types';
 
 interface Props {
-  videos: KataVideo[];
+  videos: CollectionEntry<'kata-videos'>[];
 }
 
 const { videos } = Astro.props;
@@ -15,10 +15,10 @@ const { videos } = Astro.props;
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       {videos.map((video) => (
         <div>
-          <VkVideo url={video.vkVideoUrl} title={video.title} />
-          <p class="mt-2 text-sm font-medium text-neutral-700">{video.title}</p>
-          {video.description && (
-            <p class="text-sm text-neutral-600">{video.description}</p>
+          <VkVideo url={video.data.vkVideoUrl} title={video.data.title} />
+          <p class="mt-2 text-sm font-medium text-neutral-700">{video.data.title}</p>
+          {video.data.description && (
+            <p class="text-sm text-neutral-600">{video.data.description}</p>
           )}
         </div>
       ))}

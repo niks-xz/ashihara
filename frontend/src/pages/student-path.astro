@@ -3,12 +3,14 @@ import PageLayout from '../layouts/PageLayout.astro';
 import Button from '../components/ui/Button.astro';
 import SectionHeading from '../components/ui/SectionHeading.astro';
 import BeltVisual from '../components/methodology/BeltVisual.astro';
-import { beltLevels } from '../data/content';
+import { getCollection, type CollectionEntry } from 'astro:content';
 import { firstMonthSteps, practiceSequences, studentTerms } from '../data/marketing';
 import { withBase } from '../lib/utils';
-import type { BeltLevel, RequirementRow } from '../lib/types';
+import type { RequirementRow } from '../lib/belts';
 
-const sortedBelts = [...beltLevels].sort((a, b) => a.sortOrder - b.sortOrder);
+type Belt = CollectionEntry<'belts'>;
+
+const sortedBelts = (await getCollection('belts')).sort((a, b) => a.data.sortOrder - b.data.sortOrder);
 
 function firstRow(rows: RequirementRow[]): RequirementRow | undefined {
   return rows.find((row) => row.technique.trim().length > 0);
@@ -30,55 +32,55 @@ function uniqueChoices(correct: string, candidates: string[]): string[] {
   return values;
 }
 
-function buildQuiz(belt: BeltLevel, allBelts: BeltLevel[]) {
+function buildQuiz(belt: Belt, allBelts: Belt[]) {
   const questions = [];
-  const otherBelts = allBelts.filter((item) => item.slug !== belt.slug);
-  const firstKihon = firstRow(belt.kihon);
-  const firstStrength = firstRow(belt.strengthTests);
-  const firstKata = firstRow(belt.kata);
-  const firstKumite = firstRow(belt.kumite);
+  const otherBelts = allBelts.filter((item) => item.id !== belt.id);
+  const firstKihon = firstRow(belt.data.kihon);
+  const firstStrength = firstRow(belt.data.strengthTests);
+  const firstKata = firstRow(belt.data.kata);
+  const firstKumite = firstRow(belt.data.kumite);
 
   questions.push({
-    question: `Какой цвет пояса у уровня ${belt.name}?`,
-    answer: belt.beltColor,
-    options: uniqueChoices(belt.beltColor, otherBelts.map((item) => item.beltColor)),
+    question: `Какой цвет пояса у уровня ${belt.data.name}?`,
+    answer: belt.data.beltColor,
+    options: uniqueChoices(belt.data.beltColor, otherBelts.map((item) => item.data.beltColor)),
   });
 
   if (firstStrength) {
     questions.push({
       question: `Сколько раз выполняется упражнение "${firstStrength.technique}"?`,
       answer: firstStrength.repetitions,
-      options: uniqueChoices(firstStrength.repetitions, otherBelts.flatMap((item) => item.strengthTests.map((row) => row.repetitions))),
+      options: uniqueChoices(firstStrength.repetitions, otherBelts.flatMap((item) => item.data.strengthTests.map((row) => row.repetitions))),
     });
   }
 
   if (firstKihon) {
     questions.push({
-      question: `Какая техника есть в разделе "Кихон" для ${belt.name}?`,
+      question: `Какая техника есть в разделе "Кихон" для ${belt.data.name}?`,
       answer: firstKihon.technique,
-      options: uniqueChoices(firstKihon.technique, otherBelts.flatMap((item) => item.kihon.map((row) => row.technique))),
+      options: uniqueChoices(firstKihon.technique, otherBelts.flatMap((item) => item.data.kihon.map((row) => row.technique))),
     });
   }
 
   if (firstKata) {
     questions.push({
-      question: `Какая ката указана для уровня ${belt.name}?`,
+      question: `Какая ката указана для уровня ${belt.data.name}?`,
       answer: firstKata.technique,
-      options: uniqueChoices(firstKata.technique, otherBelts.flatMap((item) => item.kata.map((row) => row.technique))),
+      options: uniqueChoices(firstKata.technique, otherBelts.flatMap((item) => item.data.kata.map((row) => row.technique))),
     });
   }
 
   if (firstKumite) {
     questions.push({
-      question: `Какой формат кумитэ есть в требованиях ${belt.name}?`,
+      question: `Какой формат кумитэ есть в требованиях ${belt.data.name}?`,
       answer: firstKumite.technique,
-      options: uniqueChoices(firstKumite.technique, otherBelts.flatMap((item) => item.kumite.map((row) => row.technique))),
+      options: uniqueChoices(firstKumite.technique, otherBelts.flatMap((item) => item.data.kumite.map((row) => row.technique))),
     });
   }
 
   return {
-    slug: belt.slug,
-    name: belt.name,
+    slug: belt.id,
+    name: belt.data.name,
     questions,
   };
 }
@@ -141,22 +143,22 @@ const quizzesJson = JSON.stringify(beltQuizzes);
               <div>
                 <div class="flex items-center gap-3">
                   <BeltVisual belt={belt} class="w-20 h-7" />
-                  <h3 class="text-lg font-bold text-dark">{belt.name}</h3>
+                  <h3 class="text-lg font-bold text-dark">{belt.data.name}</h3>
                 </div>
-                <p class="mt-3 text-sm text-neutral-600">{belt.description}</p>
+                <p class="mt-3 text-sm text-neutral-600">{belt.data.description}</p>
               </div>
             </div>
             <div class="mt-4 flex flex-wrap items-center gap-3">
               <button
                 type="button"
-                data-progress-key={`belt:${belt.slug}`}
+                data-progress-key={`belt:${belt.id}`}
                 class="rounded-full bg-neutral-100 px-3 py-1 text-xs font-semibold text-neutral-600 transition-colors"
                 aria-pressed="false"
               >
                 <span data-progress-status>Повторить</span>
               </button>
               <a
-                href={withBase(`/methodology/${belt.slug}`)}
+                href={withBase(`/methodology/${belt.id}`)}
                 class="inline-flex text-sm font-semibold text-primary hover:underline"
               >
                 Требования

@@ -1,0 +1,34 @@
+name: 4 Кю
+sortOrder: 7
+beltColor: Зелёный
+colorHex: '#16A34A'
+description: Зелёный пояс.
+strengthTests:
+  - technique: Отжимания
+    repetitions: '55'
+    notes: В т.ч. 10 на кулаках
+  - technique: Пресс
+    repetitions: '55'
+  - technique: Приседания на одной ноге
+    repetitions: 30 каждой
+kihon:
+  - technique: Полная программа кихон
+    repetitions: '40'
+    notes: Под счёт
+idoKihon:
+  - technique: Свободные комбинации
+    repetitions: '10'
+kata:
+  - technique: Ката Кумитэ-но ити
+    repetitions: '1'
+kumite:
+  - technique: Дзию кумитэ
+    repetitions: 6 раундов
+    notes: 2 минуты
+sabaki:
+  - technique: Сабаки №1-5
+    repetitions: 5 каждый
+tameshiWari:
+  - technique: Тамэши вари
+    repetitions: '1'
+    notes: Доска или черепица

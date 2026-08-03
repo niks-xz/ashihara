@@ -1,10 +1,10 @@
 ---
+import { getCollection } from 'astro:content';
 import PageLayout from '../layouts/PageLayout.astro';
 import SectionHeading from '../components/ui/SectionHeading.astro';
 import CoachCard from '../components/coaches/CoachCard.astro';
-import { coaches as allCoaches } from '../data/content';
 
-const coaches = [...allCoaches].sort((a, b) => a.sortOrder - b.sortOrder);
+const coaches = (await getCollection('coaches')).sort((a, b) => a.data.sortOrder - b.data.sortOrder);
 ---
 
 <PageLayout

@@ -1,9 +1,11 @@
 ---
 interface Props {
   formType?: 'enrollment' | 'contact' | 'team-building';
+  gyms?: { slug: string; name: string }[];
 }
 
-const { formType = 'enrollment' } = Astro.props;
+const { formType = 'enrollment', gyms = [] } = Astro.props;
+const gymNames = Object.fromEntries(gyms.map((gym) => [gym.slug, gym.name]));
 ---
 
 <form id="contact-form" class="space-y-5" novalidate>
@@ -12,8 +14,6 @@ const { formType = 'enrollment' } = Astro.props;
   <div class="sr-only" aria-hidden="true">
     <input type="text" name="website" tabindex="-1" autocomplete="off" />
   </div>
-
-  <input type="hidden" id="preferredGym" name="preferredGym" value="" />
 
   <div id="selected-gym-note" class="hidden rounded-lg border border-primary/20 bg-primary/5 p-4">
     <div class="text-xs font-semibold uppercase tracking-wide text-primary">Выбран зал</div>
@@ -103,23 +103,15 @@ const { formType = 'enrollment' } = Astro.props;
   <div id="form-status" class="hidden rounded-lg p-4 text-sm font-medium" role="alert"></div>
 </form>
 
-<script is:inline>
-  const gymNames = {
-    'sk-olimp': 'СК «Олимп»',
-    'dyussh-1': 'ДЮСШ №1',
-    'sk-vityaz': 'СК «Витязь»',
-  };
-
+<script is:inline define:vars={{ gymNames }}>
   const contactParams = new URLSearchParams(window.location.search);
   const selectedGymSlug = contactParams.get('gym') ?? '';
   const selectedGymName = gymNames[selectedGymSlug] ?? '';
   const selectedGymNote = document.getElementById('selected-gym-note');
   const selectedGymNameNode = document.getElementById('selected-gym-name');
-  const preferredGymInput = document.getElementById('preferredGym');
 
-  if (selectedGymName && selectedGymNote && selectedGymNameNode && preferredGymInput) {
+  if (selectedGymName && selectedGymNote && selectedGymNameNode) {
     selectedGymNameNode.textContent = selectedGymName;
-    preferredGymInput.value = selectedGymName;
     selectedGymNote.classList.remove('hidden');
   }
 

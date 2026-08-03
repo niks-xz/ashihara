@@ -1,17 +1,16 @@
 ---
+import { getCollection } from 'astro:content';
 import PageLayout from '../layouts/PageLayout.astro';
 import SectionHeading from '../components/ui/SectionHeading.astro';
 import ScheduleTable from '../components/schedule/ScheduleTable.astro';
-import { gyms, scheduleEntries as allEntries } from '../data/content';
+import { getGymSchedule } from '../lib/schedule';
 import { withBase } from '../lib/utils';
-import type { ScheduleEntry } from '../lib/types';
 
-const sortedGyms = [...gyms].sort((a, b) => a.sortOrder - b.sortOrder);
-
-// Group entries by gym
-function entriesForGym(gymId: number): ScheduleEntry[] {
-  return allEntries.filter(e => e.gym?.id === gymId);
-}
+const gyms = (await getCollection('gyms')).sort((a, b) => a.data.sortOrder - b.data.sortOrder);
+const gymSchedules = await Promise.all(gyms.map(async (gym) => ({
+  gym,
+  rows: await getGymSchedule(gym.id),
+})));
 ---
 
 <PageLayout
@@ -25,12 +24,11 @@ function entriesForGym(gymId: number): ScheduleEntry[] {
         subtitle="Выберите удобный зал и время для занятий"
       />
 
-      {sortedGyms.length > 0 ? (
+      {gymSchedules.length > 0 ? (
         <div class="space-y-8">
-          {sortedGyms.map((gym) => {
-            const entries = entriesForGym(gym.id);
-            return entries.length > 0 ? <ScheduleTable entries={entries} gym={gym} /> : null;
-          })}
+          {gymSchedules.map(({ gym, rows }) =>
+            rows.length > 0 ? <ScheduleTable rows={rows} gym={gym} /> : null
+          )}
         </div>
       ) : (
         <p class="text-center text-neutral-600">Расписание скоро появится</p>

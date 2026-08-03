@@ -1,0 +1,28 @@
+name: 3 Дан
+sortOrder: 13
+beltColor: Чёрный
+colorHex: '#1A1A2E'
+description: Чёрный пояс, третий дан.
+strengthTests:
+  - technique: По усмотрению экзаменатора
+    repetitions: ''
+kihon:
+  - technique: Мастерский уровень
+    repetitions: ''
+idoKihon:
+  - technique: Авторские комбинации
+    repetitions: ''
+kata:
+  - technique: Все ката + авторское ката
+    repetitions: ''
+    notes: Высший уровень
+kumite:
+  - technique: Дзию кумитэ
+    repetitions: 25+ раундов
+sabaki:
+  - technique: Мастерский уровень
+    repetitions: ''
+tameshiWari:
+  - technique: Тамэши вари
+    repetitions: ''
+    notes: Обязательно

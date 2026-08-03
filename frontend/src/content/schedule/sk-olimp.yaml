@@ -1,0 +1,41 @@
+entries:
+  - day: Понедельник
+    start: '17:00'
+    end: '18:30'
+    group: Младшая
+    coach: sidorova-elena
+  - day: Понедельник
+    start: '18:30'
+    end: '20:00'
+    group: Средняя
+    coach: petrov-dmitriy
+  - day: Понедельник
+    start: '20:00'
+    end: '21:30'
+    group: Старшая
+    coach: ivanov-sergey
+  - day: Среда
+    start: '17:00'
+    end: '18:30'
+    group: Младшая
+    coach: sidorova-elena
+  - day: Среда
+    start: '18:30'
+    end: '20:00'
+    group: Средняя
+    coach: petrov-dmitriy
+  - day: Среда
+    start: '20:00'
+    end: '21:30'
+    group: Старшая
+    coach: ivanov-sergey
+  - day: Пятница
+    start: '18:00'
+    end: '19:30'
+    group: Средняя
+    coach: kozlov-andrey
+  - day: Пятница
+    start: '19:30'
+    end: '21:00'
+    group: Старшая
+    coach: ivanov-sergey

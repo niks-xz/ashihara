@@ -1,0 +1,35 @@
+name: 5 Кю
+sortOrder: 6
+beltColor: Жёлтый
+colorHex: '#EAB308'
+description: Жёлтый пояс с зелёной полоской.
+strengthTests:
+  - technique: Отжимания
+    repetitions: '50'
+  - technique: Пресс
+    repetitions: '50'
+  - technique: Приседания на одной ноге
+    repetitions: 25 каждой
+kihon:
+  - technique: Полный набор базовой техники
+    repetitions: 30-40
+  - technique: Комбинации из 5+ техник
+    repetitions: '10'
+idoKihon:
+  - technique: Свободные комбинации
+    repetitions: '10'
+    notes: 5+ техник
+kata:
+  - technique: Ката Джиссэн-но ни
+    repetitions: '1'
+kumite:
+  - technique: Дзию кумитэ
+    repetitions: 5 раундов
+    notes: 2 минуты
+sabaki:
+  - technique: Сабаки №1-4
+    repetitions: 5 каждый
+tameshiWari:
+  - technique: Тамэши вари (доска)
+    repetitions: '1'
+    notes: По усмотрению экзаменатора

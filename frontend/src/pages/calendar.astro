@@ -1,10 +1,12 @@
 ---
+import { getCollection, type CollectionEntry } from 'astro:content';
 import PageLayout from '../layouts/PageLayout.astro';
 import SectionHeading from '../components/ui/SectionHeading.astro';
 import Button from '../components/ui/Button.astro';
-import { events } from '../data/content';
 import { eventTypeLabel, withBase } from '../lib/utils';
-import type { Event } from '../lib/types';
+
+const events = (await getCollection('events'))
+  .sort((a, b) => a.data.eventDate.valueOf() - b.data.eventDate.valueOf());
 
 const calendarYear = new Date().getFullYear();
 let latestArchiveYear: number | undefined;
@@ -15,14 +17,9 @@ const months = [
 ];
 
 // Group events by month (only for the calendar year)
-const eventsByMonth = new Map<number, Event[]>();
+const eventsByMonth = new Map<number, CollectionEntry<'events'>[]>();
 for (const event of events) {
-  if (!event.eventDate) {
-    continue;
-  }
-
-  const d = new Date(event.eventDate);
-  const eventYear = d.getFullYear();
+  const eventYear = event.data.eventDate.getFullYear();
 
   if (latestArchiveYear === undefined || eventYear > latestArchiveYear) {
     latestArchiveYear = eventYear;
@@ -32,7 +29,7 @@ for (const event of events) {
     continue;
   }
 
-  const month = d.getMonth();
+  const month = event.data.eventDate.getMonth();
   const arr = eventsByMonth.get(month) ?? [];
   arr.push(event);
   eventsByMonth.set(month, arr);
@@ -86,23 +83,23 @@ const typeColors: Record<string, string> = {
                 </div>
                 <div class="divide-y divide-neutral-100">
                   {monthEvents.map((event) => (
-                    <a href={withBase(`/events/${event.slug}`)} class="flex items-center gap-4 px-5 py-3 hover:bg-neutral-50 transition-colors">
+                    <a href={withBase(`/events/${event.id}`)} class="flex items-center gap-4 px-5 py-3 hover:bg-neutral-50 transition-colors">
                       <div class="text-center shrink-0 w-12">
                         <div class="text-2xl font-bold text-dark leading-none">
-                          {new Date(event.eventDate).getDate()}
+                          {event.data.eventDate.getDate()}
                         </div>
                       </div>
                       <div class="min-w-0 flex-1">
-                        <div class="font-medium text-dark truncate">{event.title}</div>
-                        {event.excerpt && (
-                          <div class="text-sm text-neutral-700 truncate">{event.excerpt}</div>
+                        <div class="font-medium text-dark truncate">{event.data.title}</div>
+                        {event.data.excerpt && (
+                          <div class="text-sm text-neutral-700 truncate">{event.data.excerpt}</div>
                         )}
                       </div>
                       <span class:list={[
                         'text-xs font-medium px-2.5 py-1 rounded shrink-0 hidden sm:inline',
-                        typeColors[event.eventType] ?? typeColors.other,
+                        typeColors[event.data.eventType] ?? typeColors.other,
                       ]}>
-                        {eventTypeLabel(event.eventType)}
+                        {eventTypeLabel(event.data.eventType)}
                       </span>
                     </a>
                   ))}

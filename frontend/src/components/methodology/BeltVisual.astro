@@ -1,9 +1,9 @@
 ---
-import type { BeltLevel } from '../../lib/types';
+import type { CollectionEntry } from 'astro:content';
 import { getBeltVisual } from '../../lib/belts';
 
 interface Props {
-  belt: BeltLevel;
+  belt: CollectionEntry<'belts'>;
   class?: string;
   stripeClass?: string;
 }

@@ -1,12 +1,12 @@
 ---
+import type { CollectionEntry } from 'astro:content';
 import SectionHeading from '../ui/SectionHeading.astro';
 import Card from '../ui/Card.astro';
 import Button from '../ui/Button.astro';
 import { formatDate, eventTypeLabel } from '../../lib/utils';
-import type { Event } from '../../lib/types';
 
 interface Props {
-  events: Event[];
+  events: CollectionEntry<'events'>[];
   archiveEventCount?: number;
   latestArchiveYear?: number;
 }
@@ -33,29 +33,17 @@ const archiveText = latestArchiveYear
     {hasUpcomingEvents ? (
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {events.map((event) => (
-          <Card href={`/events/${event.slug}`}>
-            {event.coverImage && (
-              <div class="aspect-video bg-neutral-100 overflow-hidden">
-                <img
-                  src={event.coverImage.url}
-                  alt={event.title}
-                  class="w-full h-full object-cover"
-                  loading="lazy"
-                />
-              </div>
-            )}
+          <Card href={`/events/${event.id}`}>
             <div class="p-5">
               <div class="flex items-center gap-2 mb-3">
                 <span class="text-xs font-medium text-primary bg-primary/10 px-2 py-1 rounded">
-                  {eventTypeLabel(event.eventType)}
+                  {eventTypeLabel(event.data.eventType)}
                 </span>
-                {event.eventDate && (
-                  <span class="text-xs text-neutral-600">{formatDate(event.eventDate)}</span>
-                )}
+                <span class="text-xs text-neutral-600">{formatDate(event.data.eventDate)}</span>
               </div>
-              <h3 class="text-lg font-bold text-dark mb-2 line-clamp-2">{event.title}</h3>
-              {event.excerpt && (
-                <p class="text-sm text-neutral-700 line-clamp-3">{event.excerpt}</p>
+              <h3 class="text-lg font-bold text-dark mb-2 line-clamp-2">{event.data.title}</h3>
+              {event.data.excerpt && (
+                <p class="text-sm text-neutral-700 line-clamp-3">{event.data.excerpt}</p>
               )}
             </div>
           </Card>

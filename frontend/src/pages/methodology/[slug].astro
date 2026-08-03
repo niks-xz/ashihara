@@ -1,45 +1,51 @@
 ---
+import { getCollection, type CollectionEntry } from 'astro:content';
 import PageLayout from '../../layouts/PageLayout.astro';
 import RequirementsTable from '../../components/methodology/RequirementsTable.astro';
 import KataVideoGrid from '../../components/methodology/KataVideoGrid.astro';
 import BeltVisual from '../../components/methodology/BeltVisual.astro';
-import { beltLevels, kataVideos } from '../../data/content';
 import { getBeltDescription } from '../../lib/belts';
 import { withBase } from '../../lib/utils';
-import type { BeltLevel, KataVideo } from '../../lib/types';
 
 export async function getStaticPaths() {
-  return beltLevels.map((belt) => ({
-    params: { slug: belt.slug },
+  const [belts, allVideos] = await Promise.all([
+    getCollection('belts'),
+    getCollection('kata-videos'),
+  ]);
+
+  return belts.map((belt) => ({
+    params: { slug: belt.id },
     props: {
       belt,
-      videos: kataVideos.filter((v) => v.beltLevel?.id === belt.id),
+      videos: allVideos
+        .filter((video) => video.data.belt?.id === belt.id)
+        .sort((a, b) => a.data.sortOrder - b.data.sortOrder),
     },
   }));
 }
 
 interface Props {
-  belt: BeltLevel;
-  videos: KataVideo[];
+  belt: CollectionEntry<'belts'>;
+  videos: CollectionEntry<'kata-videos'>[];
 }
 
 const { belt, videos } = Astro.props;
 const beltDescription = getBeltDescription(belt);
 
 const sections = [
-  { title: 'Силовые тесты', rows: belt.strengthTests ?? [] },
-  { title: 'Кихон', rows: belt.kihon ?? [] },
-  { title: 'Идо кихон', rows: belt.idoKihon ?? [] },
-  { title: 'Ката', rows: belt.kata ?? [] },
-  { title: 'Кумитэ', rows: belt.kumite ?? [] },
-  { title: 'Сабаки', rows: belt.sabaki ?? [] },
-  { title: 'Тамэши вари', rows: belt.tameshiWari ?? [] },
+  { title: 'Силовые тесты', rows: belt.data.strengthTests },
+  { title: 'Кихон', rows: belt.data.kihon },
+  { title: 'Идо кихон', rows: belt.data.idoKihon },
+  { title: 'Ката', rows: belt.data.kata },
+  { title: 'Кумитэ', rows: belt.data.kumite },
+  { title: 'Сабаки', rows: belt.data.sabaki },
+  { title: 'Тамэши вари', rows: belt.data.tameshiWari },
 ];
 ---
 
 <PageLayout
-  title={`${belt.name} — Экзаменационные требования`}
-  description={`Экзаменационные требования для ${belt.name} (${belt.beltColor} пояс) по Ашихара-каратэ. Кихон, ката, кумитэ, сабаки.`}
+  title={`${belt.data.name} — Экзаменационные требования`}
+  description={`Экзаменационные требования для ${belt.data.name} (${belt.data.beltColor} пояс) по Ашихара-каратэ. Кихон, ката, кумитэ, сабаки.`}
 >
   <section class="py-16 md:py-20">
     <div class="max-w-3xl mx-auto px-4">
@@ -50,13 +56,13 @@ const sections = [
       <div class="flex items-center gap-4 mb-8">
         <BeltVisual belt={belt} class="w-24 h-9" stripeClass="w-[5px]" />
         <div>
-          <h1 class="text-3xl font-bold text-dark">{belt.name}</h1>
+          <h1 class="text-3xl font-bold text-dark">{belt.data.name}</h1>
           <p class="text-neutral-600">{beltDescription}</p>
         </div>
       </div>
 
-      {belt.description && (
-        <p class="text-neutral-600 mb-8">{belt.description}</p>
+      {belt.data.description && (
+        <p class="text-neutral-600 mb-8">{belt.data.description}</p>
       )}
 
       {sections.map(({ title, rows }) => (

@@ -1,0 +1,38 @@
+name: 7 Кю
+sortOrder: 4
+beltColor: Синий
+colorHex: '#2563EB'
+description: Синий пояс с жёлтой полоской.
+strengthTests:
+  - technique: Отжимания
+    repetitions: '40'
+  - technique: Пресс
+    repetitions: '40'
+  - technique: Приседания
+    repetitions: '60'
+    notes: На одной ноге — 15 каждой
+kihon:
+  - technique: Все удары руками
+    repetitions: '30'
+    notes: Комбинации
+  - technique: Маэ гэри, маваши гэри, ёко гэри
+    repetitions: 20 каждой
+  - technique: Уширо маваши гэри
+    repetitions: 10 каждой
+  - technique: 'Блоки: гэдан, сото, ути, дзёдан'
+    repetitions: 15 каждый
+idoKihon:
+  - technique: Комбинации из 3-4 техник
+    repetitions: '10'
+    notes: В передвижении
+kata:
+  - technique: Ката Кихон-но ни
+    repetitions: '1'
+kumite:
+  - technique: Дзию кумитэ
+    repetitions: 4 раунда
+    notes: 1.5 минуты
+sabaki:
+  - technique: Сабаки №1-2
+    repetitions: 5 каждый
+    notes: От разных атак

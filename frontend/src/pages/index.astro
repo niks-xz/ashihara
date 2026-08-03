@@ -1,31 +1,28 @@
 ---
+import { getCollection, type CollectionEntry } from 'astro:content';
 import PageLayout from '../layouts/PageLayout.astro';
 import HeroSection from '../components/home/HeroSection.astro';
 import UpcomingEvents from '../components/home/UpcomingEvents.astro';
 import AboutPreview from '../components/home/AboutPreview.astro';
 import CtaSection from '../components/home/CtaSection.astro';
-import { events as allEvents } from '../data/content';
-import type { Event } from '../lib/types';
+
+const allEvents = (await getCollection('events'))
+  .sort((a, b) => a.data.eventDate.valueOf() - b.data.eventDate.valueOf());
 
 const today = new Date();
 today.setHours(0, 0, 0, 0);
 
-const events: Event[] = [];
+const events: CollectionEntry<'events'>[] = [];
 let latestArchiveYear: number | undefined;
 
 for (const event of allEvents) {
-  if (!event.eventDate) {
-    continue;
-  }
-
-  const eventDate = new Date(event.eventDate);
-  const eventYear = eventDate.getFullYear();
+  const eventYear = event.data.eventDate.getFullYear();
 
   if (latestArchiveYear === undefined || eventYear > latestArchiveYear) {
     latestArchiveYear = eventYear;
   }
 
-  if (eventDate >= today && events.length < 3) {
+  if (event.data.eventDate >= today && events.length < 3) {
     events.push(event);
   }
 }

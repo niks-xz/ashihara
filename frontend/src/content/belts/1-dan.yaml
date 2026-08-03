@@ -1,0 +1,37 @@
+name: 1 Дан
+sortOrder: 11
+beltColor: Чёрный
+colorHex: '#1A1A2E'
+description: Чёрный пояс, первый дан. Сёдан — «начальная ступень мастерства».
+strengthTests:
+  - technique: Отжимания
+    repetitions: '100'
+    notes: В т.ч. 30 на кулаках
+  - technique: Пресс
+    repetitions: '100'
+  - technique: Приседания на одной ноге
+    repetitions: 50 каждой
+kihon:
+  - technique: Полная программа
+    repetitions: ''
+    notes: Безупречное исполнение
+idoKihon:
+  - technique: Свободные комбинации
+    repetitions: ''
+    notes: Высокий уровень
+kata:
+  - technique: Все ката программы
+    repetitions: ''
+    notes: По выбору экзаменатора
+kumite:
+  - technique: Дзию кумитэ
+    repetitions: 15 раундов
+    notes: 2 минуты, без отдыха
+sabaki:
+  - technique: Все сабаки
+    repetitions: ''
+    notes: Мастерский уровень
+tameshiWari:
+  - technique: Тамэши вари
+    repetitions: '3'
+    notes: Обязательно

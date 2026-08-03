@@ -1,6 +1,11 @@
 ---
+import { getCollection } from 'astro:content';
 import PageLayout from '../layouts/PageLayout.astro';
 import ContactForm from '../components/contacts/ContactForm.astro';
+
+const gyms = (await getCollection('gyms'))
+  .sort((a, b) => a.data.sortOrder - b.data.sortOrder)
+  .map((gym) => ({ slug: gym.id, name: gym.data.name }));
 ---
 
 <PageLayout
@@ -23,7 +28,7 @@ import ContactForm from '../components/contacts/ContactForm.astro';
         <!-- Contact Form -->
         <div>
           <h3 class="text-xl font-bold text-dark mb-6">Записаться на тренировку</h3>
-          <ContactForm formType="enrollment" />
+          <ContactForm formType="enrollment" gyms={gyms} />
         </div>
 
         <!-- Contact Info -->

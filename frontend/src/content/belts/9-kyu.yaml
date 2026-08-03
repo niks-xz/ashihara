@@ -1,0 +1,40 @@
+name: 9 Кю
+sortOrder: 2
+beltColor: Белый
+colorHex: '#FFFFFF'
+description: Белый пояс с двумя синими полосками.
+strengthTests:
+  - technique: Отжимания
+    repetitions: '30'
+  - technique: Пресс (скручивания)
+    repetitions: '30'
+  - technique: Приседания
+    repetitions: '40'
+kihon:
+  - technique: Сэйкэн чудан цуки
+    repetitions: '30'
+  - technique: Сэйкэн дзёдан цуки
+    repetitions: '30'
+  - technique: Маэ гэри (чудан)
+    repetitions: 15 каждой
+  - technique: Маваши гэри (гэдан)
+    repetitions: 10 каждой
+  - technique: Гэдан барай
+    repetitions: '15'
+  - technique: Сото укэ
+    repetitions: '15'
+  - technique: Ути укэ
+    repetitions: '10'
+idoKihon:
+  - technique: Ой цуки — гяку цуки
+    repetitions: '10'
+    notes: В передвижении
+  - technique: Маэ гэри + ой цуки
+    repetitions: '10'
+kata:
+  - technique: Ката Шосай-но ни
+    repetitions: '1'
+kumite:
+  - technique: Якусоку кумитэ
+    repetitions: 3 раунда
+    notes: По договорённости

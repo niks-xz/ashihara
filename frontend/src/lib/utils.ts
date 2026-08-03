@@ -23,17 +23,16 @@ export function withBase(path: string | undefined): string {
   return `${base}${normalizedPath}`;
 }
 
-export function formatDate(dateStr: string): string {
-  const date = new Date(dateStr);
-  return date.toLocaleDateString('ru-RU', {
+export function formatDate(date: string | Date): string {
+  return new Date(date).toLocaleDateString('ru-RU', {
     day: 'numeric',
     month: 'long',
     year: 'numeric',
   });
 }
 
-export function formatTime(timeStr: string): string {
-  return timeStr.slice(0, 5);
+export function isoDate(date: Date): string {
+  return date.toISOString().slice(0, 10);
 }
 
 const EVENT_TYPE_LABELS: Record<string, string> = {

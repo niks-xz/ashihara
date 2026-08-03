@@ -1,0 +1,34 @@
+name: 1 Кю
+sortOrder: 10
+beltColor: Коричневый
+colorHex: '#92400E'
+description: Коричневый пояс с чёрной полоской. Последний уровень перед чёрным поясом.
+strengthTests:
+  - technique: Отжимания
+    repetitions: '80'
+    notes: В т.ч. 25 на кулаках
+  - technique: Пресс
+    repetitions: '80'
+  - technique: Приседания на одной ноге
+    repetitions: 40 каждой
+kihon:
+  - technique: Полная программа
+    repetitions: 50+
+idoKihon:
+  - technique: Свободные комбинации
+    repetitions: Без ограничений
+kata:
+  - technique: Все ката программы
+    repetitions: По выбору экзаменатора
+kumite:
+  - technique: Дзию кумитэ
+    repetitions: 10 раундов
+    notes: 2 минуты
+sabaki:
+  - technique: Все сабаки
+    repetitions: ''
+    notes: Свободное исполнение, высокий уровень
+tameshiWari:
+  - technique: Тамэши вари
+    repetitions: 2-3
+    notes: Разные техники

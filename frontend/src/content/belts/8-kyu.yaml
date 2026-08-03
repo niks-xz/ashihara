@@ -1,0 +1,40 @@
+name: 8 Кю
+sortOrder: 3
+beltColor: Синий
+colorHex: '#2563EB'
+description: Синий пояс.
+strengthTests:
+  - technique: Отжимания
+    repetitions: '35'
+  - technique: Пресс
+    repetitions: '35'
+  - technique: Приседания
+    repetitions: '50'
+kihon:
+  - technique: Сэйкэн цуки (дзёдан, чудан)
+    repetitions: '30'
+  - technique: Маэ гэри
+    repetitions: 20 каждой
+  - technique: Маваши гэри (гэдан, чудан)
+    repetitions: 15 каждой
+  - technique: Хидза гэри
+    repetitions: 10 каждой
+  - technique: Сото укэ — ути укэ
+    repetitions: '15'
+    notes: Комбинация
+idoKihon:
+  - technique: Ой цуки — гяку цуки — маэ гэри
+    repetitions: '10'
+  - technique: Маваши гэри — гяку цуки
+    repetitions: 10 каждой
+kata:
+  - technique: Ката Кихон-но ити
+    repetitions: '1'
+kumite:
+  - technique: Дзию кумитэ
+    repetitions: 3 раунда
+    notes: 1.5 минуты
+sabaki:
+  - technique: Сабаки №1
+    repetitions: '5'
+    notes: От чудан цуки

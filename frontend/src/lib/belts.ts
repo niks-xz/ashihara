@@ -1,4 +1,8 @@
-import type { BeltLevel } from './types';
+import type { CollectionEntry } from 'astro:content';
+
+type Belt = CollectionEntry<'belts'>;
+
+export type RequirementRow = Belt['data']['kihon'][number];
 
 export interface BeltVisual {
   base: string;
@@ -41,13 +45,13 @@ const baseColorNames: Record<string, string> = {
   '#1A1A2E': 'Чёрный',
 };
 
-export function getBeltVisual(belt: BeltLevel): BeltVisual {
-  return beltVisuals[belt.slug] ?? { base: belt.colorHex, stripeCount: 0 };
+export function getBeltVisual(belt: Belt): BeltVisual {
+  return beltVisuals[belt.id] ?? { base: belt.data.colorHex, stripeCount: 0 };
 }
 
-export function getBeltDescription(belt: BeltLevel): string {
+export function getBeltDescription(belt: Belt): string {
   const visual = getBeltVisual(belt);
-  const baseName = baseColorNames[visual.base] ?? belt.beltColor;
+  const baseName = baseColorNames[visual.base] ?? belt.data.beltColor;
 
   if (!visual.stripe || visual.stripeCount === 0) {
     return `${baseName} пояс`;

@@ -1,0 +1,11 @@
+entries:
+  - day: Суббота
+    start: '10:00'
+    end: '12:00'
+    group: Старшая
+    coach: ivanov-sergey
+  - day: Суббота
+    start: '12:00'
+    end: '13:30'
+    group: Средняя
+    coach: petrov-dmitriy

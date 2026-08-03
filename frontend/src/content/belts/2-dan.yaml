@@ -1,0 +1,29 @@
+name: 2 Дан
+sortOrder: 12
+beltColor: Чёрный
+colorHex: '#1A1A2E'
+description: Чёрный пояс, второй дан.
+strengthTests:
+  - technique: Повышенные требования
+    repetitions: ''
+    notes: По усмотрению экзаменатора
+kihon:
+  - technique: Полная программа
+    repetitions: ''
+    notes: Безупречное исполнение
+idoKihon:
+  - technique: Авторские комбинации
+    repetitions: ''
+kata:
+  - technique: Все ката + авторское ката
+    repetitions: ''
+kumite:
+  - technique: Дзию кумитэ
+    repetitions: 20 раундов
+sabaki:
+  - technique: Мастерский уровень
+    repetitions: ''
+tameshiWari:
+  - technique: Тамэши вари
+    repetitions: ''
+    notes: Обязательно

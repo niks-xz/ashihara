@@ -1,47 +1,20 @@
 ---
-import type { ScheduleEntry, Gym } from '../../lib/types';
-import { formatTime } from '../../lib/utils';
+import type { CollectionEntry } from 'astro:content';
+import { groupByDay, SHORT_DAY, type ScheduleRow } from '../../lib/schedule';
 
 interface Props {
-  entries: ScheduleEntry[];
-  gym: Gym;
+  rows: ScheduleRow[];
+  gym: CollectionEntry<'gyms'>;
 }
 
-const { entries, gym } = Astro.props;
-
-const dayOrder = ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота', 'Воскресенье'];
-const sorted = [...entries].sort((a, b) => {
-  const dayDiff = dayOrder.indexOf(a.dayOfWeek) - dayOrder.indexOf(b.dayOfWeek);
-
-  if (dayDiff !== 0) {
-    return dayDiff;
-  }
-
-  return a.timeStart.localeCompare(b.timeStart);
-});
-const grouped = new Map<string, ScheduleEntry[]>();
-
-for (const entry of sorted) {
-  const dayEntries = grouped.get(entry.dayOfWeek) ?? [];
-  dayEntries.push(entry);
-  grouped.set(entry.dayOfWeek, dayEntries);
-}
-
-const shortDay: Record<string, string> = {
-  'Понедельник': 'Пн',
-  'Вторник': 'Вт',
-  'Среда': 'Ср',
-  'Четверг': 'Чт',
-  'Пятница': 'Пт',
-  'Суббота': 'Сб',
-  'Воскресенье': 'Вс',
-};
+const { rows, gym } = Astro.props;
+const grouped = groupByDay(rows);
 ---
 
 <div class="rounded-xl border border-neutral-200 bg-white shadow-sm overflow-hidden">
   <div class="px-6 py-4 bg-dark">
-    <h3 class="text-lg font-bold text-white">{gym.name}</h3>
-    <p class="text-sm text-neutral-300">{gym.address}</p>
+    <h3 class="text-lg font-bold text-white">{gym.data.name}</h3>
+    <p class="text-sm text-neutral-300">{gym.data.address}</p>
   </div>
 
   <div class="overflow-x-auto">
@@ -55,23 +28,23 @@ const shortDay: Record<string, string> = {
         </tr>
       </thead>
       <tbody>
-        {[...grouped.entries()].map(([day, dayEntries]) =>
-          dayEntries.map((entry, index) => (
+        {[...grouped.entries()].map(([day, dayRows]) =>
+          dayRows.map((row, index) => (
             <tr class="border-b border-neutral-100">
               {index === 0 && (
                 <td
                   class="sticky left-0 z-10 bg-primary/5 px-6 py-3 font-semibold text-dark align-middle whitespace-nowrap border-r border-neutral-200 border-t-2 border-t-primary/20"
-                  rowspan={dayEntries.length}
+                  rowspan={dayRows.length}
                 >
                   <span class="hidden sm:inline">{day}</span>
-                  <span class="sm:hidden">{shortDay[day] ?? day}</span>
+                  <span class="sm:hidden">{SHORT_DAY[day] ?? day}</span>
                 </td>
               )}
               <td class:list={['px-6 py-3 text-neutral-700 whitespace-nowrap', index === 0 && 'border-t-2 border-t-primary/20']}>
-                {formatTime(entry.timeStart)} - {formatTime(entry.timeEnd)}
+                {row.start} - {row.end}
               </td>
-              <td class:list={['px-6 py-3 text-neutral-700', index === 0 && 'border-t-2 border-t-primary/20']}>{entry.groupName}</td>
-              <td class:list={['px-6 py-3 text-neutral-700', index === 0 && 'border-t-2 border-t-primary/20']}>{entry.coach?.fullName || '-'}</td>
+              <td class:list={['px-6 py-3 text-neutral-700', index === 0 && 'border-t-2 border-t-primary/20']}>{row.group}</td>
+              <td class:list={['px-6 py-3 text-neutral-700', index === 0 && 'border-t-2 border-t-primary/20']}>{row.coach.data.fullName}</td>
             </tr>
           ))
         )}
