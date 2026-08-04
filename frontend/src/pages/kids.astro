@@ -3,7 +3,13 @@ import { getCollection, getEntries } from 'astro:content';
 import PageLayout from '../layouts/PageLayout.astro';
 import Button from '../components/ui/Button.astro';
 import SectionHeading from '../components/ui/SectionHeading.astro';
-import { gymMarketingBySlug, parentQuestions } from '../data/marketing';
+import {
+  equipmentHygieneNote,
+  equipmentStages,
+  gymMarketingBySlug,
+  parentQuestions,
+  practicalQuestions,
+} from '../data/marketing';
 import { getGymSchedule, isYouthRow } from '../lib/schedule';
 import { withBase } from '../lib/utils';
 
@@ -84,6 +90,62 @@ const firstSteps = [
             <p class="mt-3 text-neutral-700 leading-relaxed">{item.text}</p>
           </article>
         ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="py-16 md:py-20">
+    <div class="max-w-7xl mx-auto px-4">
+      <SectionHeading
+        title="Организация и оплата"
+        subtitle="Практические вопросы, которые обычно возникают уже после решения записаться"
+      />
+      <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+        {practicalQuestions.map((item) => (
+          <article class="rounded-lg border border-neutral-200 bg-white p-6 shadow-sm">
+            <h3 class="text-lg font-bold text-dark">{item.title}</h3>
+            <p class="mt-3 text-neutral-700 leading-relaxed">{item.text}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="py-16 md:py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4">
+      <SectionHeading
+        title="Что нужно для занятий"
+        subtitle="Форма и защита нужны не сразу - список растёт вместе с ребёнком"
+      />
+      <div class="grid gap-6 lg:grid-cols-3">
+        {equipmentStages.map((stage, index) => (
+          <article class="flex flex-col rounded-lg border border-neutral-200 bg-neutral-50 p-6">
+            <div class="flex items-center gap-3">
+              <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary text-white font-bold">
+                {index + 1}
+              </span>
+              <h3 class="text-lg font-bold text-dark">{stage.title}</h3>
+            </div>
+            <ul class="mt-5 space-y-3">
+              {stage.items.map((item) => (
+                <li class="flex gap-3 text-neutral-700">
+                  <svg class="mt-1 h-5 w-5 shrink-0 text-primary" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                  </svg>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+            <p class="mt-auto pt-5 text-sm text-neutral-600">{stage.note}</p>
+          </article>
+        ))}
+      </div>
+
+      <div class="mt-6 flex gap-4 rounded-lg border border-primary/20 bg-primary/5 p-6">
+        <svg class="h-6 w-6 shrink-0 text-primary" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+        </svg>
+        <p class="text-neutral-700 leading-relaxed">{equipmentHygieneNote}</p>
       </div>
     </div>
   </section>
