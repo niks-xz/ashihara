@@ -1,0 +1,9 @@
+name: СК «Сэнсэй»
+district: Микрорайон Черемушки
+address: г. Краснодар, ул. Димитрова, 95
+phone: +7 (929) 844-47-73
+phoneNote: дежурный администратор Сергей
+coaches:
+  - shikhov-andrey
+  - gusarchuk-irina
+sortOrder: 1

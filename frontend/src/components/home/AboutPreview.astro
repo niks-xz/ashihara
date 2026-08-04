@@ -1,5 +1,9 @@
 ---
+import { getCollection } from 'astro:content';
 import Button from '../ui/Button.astro';
+
+const gymCount = (await getCollection('gyms')).length;
+const coachCount = (await getCollection('coaches')).length;
 ---
 
 <section class="py-16 md:py-20 bg-neutral-100">
@@ -21,20 +25,20 @@ import Button from '../ui/Button.astro';
 
       <div class="grid grid-cols-2 gap-4">
         <div class="bg-white rounded-xl p-6 text-center shadow-sm">
-          <div class="text-3xl font-bold text-primary mb-2">10+</div>
-          <div class="text-sm text-neutral-600">Лет работы</div>
+          <div class="text-3xl font-bold text-primary mb-2">{gymCount}</div>
+          <div class="text-sm text-neutral-600">Залов в Краснодаре и крае</div>
         </div>
         <div class="bg-white rounded-xl p-6 text-center shadow-sm">
-          <div class="text-3xl font-bold text-primary mb-2">5+</div>
-          <div class="text-sm text-neutral-600">Тренеров</div>
+          <div class="text-3xl font-bold text-primary mb-2">{coachCount}</div>
+          <div class="text-sm text-neutral-600">Тренеров федерации</div>
         </div>
         <div class="bg-white rounded-xl p-6 text-center shadow-sm">
-          <div class="text-3xl font-bold text-primary mb-2">200+</div>
-          <div class="text-sm text-neutral-600">Учеников</div>
+          <div class="text-3xl font-bold text-primary mb-2">2</div>
+          <div class="text-sm text-neutral-600">Чемпиона мира в тренерском составе</div>
         </div>
         <div class="bg-white rounded-xl p-6 text-center shadow-sm">
           <div class="text-3xl font-bold text-primary mb-2">NIKO</div>
-          <div class="text-sm text-neutral-600">Организация</div>
+          <div class="text-sm text-neutral-600">Официальный филиал в крае</div>
         </div>
       </div>
     </div>

@@ -14,7 +14,7 @@ const coaches = defineCollection({
     fullName: z.string(),
     rank: z.string(),
     title: z.string(),
-    achievements: z.string(),
+    achievements: z.string().default(''),
     sortOrder: z.number(),
   }),
 });
@@ -23,9 +23,12 @@ const gyms = defineCollection({
   loader: glob({ pattern: '**/*.yaml', base: './src/content/gyms' }),
   schema: z.object({
     name: z.string(),
+    district: z.string(),
     address: z.string(),
     phone: z.string().optional(),
-    description: z.string(),
+    phoneNote: z.string().optional(),
+    description: z.string().optional(),
+    coaches: z.array(reference('coaches')).default([]),
     sortOrder: z.number(),
   }),
 });

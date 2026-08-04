@@ -1,0 +1,9 @@
+name: СК «Елизаветинский»
+district: Станица Елизаветинская
+address: ст. Елизаветинская, ул. Советская, 30
+phone: +7 (964) 900-86-07
+phoneNote: дежурный администратор Карина
+coaches:
+  - gusarchuk-irina
+  - chernega-grigoriy
+sortOrder: 6

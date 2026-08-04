@@ -1,5 +1,5 @@
 ---
-import { getCollection, type CollectionEntry } from 'astro:content';
+import { getCollection, getEntries, type CollectionEntry } from 'astro:content';
 import PageLayout from '../../layouts/PageLayout.astro';
 import Button from '../../components/ui/Button.astro';
 import { gymMarketingBySlug } from '../../data/marketing';
@@ -25,7 +25,7 @@ const sortedRows = await getGymSchedule(gym.id);
 const groupedRows = groupByDay(sortedRows);
 const youthRows = sortedRows.filter(isYouthRow);
 const trialRows = youthRows.length > 0 ? youthRows : sortedRows;
-const gymCoaches = uniqueCoaches(sortedRows);
+const gymCoaches = await getEntries(gym.data.coaches);
 const trialCoaches = uniqueCoaches(trialRows);
 const pageDescription = gym.data.description
   ? `${gym.data.name}: ${gym.data.address}. ${gym.data.description}`
@@ -48,7 +48,8 @@ const yandexMapWidgetUrl = `https://yandex.ru/map-widget/v1/?mode=search&text=${
         <div class="min-w-0 space-y-6">
           <section class="rounded-xl border border-neutral-200 bg-white overflow-hidden shadow-sm">
             <div class="p-6 md:p-8">
-              <h1 class="text-3xl md:text-4xl font-bold text-dark">{gym.data.name}</h1>
+              <div class="text-sm font-semibold uppercase tracking-wide text-primary">{gym.data.district}</div>
+              <h1 class="mt-2 text-3xl md:text-4xl font-bold text-dark">{gym.data.name}</h1>
               <div class="mt-4 flex items-start gap-3 text-neutral-700">
                 <svg class="w-5 h-5 text-primary shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -226,6 +227,9 @@ const yandexMapWidgetUrl = `https://yandex.ru/map-widget/v1/?mode=search&text=${
                 <a href={`tel:${gym.data.phone.replace(/[^\d+]/g, '')}`} class="mt-1 inline-block text-primary font-semibold hover:underline">
                   {gym.data.phone}
                 </a>
+                {gym.data.phoneNote && (
+                  <p class="mt-1 text-sm text-neutral-600">{gym.data.phoneNote}</p>
+                )}
               </div>
             )}
           </div>

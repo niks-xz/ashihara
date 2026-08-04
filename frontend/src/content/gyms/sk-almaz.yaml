@@ -1,0 +1,8 @@
+name: СК «Алмаз»
+district: Фестивальный микрорайон
+address: г. Краснодар, ул. Симиренко, 37/1
+description: Цокольный этаж, вход с улицы Круговой.
+phone: +7 (918) 448-35-58
+coaches:
+  - shikhov-andrey
+sortOrder: 4

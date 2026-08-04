@@ -11,7 +11,8 @@ const { gym } = Astro.props;
 
 <Card href={`/gyms/${gym.id}`} class="h-full group">
   <div class="p-6">
-    <h3 class="text-lg font-bold text-dark mb-2 group-hover:text-primary transition-colors">{gym.data.name}</h3>
+    <div class="text-xs font-semibold uppercase tracking-wide text-primary">{gym.data.district}</div>
+    <h3 class="mt-1 text-lg font-bold text-dark mb-2 group-hover:text-primary transition-colors">{gym.data.name}</h3>
     <div class="flex items-start gap-2 text-neutral-600 mb-2">
       <svg class="w-5 h-5 text-primary shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
