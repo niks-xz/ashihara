@@ -10,11 +10,12 @@ const requirementRow = z.object({
 
 const coaches = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/coaches' }),
-  schema: z.object({
+  schema: ({ image }) => z.object({
     fullName: z.string(),
     rank: z.string(),
     title: z.string(),
     achievements: z.string().default(''),
+    photo: image().optional(),
     sortOrder: z.number(),
   }),
 });

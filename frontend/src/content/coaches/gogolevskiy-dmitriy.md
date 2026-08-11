@@ -2,6 +2,7 @@
 fullName: Гоголевский Дмитрий Александрович
 rank: 1 дан
 title: Тренер СК «Сэнсэй»
+photo: ../../assets/coaches/gogolevskiy-dmitriy.jpg
 sortOrder: 5
 ---
 
