@@ -30,7 +30,7 @@ const gymCoaches = await getEntries(gym.data.coaches);
 const trialCoaches = uniqueCoaches(trialRows);
 const pageDescription = gym.data.description
   ? `${gym.data.name}: ${gym.data.address}. ${gym.data.description}`
-  : `${gym.data.name}: ${gym.data.address}. Зал Федерации Ашихара-каратэ Краснодарского края.`;
+  : `${gym.data.name}: ${gym.data.address}. Зал Федерации Ашихара-каратэ г. Краснодара.`;
 const mapSearchText = `${gym.data.name}, ${gym.data.address}`;
 const yandexMapWidgetUrl = `https://yandex.ru/map-widget/v1/?mode=search&text=${encodeURIComponent(mapSearchText)}&z=16`;
 ---

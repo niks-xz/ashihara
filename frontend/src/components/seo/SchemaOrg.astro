@@ -17,20 +17,29 @@ const siteUrl = new URL(import.meta.env.BASE_URL, Astro.site).href;
 const orgSchema = {
   '@context': 'https://schema.org',
   '@type': 'SportsOrganization',
-  name: 'Федерация Ашихара-каратэ Краснодарского края',
+  name: 'Федерация Ашихара-каратэ г. Краснодара',
+  legalName: 'Общественная организация Федерация «Ашихара-каратэ» г. Краснодара',
   url: siteUrl,
-  ...(phone && { telephone: phone }),
-  ...(email && { email }),
+  telephone: phone ?? '+7 (918) 448-35-58',
+  email: email ?? 'ashiharakarate23@mail.ru',
+  taxID: '2312080189',
   address: {
     '@type': 'PostalAddress',
+    postalCode: '350080',
+    streetAddress: 'ул. Уральская, 112',
     addressLocality: 'Краснодар',
     addressRegion: 'Краснодарский край',
     addressCountry: 'RU',
+  },
+  founder: {
+    '@type': 'Person',
+    name: 'Шихов Андрей Владимирович',
   },
   sport: 'Ashihara Karate',
   memberOf: {
     '@type': 'SportsOrganization',
     name: 'NIKO — Новая Международная Организация Ашихара Каратэ Кайкан',
+    url: 'https://ashihara-karate.net/',
   },
 };
 
@@ -49,7 +58,7 @@ const eventSchema = eventData
       }),
       organizer: {
         '@type': 'SportsOrganization',
-        name: 'Федерация Ашихара-каратэ Краснодарского края',
+        name: 'Федерация Ашихара-каратэ г. Краснодара',
         url: siteUrl,
       },
     }

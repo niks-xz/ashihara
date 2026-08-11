@@ -16,7 +16,7 @@ const {
 } = Astro.props;
 
 const fullTitle = title === 'Главная'
-  ? 'Федерация Ашихара-каратэ Краснодарского края'
+  ? 'Федерация Ашихара-каратэ г. Краснодара'
   : `${title} | Ашихара-каратэ Краснодар`;
 const resolvedOgImage = new URL(withBase(ogImage), Astro.site).href;
 ---
@@ -35,6 +35,6 @@ const resolvedOgImage = new URL(withBase(ogImage), Astro.site).href;
 <meta property="og:image" content={resolvedOgImage} />
 <meta property="og:url" content={canonicalUrl} />
 <meta property="og:locale" content="ru_RU" />
-<meta property="og:site_name" content="Федерация Ашихара-каратэ Краснодарского края" />
+<meta property="og:site_name" content="Федерация Ашихара-каратэ г. Краснодара" />
 
 <link rel="icon" type="image/x-icon" href={withBase('/favicon.ico')} />

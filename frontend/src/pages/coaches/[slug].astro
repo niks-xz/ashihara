@@ -35,8 +35,8 @@ const { Content } = await render(coach);
 const hasBio = Boolean(coach.body?.trim());
 const achievementItems = splitAchievements(coach.data.achievements);
 const pageDescription = coach.data.title
-  ? `${coach.data.fullName} - ${coach.data.title}. Тренер Федерации Ашихара-каратэ Краснодарского края.`
-  : `${coach.data.fullName} - тренер Федерации Ашихара-каратэ Краснодарского края.`;
+  ? `${coach.data.fullName} - ${coach.data.title}. Тренер Федерации Ашихара-каратэ г. Краснодара.`
+  : `${coach.data.fullName} - тренер Федерации Ашихара-каратэ г. Краснодара.`;
 ---
 
 <PageLayout
