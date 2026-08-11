@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import { Image } from 'astro:assets';
 import Card from '../ui/Card.astro';
 
 interface Props {
@@ -9,7 +10,19 @@ interface Props {
 const { gym } = Astro.props;
 ---
 
-<Card href={`/gyms/${gym.id}`} class="h-full group">
+<Card href={`/gyms/${gym.id}`} class="h-full group flex flex-col">
+  {gym.data.photo && (
+    <div class="aspect-video overflow-hidden bg-neutral-100">
+      <Image
+        src={gym.data.photo}
+        alt={gym.data.photoAlt ?? gym.data.name}
+        width={640}
+        height={360}
+        class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+        loading="lazy"
+      />
+    </div>
+  )}
   <div class="p-6">
     <div class="text-xs font-semibold uppercase tracking-wide text-primary">{gym.data.district}</div>
     <h3 class="mt-1 text-lg font-bold text-dark mb-2 group-hover:text-primary transition-colors">{gym.data.name}</h3>

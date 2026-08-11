@@ -28,8 +28,10 @@ const coaches = defineCollection({
 
 const gyms = defineCollection({
   loader: glob({ pattern: '**/*.yaml', base: './src/content/gyms' }),
-  schema: z.object({
+  schema: ({ image }) => z.object({
     name: z.string(),
+    photo: image().optional(),
+    photoAlt: z.string().optional(),
     district: z.string(),
     address: z.string(),
     phone: z.string().optional(),

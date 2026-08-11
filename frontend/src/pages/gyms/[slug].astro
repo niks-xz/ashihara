@@ -1,5 +1,6 @@
 ---
 import { getCollection, getEntries, type CollectionEntry } from 'astro:content';
+import { Image } from 'astro:assets';
 import PageLayout from '../../layouts/PageLayout.astro';
 import Button from '../../components/ui/Button.astro';
 import { gymMarketingBySlug } from '../../data/marketing';
@@ -47,6 +48,18 @@ const yandexMapWidgetUrl = `https://yandex.ru/map-widget/v1/?mode=search&text=${
       <div class="grid gap-8 lg:grid-cols-[1fr_20rem] lg:items-start">
         <div class="min-w-0 space-y-6">
           <section class="rounded-xl border border-neutral-200 bg-white overflow-hidden shadow-sm">
+            {gym.data.photo && (
+              <div class="aspect-video bg-neutral-100">
+                <Image
+                  src={gym.data.photo}
+                  alt={gym.data.photoAlt ?? gym.data.name}
+                  width={1280}
+                  height={720}
+                  class="h-full w-full object-cover"
+                  loading="eager"
+                />
+              </div>
+            )}
             <div class="p-6 md:p-8">
               <div class="text-sm font-semibold uppercase tracking-wide text-primary">{gym.data.district}</div>
               <h1 class="mt-2 text-3xl md:text-4xl font-bold text-dark">{gym.data.name}</h1>
