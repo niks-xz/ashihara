@@ -2,8 +2,6 @@ import type { CollectionEntry } from 'astro:content';
 
 type Belt = CollectionEntry<'belts'>;
 
-export type RequirementRow = Belt['data']['kihon'][number];
-
 export interface BeltVisual {
   base: string;
   stripe?: string;

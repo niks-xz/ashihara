@@ -31,16 +31,6 @@ interface Props {
 
 const { belt, videos } = Astro.props;
 const beltDescription = getBeltDescription(belt);
-
-const sections = [
-  { title: 'Силовые тесты', rows: belt.data.strengthTests },
-  { title: 'Кихон', rows: belt.data.kihon },
-  { title: 'Идо кихон', rows: belt.data.idoKihon },
-  { title: 'Ката', rows: belt.data.kata },
-  { title: 'Кумитэ', rows: belt.data.kumite },
-  { title: 'Сабаки', rows: belt.data.sabaki },
-  { title: 'Тамэши вари', rows: belt.data.tameshiWari },
-];
 ---
 
 <PageLayout
@@ -65,9 +55,7 @@ const sections = [
         <p class="text-neutral-600 mb-8">{belt.data.description}</p>
       )}
 
-      {sections.map(({ title, rows }) => (
-        <RequirementsTable title={title} rows={rows} />
-      ))}
+      <RequirementsTable strengthTest={belt.data.strengthTest} sections={belt.data.sections} />
 
       <KataVideoGrid videos={videos} />
 

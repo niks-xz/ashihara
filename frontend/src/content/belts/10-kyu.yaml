@@ -2,29 +2,40 @@ name: 10 Кю
 sortOrder: 1
 beltColor: Белый
 colorHex: '#FFFFFF'
-description: Начальный уровень. Белый пояс с одной синей полоской.
-strengthTests:
-  - technique: Отжимания
-    repetitions: '20'
-  - technique: Пресс (скручивания)
-    repetitions: '20'
-  - technique: Приседания
-    repetitions: '30'
-kihon:
-  - technique: Сэйкэн чудан цуки
-    repetitions: '20'
-    notes: На месте
-  - technique: Сэйкэн дзёдан цуки
-    repetitions: '20'
-    notes: На месте
-  - technique: Гэдан барай
-    repetitions: '10'
-  - technique: Сото укэ
-    repetitions: '10'
-idoKihon:
-  - technique: Ой цуки (чудан)
-    repetitions: '10'
-    notes: В дзэнкуцу-дати
-kata:
-  - technique: Ката Шосай-но ити
-    repetitions: '1'
+description: Белый пояс.
+strengthTest:
+  - exercise: Отжимание от пола на кулаках
+    count: 20
+  - exercise: Упражнения на пресс
+    count: 20
+  - exercise: Приседания
+    count: 20
+  - exercise: Подтягивание на перекладине
+    count: 2
+sections:
+  - title: Кихон
+    groups:
+      - title: Удары руками из Санчин дачи
+        items:
+          - Чудан (Дзёдан) Сэйкэн Цуки
+          - Сэйкэн Аго Учи
+      - title: Удары ногами из Хэйко дачи
+        items:
+          - Хиза Ганмэн Гэри
+          - Кинтэки Гэри (Хайсоку)
+          - Мае Хиза Гэри
+          - Мае Гэри (Чусоку)
+          - Маваши Хиза Гэри
+      - title: Удары ногами из Кэри но камаэ
+        items:
+          - Мае Кэри Агэ
+      - title: Блоки из Санчин дачи
+        items:
+          - Гэдан Барай
+          - Чудан Сото Укэ
+          - Дзёдан Агэ Укэ
+          - Чудан Учи Укэ
+  - title: Технические приёмы
+    groups:
+      - items:
+          - Отдельные комбинации из ката Шошин 1

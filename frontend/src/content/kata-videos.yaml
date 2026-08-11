@@ -1,1 +1,131 @@
-[]
+# Сборник ката 9 кю - 1 дан. Видео размещены на сторонних каналах,
+# федерация ссылалась на них со своего сайта.
+# belt - уровень, на котором ката впервые входит в программу аттестации.
+
+- id: shoshin-1
+  title: Шошин но Ката Ити
+  latinTitle: Shoshin 1
+  duration: '2:50'
+  videoUrl: https://youtu.be/iysonHikcac
+  belt: 9-kyu
+  sortOrder: 1
+
+- id: shoshin-2
+  title: Шошин но Ката Ни
+  latinTitle: Shoshin 2
+  duration: '2:48'
+  videoUrl: https://youtu.be/l5Hpar2YfoI
+  belt: 6-kyu
+  sortOrder: 2
+
+- id: shoshin-3
+  title: Шошин но Ката Сан
+  latinTitle: Shoshin 3
+  duration: '3:05'
+  videoUrl: https://youtu.be/8qmc1VvCnqo
+  belt: 4-kyu
+  sortOrder: 3
+
+- id: kihon-1
+  title: Кихон но Ката Ити
+  latinTitle: Kihon 1
+  duration: '2:36'
+  videoUrl: https://youtu.be/V4SxleHUX2U
+  belt: 8-kyu
+  sortOrder: 4
+
+- id: kihon-2
+  title: Кихон но Ката Ни
+  latinTitle: Kihon 2
+  duration: '2:38'
+  videoUrl: https://youtu.be/eJbMp9XM9W4
+  belt: 4-kyu
+  sortOrder: 5
+
+- id: kihon-3
+  title: Кихон но Ката Сан
+  latinTitle: Kihon 3
+  duration: '2:42'
+  videoUrl: https://youtu.be/Tyaixt-Uujc
+  belt: 2-kyu
+  sortOrder: 6
+
+- id: kumite-1
+  title: Кумитэ но Ката Ити
+  latinTitle: Kumite 1
+  duration: '2:35'
+  videoUrl: https://youtu.be/qviODPWg7gY
+  belt: 7-kyu
+  sortOrder: 7
+
+- id: kumite-2
+  title: Кумитэ но Ката Ни
+  latinTitle: Kumite 2
+  duration: '2:57'
+  videoUrl: https://youtu.be/T74e_xv55DE
+  belt: 5-kyu
+  sortOrder: 8
+
+- id: kumite-3
+  title: Кумитэ но Ката Сан
+  latinTitle: Kumite 3
+  duration: '3:22'
+  videoUrl: https://youtu.be/BK5XWkpWC5A
+  belt: 3-kyu
+  sortOrder: 9
+
+- id: kumite-4
+  title: Кумитэ но Ката Ён
+  latinTitle: Kumite 4
+  duration: '3:30'
+  videoUrl: https://youtu.be/jBqe_kIvcAU
+  belt: 1-kyu
+  sortOrder: 10
+
+- id: kumite-5
+  title: Кумитэ но Ката Го
+  latinTitle: Kumite 5
+  duration: '3:30'
+  videoUrl: https://youtu.be/dzfoPi0vENg
+  belt: 1-dan
+  sortOrder: 11
+
+- id: nage-1
+  title: Наге но Ката Ити
+  latinTitle: Nage 1
+  duration: '2:48'
+  videoUrl: https://youtu.be/eiFFFrNvRtA
+  belt: 8-kyu
+  sortOrder: 12
+
+- id: nage-2
+  title: Наге но Ката Ни
+  latinTitle: Nage 2
+  duration: '3:16'
+  videoUrl: https://youtu.be/mg2jUj7qsBI
+  belt: 6-kyu
+  sortOrder: 13
+
+- id: nage-3
+  title: Наге но Ката Сан
+  latinTitle: Nage 3
+  duration: '3:27'
+  videoUrl: https://youtu.be/1057jvAGipc
+  belt: 1-kyu
+  sortOrder: 14
+
+- id: nage-4
+  title: Наге но Ката Ён
+  latinTitle: Nage 4
+  duration: '3:43'
+  videoUrl: https://youtu.be/yi1TSlgLzno
+  belt: 2-dan
+  sortOrder: 15
+
+- id: jissen-1
+  title: Джиссэн но Ката Ити
+  latinTitle: Jissen 1
+  duration: '1:32'
+  videoUrl: https://youtu.be/_8dKb3BqrtU
+  belt: 1-dan
+  sortOrder: 16

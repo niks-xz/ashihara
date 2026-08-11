@@ -2,37 +2,53 @@ name: 7 Кю
 sortOrder: 4
 beltColor: Синий
 colorHex: '#2563EB'
-description: Синий пояс с жёлтой полоской.
-strengthTests:
-  - technique: Отжимания
-    repetitions: '40'
-  - technique: Пресс
-    repetitions: '40'
-  - technique: Приседания
-    repetitions: '60'
-    notes: На одной ноге — 15 каждой
-kihon:
-  - technique: Все удары руками
-    repetitions: '30'
-    notes: Комбинации
-  - technique: Маэ гэри, маваши гэри, ёко гэри
-    repetitions: 20 каждой
-  - technique: Уширо маваши гэри
-    repetitions: 10 каждой
-  - technique: 'Блоки: гэдан, сото, ути, дзёдан'
-    repetitions: 15 каждый
-idoKihon:
-  - technique: Комбинации из 3-4 техник
-    repetitions: '10'
-    notes: В передвижении
-kata:
-  - technique: Ката Кихон-но ни
-    repetitions: '1'
-kumite:
-  - technique: Дзию кумитэ
-    repetitions: 4 раунда
-    notes: 1.5 минуты
-sabaki:
-  - technique: Сабаки №1-2
-    repetitions: 5 каждый
-    notes: От разных атак
+description: Синий пояс.
+strengthTest:
+  - exercise: Отжимание от пола на кулаках
+    count: 35
+  - exercise: Упражнения на пресс
+    count: 35
+  - exercise: Приседания
+    count: 35
+  - exercise: Подтягивание на перекладине
+    count: 7
+sections:
+  - title: Кихон
+    note: вся техника до 9 Кю включительно
+    groups:
+      - title: Удары руками из Киба дачи
+        items:
+          - Энкэй Гяку Дзуки
+      - title: Удары руками из Санчин дачи
+        items:
+          - Тэтсуи Сото Учи
+          - Тэтсуи Учи Учи
+      - title: Удары ногами из Хэйко дачи
+        items:
+          - Уширо Гэри(Какато)
+      - title: Блоки из Санчин дачи
+        items:
+          - Гэдан Барай/ Учи Укэ
+  - title: Идо Кихон
+    groups:
+      - title: Перемещения в Зэнкутсу дачи на 3,5,10 шагов
+        items:
+          - Сото Укэ / Гяку Дзуки / Дзёдан Укэ/ Гяку Дзуки
+          - Маэ Кэри Агэ/ Маваши Гэри/ Хиза Гэри
+      - title: Перемещения в Киба дачи
+        items:
+          - Три шага с Тэтсуи (фронт-фронт-задний развороты)
+  - title: Технические приёмы
+    groups:
+      - items:
+          - 4 позиции Ашихара-каратэ в сочетании с контролем после выполнения блоков сото, сюто, гэдан барай, сунэ укэ
+          - Отдельные комбинации из ката Кумитэ 1 и Нагэ 2
+  - title: Ката
+    groups:
+      - items:
+          - Kumite 1
+  - title: Кондиция, демонстрация силы ударов на снарядах
+    groups:
+      - items:
+          - Нихон Дзуки, Маэ Гэри, Маваши Гэри
+          - Ёко Гэри, Уширо Гэри

@@ -6,14 +6,15 @@ import BeltVisual from '../components/methodology/BeltVisual.astro';
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { firstMonthSteps, practiceSequences, studentTerms } from '../data/marketing';
 import { withBase } from '../lib/utils';
-import type { RequirementRow } from '../lib/belts';
 
 type Belt = CollectionEntry<'belts'>;
 
 const sortedBelts = (await getCollection('belts')).sort((a, b) => a.data.sortOrder - b.data.sortOrder);
 
-function firstRow(rows: RequirementRow[]): RequirementRow | undefined {
-  return rows.find((row) => row.technique.trim().length > 0);
+function sectionItems(belt: Belt, title: string): string[] {
+  return belt.data.sections
+    .filter((section) => section.title.startsWith(title))
+    .flatMap((section) => section.groups.flatMap((group) => group.items));
 }
 
 function uniqueChoices(correct: string, candidates: string[]): string[] {
@@ -35,10 +36,6 @@ function uniqueChoices(correct: string, candidates: string[]): string[] {
 function buildQuiz(belt: Belt, allBelts: Belt[]) {
   const questions = [];
   const otherBelts = allBelts.filter((item) => item.id !== belt.id);
-  const firstKihon = firstRow(belt.data.kihon);
-  const firstStrength = firstRow(belt.data.strengthTests);
-  const firstKata = firstRow(belt.data.kata);
-  const firstKumite = firstRow(belt.data.kumite);
 
   questions.push({
     question: `Какой цвет пояса у уровня ${belt.data.name}?`,
@@ -46,35 +43,36 @@ function buildQuiz(belt: Belt, allBelts: Belt[]) {
     options: uniqueChoices(belt.data.beltColor, otherBelts.map((item) => item.data.beltColor)),
   });
 
-  if (firstStrength) {
+  const strength = belt.data.strengthTest[0];
+
+  if (strength) {
     questions.push({
-      question: `Сколько раз выполняется упражнение "${firstStrength.technique}"?`,
-      answer: firstStrength.repetitions,
-      options: uniqueChoices(firstStrength.repetitions, otherBelts.flatMap((item) => item.data.strengthTests.map((row) => row.repetitions))),
+      question: `Сколько раз нужно выполнить упражнение «${strength.exercise}» на ${belt.data.name}?`,
+      answer: strength.count,
+      options: uniqueChoices(
+        strength.count,
+        otherBelts.flatMap((item) => item.data.strengthTest.map((row) => row.count)),
+      ),
     });
   }
 
-  if (firstKihon) {
+  const kihon = sectionItems(belt, 'Кихон')[0];
+
+  if (kihon) {
     questions.push({
-      question: `Какая техника есть в разделе "Кихон" для ${belt.data.name}?`,
-      answer: firstKihon.technique,
-      options: uniqueChoices(firstKihon.technique, otherBelts.flatMap((item) => item.data.kihon.map((row) => row.technique))),
+      question: `Какая техника входит в раздел «Кихон» на ${belt.data.name}?`,
+      answer: kihon,
+      options: uniqueChoices(kihon, otherBelts.flatMap((item) => sectionItems(item, 'Кихон'))),
     });
   }
 
-  if (firstKata) {
-    questions.push({
-      question: `Какая ката указана для уровня ${belt.data.name}?`,
-      answer: firstKata.technique,
-      options: uniqueChoices(firstKata.technique, otherBelts.flatMap((item) => item.data.kata.map((row) => row.technique))),
-    });
-  }
+  const kata = sectionItems(belt, 'Ката')[0];
 
-  if (firstKumite) {
+  if (kata) {
     questions.push({
-      question: `Какой формат кумитэ есть в требованиях ${belt.data.name}?`,
-      answer: firstKumite.technique,
-      options: uniqueChoices(firstKumite.technique, otherBelts.flatMap((item) => item.data.kumite.map((row) => row.technique))),
+      question: `Какое ката сдают на ${belt.data.name}?`,
+      answer: kata,
+      options: uniqueChoices(kata, otherBelts.flatMap((item) => sectionItems(item, 'Ката'))),
     });
   }
 

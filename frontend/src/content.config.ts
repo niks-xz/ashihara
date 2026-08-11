@@ -2,10 +2,16 @@ import { defineCollection, reference } from 'astro:content';
 import { glob, file } from 'astro/loaders';
 import { z } from 'astro/zod';
 
-const requirementRow = z.object({
-  technique: z.string(),
-  repetitions: z.string(),
-  notes: z.string().default(''),
+// Раздел требований: техники сгруппированы по стойкам, как в методичке федерации.
+// Отметка «Х» в исходной таблице означает «техника входит в программу уровня»,
+// поэтому у большинства позиций нет числа повторений - только само название.
+const requirementSection = z.object({
+  title: z.string(),
+  note: z.string().default(''),
+  groups: z.array(z.object({
+    title: z.string().default(''),
+    items: z.array(z.string()).nonempty(),
+  })).nonempty(),
 });
 
 const coaches = defineCollection({
@@ -68,25 +74,24 @@ const belts = defineCollection({
     beltColor: z.string(),
     colorHex: z.string().regex(/^#[0-9A-Fa-f]{6}$/),
     description: z.string(),
-    strengthTests: z.array(requirementRow).default([]),
-    kihon: z.array(requirementRow).default([]),
-    idoKihon: z.array(requirementRow).default([]),
-    kata: z.array(requirementRow).default([]),
-    kumite: z.array(requirementRow).default([]),
-    sabaki: z.array(requirementRow).default([]),
-    tameshiWari: z.array(requirementRow).default([]),
+    strengthTest: z.array(z.object({
+      exercise: z.string(),
+      count: z.coerce.string(),
+    })).default([]),
+    sections: z.array(requirementSection).default([]),
   }),
 });
 
-// Каждому видео нужен уникальный id: - { id: kata-1, title: ..., vkVideoUrl: ..., belt: 10-kyu }
+// Каждому видео нужен уникальный id (см. комментарий в самом файле)
 const kataVideos = defineCollection({
   loader: file('./src/content/kata-videos.yaml'),
   schema: z.object({
     title: z.string(),
-    vkVideoUrl: z.string().url(),
-    description: z.string().default(''),
-    sortOrder: z.number().default(0),
+    latinTitle: z.string(),
+    duration: z.string().regex(/^\d+:\d{2}$/),
+    videoUrl: z.string().url(),
     belt: reference('belts').optional(),
+    sortOrder: z.number().default(0),
   }),
 });
 

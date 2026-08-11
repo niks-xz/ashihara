@@ -2,39 +2,44 @@ name: 9 Кю
 sortOrder: 2
 beltColor: Белый
 colorHex: '#FFFFFF'
-description: Белый пояс с двумя синими полосками.
-strengthTests:
-  - technique: Отжимания
-    repetitions: '30'
-  - technique: Пресс (скручивания)
-    repetitions: '30'
-  - technique: Приседания
-    repetitions: '40'
-kihon:
-  - technique: Сэйкэн чудан цуки
-    repetitions: '30'
-  - technique: Сэйкэн дзёдан цуки
-    repetitions: '30'
-  - technique: Маэ гэри (чудан)
-    repetitions: 15 каждой
-  - technique: Маваши гэри (гэдан)
-    repetitions: 10 каждой
-  - technique: Гэдан барай
-    repetitions: '15'
-  - technique: Сото укэ
-    repetitions: '15'
-  - technique: Ути укэ
-    repetitions: '10'
-idoKihon:
-  - technique: Ой цуки — гяку цуки
-    repetitions: '10'
-    notes: В передвижении
-  - technique: Маэ гэри + ой цуки
-    repetitions: '10'
-kata:
-  - technique: Ката Шосай-но ни
-    repetitions: '1'
-kumite:
-  - technique: Якусоку кумитэ
-    repetitions: 3 раунда
-    notes: По договорённости
+description: Белый пояс.
+strengthTest:
+  - exercise: Отжимание от пола на кулаках
+    count: 25
+  - exercise: Упражнения на пресс
+    count: 25
+  - exercise: Приседания
+    count: 25
+  - exercise: Подтягивание на перекладине
+    count: 3
+sections:
+  - title: Кихон
+    groups:
+      - title: Удары руками из Санчин дачи
+        items:
+          - Уракэн Ганмэн Учи
+          - Уракэн Саю Ганмэн Учи
+          - Уракэн Хизо Учи (Печень, Рёбра, Живот, Селезёнка)
+          - Уракэн Маваши Учи
+      - title: Удары руками из Киба дачи
+        items:
+          - Чудан Шита Дзуки (в корпус)
+      - title: Удары ногами из Хэйко дачи
+        items:
+          - Маваши Гэри (Хайсоку)
+      - title: Удары ногами из Хэйсоку дачи
+        items:
+          - Кансэтсу Гэри
+          - Ёко Гэри
+          - Ёко Кэри Агэ
+      - title: Блоки из Санчин дачи
+        items:
+          - Маваши Укэ
+  - title: Технические приёмы
+    groups:
+      - items:
+          - Отдельные комбинации из ката Шошин 1 и Шошин 2
+  - title: Ката
+    groups:
+      - items:
+          - Shoshin 1

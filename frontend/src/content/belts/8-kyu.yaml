@@ -3,38 +3,57 @@ sortOrder: 3
 beltColor: Синий
 colorHex: '#2563EB'
 description: Синий пояс.
-strengthTests:
-  - technique: Отжимания
-    repetitions: '35'
-  - technique: Пресс
-    repetitions: '35'
-  - technique: Приседания
-    repetitions: '50'
-kihon:
-  - technique: Сэйкэн цуки (дзёдан, чудан)
-    repetitions: '30'
-  - technique: Маэ гэри
-    repetitions: 20 каждой
-  - technique: Маваши гэри (гэдан, чудан)
-    repetitions: 15 каждой
-  - technique: Хидза гэри
-    repetitions: 10 каждой
-  - technique: Сото укэ — ути укэ
-    repetitions: '15'
-    notes: Комбинация
-idoKihon:
-  - technique: Ой цуки — гяку цуки — маэ гэри
-    repetitions: '10'
-  - technique: Маваши гэри — гяку цуки
-    repetitions: 10 каждой
-kata:
-  - technique: Ката Кихон-но ити
-    repetitions: '1'
-kumite:
-  - technique: Дзию кумитэ
-    repetitions: 3 раунда
-    notes: 1.5 минуты
-sabaki:
-  - technique: Сабаки №1
-    repetitions: '5'
-    notes: От чудан цуки
+strengthTest:
+  - exercise: Отжимание от пола на кулаках
+    count: 30
+  - exercise: Упражнения на пресс
+    count: 30
+  - exercise: Приседания
+    count: 30
+  - exercise: Подтягивание на перекладине
+    count: 5
+sections:
+  - title: Кихон
+    note: вся техника до 9 Кю включительно
+    groups:
+      - title: Удары руками из Киба дачи
+        items:
+          - Хиджи Маваши Учи
+          - Шита Агэ Учи (апперкот)
+      - title: Удары руками из Санчин дачи
+        items:
+          - Сэйкэн Маваши Учи
+      - title: Удары ногами из Хэйко дачи
+        items:
+          - Сото Маваши Гэри (Тэйсоку)
+          - Учи Маваши Гэри (Сокуто)
+  - title: Идо Кихон
+    groups:
+      - title: Перемещения в Зэнкутсу дачи на 3,5,10 шагов
+        items:
+          - Ой Дзуки
+          - Гяку Дзуки
+          - Дзёдан Укэ – Гяку Дзуки
+          - Гэдан Барай – Гяку Дзуки
+          - Сото укэ – Гяку Дзуки
+          - Учи укэ – Гяку Дзуки
+          - Маэ Кэри Агэ (Хайсоку)
+          - Маэ Гэри (Чусоку)
+          - Маваши Гэри (Хайсоку)
+      - title: Перемещения в Киба дачи
+        items:
+          - Тэтцуи с фронтальным и задним разворотом
+  - title: Технические приёмы
+    groups:
+      - items:
+          - 4 позиции Ашихара-каратэ в сочетании с контролем после выполнения блоков сото, сюто, гэдан барай, сунэ укэ
+          - Отдельные комбинации из ката Шошин 2 и Кихон 1
+  - title: Ката
+    groups:
+      - items:
+          - Kihon 1
+          - Nage 1
+  - title: Кондиция, демонстрация силы ударов на снарядах
+    groups:
+      - items:
+          - Нихон Дзуки, Маэ Гэри, Маваши Гэри
