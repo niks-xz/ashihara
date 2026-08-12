@@ -7,8 +7,7 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://niks-xz.github.io',
-  base: '/ashihara',
+  site: 'https://ashihara23.ru',
   output: 'static',
   vite: {
     plugins: [tailwindcss()],
