@@ -4,6 +4,7 @@ import PageLayout from '../../layouts/PageLayout.astro';
 import SectionHeading from '../../components/ui/SectionHeading.astro';
 import BeltLevelCard from '../../components/methodology/BeltLevelCard.astro';
 import Button from '../../components/ui/Button.astro';
+import { withBase } from '../../lib/utils';
 
 const beltLevels = (await getCollection('belts')).sort((a, b) => a.data.sortOrder - b.data.sortOrder);
 ---
@@ -36,6 +37,23 @@ const beltLevels = (await getCollection('belts')).sort((a, b) => a.data.sortOrde
       ) : (
         <p class="text-center text-neutral-600">Экзаменационные требования скоро появятся</p>
       )}
+
+      <div class="mt-8 flex items-center justify-between gap-4 rounded-lg border border-neutral-200 bg-white p-5">
+        <div>
+          <div class="font-semibold text-dark">Экзаменационные требования одним файлом</div>
+          <p class="mt-1 text-sm text-neutral-600">Официальный PDF федерации, редакция июня 2025 года.</p>
+        </div>
+        <a
+          href={withBase('/files/ekzamenaczionnye-trebovaniya.pdf')}
+          class="inline-flex shrink-0 items-center gap-2 rounded-lg border-2 border-primary px-4 py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary hover:text-white"
+          download
+        >
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+          </svg>
+          Скачать PDF
+        </a>
+      </div>
     </div>
   </section>
 </PageLayout>
