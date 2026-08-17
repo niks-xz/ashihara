@@ -1,6 +1,5 @@
 ---
 import BaseLayout from './BaseLayout.astro';
-import PhoneBanner from '../components/layout/PhoneBanner.astro';
 import Header from '../components/layout/Header.astro';
 import MobileMenu from '../components/layout/MobileMenu.astro';
 import Footer from '../components/layout/Footer.astro';
@@ -22,7 +21,6 @@ const { title, description, ogImage, schemaType, eventData } = Astro.props;
 ---
 
 <BaseLayout title={title} description={description} ogImage={ogImage} schemaType={schemaType} eventData={eventData}>
-  <PhoneBanner />
   <Header />
   <MobileMenu />
   <main class="min-h-[60vh]">

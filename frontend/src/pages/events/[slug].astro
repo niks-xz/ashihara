@@ -61,7 +61,7 @@ const eventDateIso = isoDate(event.data.eventDate);
             preload="metadata"
             playsinline
             poster={event.data.videoPoster ? withBase(event.data.videoPoster) : undefined}
-            class="mx-auto max-h-[70vh] rounded-lg bg-dark"
+            class="w-full rounded-lg bg-dark"
           >
             <source src={withBase(event.data.video)} type="video/mp4" />
             Ваш браузер не поддерживает воспроизведение видео.
