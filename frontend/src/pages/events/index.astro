@@ -6,6 +6,13 @@ import EventCard from '../../components/events/EventCard.astro';
 
 const events = (await getCollection('events'))
   .sort((a, b) => b.data.eventDate.valueOf() - a.data.eventDate.valueOf());
+
+// Группировка по годам: свежие годы сверху, внутри года - по убыванию даты
+const years = [...new Set(events.map((e) => e.data.eventDate.getFullYear()))];
+const byYear = years.map((year) => ({
+  year,
+  items: events.filter((e) => e.data.eventDate.getFullYear() === year),
+}));
 ---
 
 <PageLayout
@@ -20,9 +27,14 @@ const events = (await getCollection('events'))
       />
 
       {events.length > 0 ? (
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {events.map((event) => <EventCard event={event} />)}
-        </div>
+        byYear.map(({ year, items }) => (
+          <div class="mb-12">
+            <h3 class="text-2xl font-bold text-dark mb-6">{year}</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {items.map((event) => <EventCard event={event} />)}
+            </div>
+          </div>
+        ))
       ) : (
         <p class="text-center text-neutral-600">Скоро здесь появятся события</p>
       )}
