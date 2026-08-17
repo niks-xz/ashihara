@@ -5,8 +5,7 @@ import SectionHeading from '../../components/ui/SectionHeading.astro';
 import EventCard from '../../components/events/EventCard.astro';
 
 const events = (await getCollection('events'))
-  .sort((a, b) => b.data.eventDate.valueOf() - a.data.eventDate.valueOf())
-  .slice(0, 12);
+  .sort((a, b) => b.data.eventDate.valueOf() - a.data.eventDate.valueOf());
 ---
 
 <PageLayout

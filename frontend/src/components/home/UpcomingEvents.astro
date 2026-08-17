@@ -1,53 +1,51 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import SectionHeading from '../ui/SectionHeading.astro';
-import Card from '../ui/Card.astro';
+import EventCard from '../events/EventCard.astro';
 import Button from '../ui/Button.astro';
-import { formatDate, eventTypeLabel } from '../../lib/utils';
 
 interface Props {
-  events: CollectionEntry<'events'>[];
-  archiveEventCount?: number;
-  latestArchiveYear?: number;
+  upcoming: CollectionEntry<'events'>[];
+  recent: CollectionEntry<'events'>[];
 }
 
-const { events, archiveEventCount = 0, latestArchiveYear } = Astro.props;
-const hasUpcomingEvents = events.length > 0;
+const { upcoming, recent } = Astro.props;
+const hasUpcoming = upcoming.length > 0;
+const hasRecent = recent.length > 0;
+const hasAny = hasUpcoming || hasRecent;
 const currentYear = new Date().getFullYear();
-const title = hasUpcomingEvents ? 'Ближайшие события' : 'Календарный план';
-const subtitle = hasUpcomingEvents
-  ? 'Соревнования, семинары, аттестации и другие мероприятия федерации'
-  : `План мероприятий на ${currentYear} год формируется`;
-const archiveText = latestArchiveYear
-  ? `Архив событий ${latestArchiveYear} года доступен в разделе событий.`
-  : 'Архив прошедших событий доступен в разделе событий.';
 ---
 
 <section class="py-16 md:py-20">
   <div class="max-w-7xl mx-auto px-4">
     <SectionHeading
-      title={title}
-      subtitle={subtitle}
+      title={hasAny ? 'События федерации' : 'Календарный план'}
+      subtitle={hasAny
+        ? 'Соревнования, лагеря, аттестации и репортажи с прошедших мероприятий'
+        : `План мероприятий на ${currentYear} год формируется`}
     />
 
-    {hasUpcomingEvents ? (
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {events.map((event) => (
-          <Card href={`/events/${event.id}`}>
-            <div class="p-5">
-              <div class="flex items-center gap-2 mb-3">
-                <span class="text-xs font-medium text-primary bg-primary/10 px-2 py-1 rounded">
-                  {eventTypeLabel(event.data.eventType)}
-                </span>
-                <span class="text-xs text-neutral-600">{formatDate(event.data.eventDate)}</span>
-              </div>
-              <h3 class="text-lg font-bold text-dark mb-2 line-clamp-2">{event.data.title}</h3>
-              {event.data.excerpt && (
-                <p class="text-sm text-neutral-700 line-clamp-3">{event.data.excerpt}</p>
-              )}
-            </div>
-          </Card>
-        ))}
+    {hasUpcoming && (
+      <>
+        <h3 class="text-xl font-bold text-dark mb-6">Ближайшие</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {upcoming.map((event) => <EventCard event={event} />)}
+        </div>
+      </>
+    )}
+
+    {hasRecent && (
+      <>
+        <h3 class:list={['text-xl font-bold text-dark mb-6', hasUpcoming && 'mt-12']}>Недавние</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {recent.map((event) => <EventCard event={event} />)}
+        </div>
+      </>
+    )}
+
+    {hasAny ? (
+      <div class="mt-10 text-center">
+        <Button href="/events" variant="outline">Все события</Button>
       </div>
     ) : (
       <div class="max-w-3xl mx-auto rounded-xl border border-neutral-200 bg-white p-6 md:p-8 text-center shadow-sm">
@@ -56,18 +54,12 @@ const archiveText = latestArchiveYear
         </p>
         <p class="text-neutral-700 leading-relaxed mb-6">
           После утверждения календаря здесь появятся ближайшие соревнования,
-          семинары и аттестации. {archiveEventCount > 0 ? archiveText : ''}
+          семинары и аттестации.
         </p>
         <div class="flex flex-col sm:flex-row gap-3 justify-center">
           <Button href="/calendar">Календарный план</Button>
           <Button href="/events" variant="outline">Архив событий</Button>
         </div>
-      </div>
-    )}
-
-    {hasUpcomingEvents && (
-      <div class="mt-10 text-center">
-        <Button href="/events" variant="outline">Все события</Button>
       </div>
     )}
   </div>

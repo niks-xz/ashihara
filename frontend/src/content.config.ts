@@ -65,6 +65,9 @@ const events = defineCollection({
     eventDate: z.coerce.date(),
     eventType: z.enum(['news', 'competition', 'event', 'exam', 'other']),
     excerpt: z.string(),
+    // Видеорепортаж: пути от корня сайта, файлы лежат в public/videos/
+    video: z.string().optional(),
+    videoPoster: z.string().optional(),
   }),
 });
 

@@ -54,6 +54,22 @@ const eventDateIso = isoDate(event.data.eventDate);
         <Content />
       </div>
 
+      {event.data.video && (
+        <div class="mt-10">
+          <video
+            controls
+            preload="metadata"
+            playsinline
+            poster={event.data.videoPoster ? withBase(event.data.videoPoster) : undefined}
+            class="mx-auto max-h-[70vh] rounded-lg bg-dark"
+          >
+            <source src={withBase(event.data.video)} type="video/mp4" />
+            Ваш браузер не поддерживает воспроизведение видео.
+            <a href={withBase(event.data.video)}>Скачать видео</a>
+          </video>
+        </div>
+      )}
+
       <div class="mt-12 pt-8 border-t border-neutral-200">
         <Button href="/events" variant="outline">&larr; Все события</Button>
       </div>

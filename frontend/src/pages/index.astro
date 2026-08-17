@@ -1,5 +1,5 @@
 ---
-import { getCollection, type CollectionEntry } from 'astro:content';
+import { getCollection } from 'astro:content';
 import PageLayout from '../layouts/PageLayout.astro';
 import HeroSection from '../components/home/HeroSection.astro';
 import UpcomingEvents from '../components/home/UpcomingEvents.astro';
@@ -12,20 +12,9 @@ const allEvents = (await getCollection('events'))
 const today = new Date();
 today.setHours(0, 0, 0, 0);
 
-const events: CollectionEntry<'events'>[] = [];
-let latestArchiveYear: number | undefined;
-
-for (const event of allEvents) {
-  const eventYear = event.data.eventDate.getFullYear();
-
-  if (latestArchiveYear === undefined || eventYear > latestArchiveYear) {
-    latestArchiveYear = eventYear;
-  }
-
-  if (event.data.eventDate >= today && events.length < 3) {
-    events.push(event);
-  }
-}
+// Ближайшие будущие - по возрастанию даты, недавние прошедшие - по убыванию
+const upcoming = allEvents.filter((e) => e.data.eventDate >= today).slice(0, 3);
+const recent = allEvents.filter((e) => e.data.eventDate < today).reverse().slice(0, 3);
 ---
 
 <PageLayout
@@ -33,11 +22,7 @@ for (const event of allEvents) {
   description="Федерация Ашихара-каратэ г. Краснодара. Тренировки для детей и взрослых, соревнования, аттестации. Организация NIKO."
 >
   <HeroSection />
-  <UpcomingEvents
-    events={events}
-    archiveEventCount={allEvents.length}
-    latestArchiveYear={latestArchiveYear}
-  />
+  <UpcomingEvents upcoming={upcoming} recent={recent} />
   <AboutPreview />
   <CtaSection />
 </PageLayout>
