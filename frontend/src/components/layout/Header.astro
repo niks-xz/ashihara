@@ -21,15 +21,22 @@ function isActive(href: string): boolean {
 ---
 
 <header class="sticky top-0 z-50 bg-cream/90 backdrop-blur-md border-b border-line">
-  <div class="max-w-[1180px] mx-auto px-[22px] flex items-center gap-4 flex-wrap min-h-[66px]">
+  {/* Мобильно: [лого ... Записаться] и навигация второй строкой; от md - один ряд */}
+  <div class="max-w-[1180px] mx-auto px-[22px] flex items-center gap-x-4 flex-wrap min-h-[66px]">
     <a href={withBase('/')} class="flex items-center gap-3 py-2.5">
       <Image src={nikoLogo} alt="Эмблема Ашихара кайкан" width={80} height={80} class="w-10 h-10 block" />
       <span class="flex flex-col leading-[1.1]">
         <span class="font-extrabold text-base tracking-tight text-dark">Ашихара-каратэ</span>
-        <span class="text-[11px] font-semibold text-neutral-600">Федерация · Краснодарский край</span>
+        <span class="hidden min-[430px]:block text-[11px] font-semibold text-neutral-600">Федерация · Краснодарский край</span>
       </span>
     </a>
-    <nav class="flex items-center gap-0.5 flex-wrap ml-auto">
+    <a
+      href={withBase('/gyms')}
+      class="ml-auto order-2 md:order-3 md:ml-3 shrink-0 bg-primary text-white rounded-full font-bold text-[13.5px] md:text-sm px-4 md:px-5 py-2 md:py-[9.5px] shadow-[0_6px_16px_rgba(185,33,54,0.28)] hover:bg-primary-dark transition-colors"
+    >
+      Записаться
+    </a>
+    <nav class="order-3 w-full pb-2.5 -mx-[13px] flex items-center gap-0.5 flex-wrap md:order-2 md:w-auto md:pb-0 md:mx-0 md:ml-auto">
       {nav.map(({ href, label }) => (
         <a
           href={withBase(href)}
@@ -41,12 +48,6 @@ function isActive(href: string): boolean {
           {label}
         </a>
       ))}
-      <a
-        href={withBase('/gyms')}
-        class="ml-3 bg-primary text-white rounded-full font-bold text-sm px-5 py-[9.5px] shadow-[0_6px_16px_rgba(185,33,54,0.28)] hover:bg-primary-dark transition-colors"
-      >
-        Записаться
-      </a>
     </nav>
   </div>
 </header>

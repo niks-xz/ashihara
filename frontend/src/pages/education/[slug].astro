@@ -3,8 +3,8 @@ import { getCollection, type CollectionEntry } from 'astro:content';
 import PageLayout from '../../layouts/PageLayout.astro';
 import BeltBar from '../../components/education/BeltBar.astro';
 import { getBeltDescription } from '../../lib/belts';
-import { translateTerm } from '../../lib/glossary';
-import { parseTechniqueList } from '../../lib/techniques';
+import { translateTerm, canonizeDisplay } from '../../lib/glossary';
+import { parseTechniqueList, type TechniqueItem } from '../../lib/techniques';
 import { withBase } from '../../lib/utils';
 
 export async function getStaticPaths() {
@@ -26,6 +26,19 @@ function findKataVideo(name: string): CollectionEntry<'kata-videos'> | undefined
   );
 }
 
+// Отображаемые названия техник приводятся к канону глоссария
+// (подсказки-переводы ищутся по исходному написанию методички до канонизации)
+function canonizeItem(item: TechniqueItem): TechniqueItem {
+  if (item.kind === 'combo') {
+    return {
+      ...item,
+      label: canonizeDisplay(item.label),
+      steps: item.steps.map((step) => ({ ...step, text: canonizeDisplay(step.text) })),
+    };
+  }
+  return { ...item, text: canonizeDisplay(item.text) };
+}
+
 const parsedSections = belt.data.sections.map((section) => {
   const isKata = /ката/i.test(section.title);
   return {
@@ -37,14 +50,14 @@ const parsedSections = belt.data.sections.map((section) => {
           .flatMap((group) => group.items)
           .map((name) => {
             const video = findKataVideo(name);
-            return { name: video?.data.title ?? name, videoUrl: video?.data.videoUrl };
+            return { name: canonizeDisplay(video?.data.title ?? name), videoUrl: video?.data.videoUrl };
           })
       : [],
     groups: isKata
       ? []
       : section.groups.map((group) => ({
-          title: group.title,
-          items: group.items.flatMap((item) => parseTechniqueList(item, translateTerm)),
+          title: canonizeDisplay(group.title),
+          items: group.items.flatMap((item) => parseTechniqueList(item, translateTerm).map(canonizeItem)),
         })),
   };
 });

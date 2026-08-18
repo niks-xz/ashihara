@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import PageLayout from '../../layouts/PageLayout.astro';
 import EducationTabs from '../../components/education/EducationTabs.astro';
 import { buildGlossary } from '../../lib/glossary';
+import { withBase } from '../../lib/utils';
 
 const belts = (await getCollection('belts')).sort((a, b) => a.data.sortOrder - b.data.sortOrder);
 const glossary = buildGlossary(belts);
@@ -24,7 +25,17 @@ const glossary = buildGlossary(belts);
             {section.terms.map((term) => (
               <div class="rounded-xl border border-line bg-white px-[15px] py-3">
                 <div class="flex items-baseline justify-between gap-3">
-                  <span class="text-[14.5px] font-bold">{term.name}</span>
+                  <span class="flex items-center gap-2 text-[14.5px] font-bold">
+                    {term.audio && (
+                      <button
+                        type="button"
+                        data-audio={withBase(`/audio/glossary/${term.audio}.mp3`)}
+                        aria-label={`Произношение: ${term.name}`}
+                        class="flex h-6 w-6 shrink-0 cursor-pointer items-center justify-center rounded-full bg-primary-tint text-[10px] text-primary transition-colors hover:bg-primary hover:text-white"
+                      >▶</button>
+                    )}
+                    {term.name}
+                  </span>
                   {term.japanese && <span lang="ja" class="shrink-0 text-[13px] text-neutral-500">{term.japanese}</span>}
                 </div>
                 <div class="mt-[3px] text-[13px] leading-[1.5] text-neutral-800">{term.detail}</div>
@@ -34,5 +45,21 @@ const glossary = buildGlossary(belts);
         </div>
       ))}
     </div>
+    <p class="mt-8 text-[12px] text-neutral-500">Озвучка терминов: VOICEVOX (голос 青山龍星 / Аояма Рюсэй)</p>
   </section>
 </PageLayout>
+
+<script>
+  const player = new Audio();
+  document.querySelectorAll<HTMLButtonElement>('button[data-audio]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const src = btn.dataset.audio ?? '';
+      if (!player.paused && player.src.endsWith(src)) {
+        player.pause();
+        return;
+      }
+      player.src = src;
+      void player.play();
+    });
+  });
+</script>

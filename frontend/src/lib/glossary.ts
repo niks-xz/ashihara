@@ -26,6 +26,21 @@ export interface GlossaryTerm {
   japanese?: string;
   common?: string;
   note?: string;
+  audio?: string;
+}
+
+// Имя аудиофайла произношения: тот же slug, что у генератора озвучки
+function audioSlug(romaji: string): string | undefined {
+  const main = romaji.split('(')[0].trim();
+  if (/^[A-Z]{2,}$/.test(main)) {
+    return undefined;
+  }
+  const slug = main
+    .toLowerCase()
+    .replace(/[()]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+  return slug || undefined;
 }
 
 export interface GlossarySection {
@@ -67,6 +82,94 @@ for (const section of manualSections) {
 // Перед поиском отбрасываются маркеры стороны «Л»/«П» в начале названия
 export const translateTerm: TranslateTerm = (name) =>
   translations.get(dedupeKey(name.replace(/^(?:[ЛП]\s+)+/, ''))) ?? '';
+
+// --- Канонизация отображения: написания методички приводятся к канону глоссария ---
+
+// Фразы: ключ ru и ruCommon -> каноническое ru («санчин дачи» -> «сантин-дати»)
+const phraseCanon = new Map<string, string>();
+// Отдельные слова: токен методички -> канонический токен («маваши» -> «маваси»)
+const tokenCanon = new Map<string, string>();
+
+for (const section of manualSections) {
+  for (const row of section.rows) {
+    phraseCanon.set(dedupeKey(row.ru), row.ru);
+    if (row.ruCommon) {
+      phraseCanon.set(dedupeKey(row.ruCommon), row.ru);
+    }
+    const ruWords = row.ru.split(/[\s-]+/).filter(Boolean);
+    for (const word of ruWords) {
+      const key = tokenKey(word);
+      if (key && !tokenCanon.has(key)) {
+        tokenCanon.set(key, word.toLowerCase());
+      }
+    }
+    if (row.ruCommon) {
+      const commonWords = row.ruCommon.split(/[\s-]+/).filter(Boolean);
+      if (commonWords.length === ruWords.length) {
+        commonWords.forEach((word, i) => {
+          const key = tokenKey(word);
+          if (key && !tokenCanon.has(key)) {
+            tokenCanon.set(key, ruWords[i].toLowerCase());
+          }
+        });
+      }
+    }
+  }
+}
+
+function matchCase(sample: string, canon: string): string {
+  if (/^[А-ЯЁA-Z]/.test(sample)) {
+    return canon
+      .split(' ')
+      .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+      .join(' ');
+  }
+  return canon;
+}
+
+// Приводит отображаемый текст к канону глоссария: сперва самая длинная фразовая
+// замена (до 4 слов), затем пословная; неизвестные слова остаются как есть.
+export function canonizeDisplay(text: string): string {
+  const parts = text.split(/(\s+|[(),/])/);
+  const wordIdx: number[] = [];
+  parts.forEach((p, i) => {
+    if (p && !/^(\s+|[(),/])$/.test(p)) {
+      wordIdx.push(i);
+    }
+  });
+  let w = 0;
+  while (w < wordIdx.length) {
+    let replaced = false;
+    for (let len = Math.min(4, wordIdx.length - w); len >= 2; len--) {
+      const segment = wordIdx.slice(w, w + len).map((i) => parts[i]).join(' ');
+      const canon = phraseCanon.get(dedupeKey(segment));
+      if (canon) {
+        parts[wordIdx[w]] = matchCase(segment, canon);
+        for (let k = 1; k < len; k++) {
+          parts[wordIdx[w + k]] = '';
+        }
+        // затираем пробелы между словами заменённого сегмента
+        for (let i = wordIdx[w] + 1; i < wordIdx[w + len - 1]; i++) {
+          if (/^\s+$/.test(parts[i])) {
+            parts[i] = '';
+          }
+        }
+        w += len;
+        replaced = true;
+        break;
+      }
+    }
+    if (!replaced) {
+      const i = wordIdx[w];
+      const canonToken = tokenCanon.get(tokenKey(parts[i]));
+      if (canonToken) {
+        parts[i] = matchCase(parts[i], canonToken);
+      }
+      w++;
+    }
+  }
+  return parts.join('').replace(/\s{2,}/g, ' ').trim();
+}
 
 // Токены японских терминов: базовый набор из методички плюс все токены ручного глоссария.
 // По ним автоизвлечение отличает название техники от прозового требования.
@@ -136,6 +239,7 @@ export function buildGlossary(_belts: Belt[]): GlossarySection[] {
       japanese: row.japanese || undefined,
       common: row.ruCommon && dedupeKey(row.ruCommon) !== dedupeKey(row.ru) ? row.ruCommon : undefined,
       note: row.note || undefined,
+      audio: audioSlug(row.romaji),
     })),
   }));
 }
