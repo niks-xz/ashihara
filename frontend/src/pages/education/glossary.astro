@@ -15,7 +15,7 @@ const glossary = buildGlossary(belts);
   <section class="mx-auto max-w-[1180px] px-[22px] py-[clamp(36px,5vw,60px)]">
     <h1 class="mb-[18px] text-[clamp(28px,3.6vw,40px)] font-bold tracking-[-0.02em]">Обучение</h1>
     <EducationTabs active="glossary" />
-    <p class="mb-6 max-w-[680px] text-base leading-[1.6] text-neutral-800 [text-wrap:pretty]">Японские термины программы аттестаций: оригинальное написание, транскрипция по системе Поливанова и значение. Выверено по материалам хомбу Ашихара кайкан, японским источникам и официальным филиалам NIKO.</p>
+    <p class="mb-6 max-w-[680px] text-base leading-[1.6] text-neutral-800 [text-wrap:pretty]">Термины, которые звучат на тренировках и аттестациях, — что они значат и как пишутся по-японски.</p>
     <div class="flex flex-col gap-5">
       {glossary.map((section) => (
         <div>
@@ -27,17 +27,7 @@ const glossary = buildGlossary(belts);
                   <span class="text-[14.5px] font-bold">{term.name}</span>
                   {term.japanese && <span lang="ja" class="shrink-0 text-[13px] text-neutral-500">{term.japanese}</span>}
                 </div>
-                {term.detail ? (
-                  <div class="mt-[3px] text-[13px] leading-[1.5] text-neutral-800">{term.detail}</div>
-                ) : (
-                  <div class="mt-[3px] text-[12.5px] italic text-neutral-500">перевод уточняется</div>
-                )}
-                {term.common && (
-                  <div class="mt-[3px] text-[12px] text-neutral-500">привычное написание: {term.common}</div>
-                )}
-                {term.note && (
-                  <div class="mt-[3px] text-[12px] leading-[1.5] text-neutral-500">{term.note}</div>
-                )}
+                <div class="mt-[3px] text-[13px] leading-[1.5] text-neutral-800">{term.detail}</div>
               </div>
             ))}
           </div>

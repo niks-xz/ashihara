@@ -124,10 +124,11 @@ function canonTerm(name: string): string | null {
   return tokens.map((token) => canonSpellings[tokenKey(token)] ?? titleCase(token)).join(' ');
 }
 
-// Глоссарий: тематические секции ручного глоссария, затем автоизвлечённые из методички
-// термины, которых там нет, - сгруппированные по первой букве, с пометкой «перевод уточняется»
-export function buildGlossary(belts: Belt[]): GlossarySection[] {
-  const sections: GlossarySection[] = manualSections.map((section) => ({
+// Глоссарий страницы: только выверенные тематические секции ручного глоссария.
+// Автоизвлечение терминов методички осталось у translateTerm - оно питает тултипы
+// на страницах поясов, но не попадает на страницу глоссария.
+export function buildGlossary(_belts: Belt[]): GlossarySection[] {
+  return manualSections.map((section) => ({
     header: section.title,
     terms: section.rows.map((row) => ({
       name: row.ru,
@@ -137,50 +138,4 @@ export function buildGlossary(belts: Belt[]): GlossarySection[] {
       note: row.note || undefined,
     })),
   }));
-
-  const autoTerms = new Map<string, GlossaryTerm>();
-  const addTerm = (name: string): void => {
-    const canon = canonTerm(name);
-    if (!canon) {
-      return;
-    }
-    const key = dedupeKey(canon);
-    if (!translations.has(key) && !autoTerms.has(key)) {
-      autoTerms.set(key, { name: canon, detail: '' });
-    }
-  };
-
-  for (const belt of belts) {
-    for (const section of belt.data.sections) {
-      for (const group of section.groups) {
-        for (const raw of group.items) {
-          for (const item of parseTechniqueList(raw, translateTerm)) {
-            if (item.kind === 'text' && item.text) {
-              addTerm(item.text);
-            } else if (item.kind === 'combo') {
-              for (const step of item.steps) {
-                if (step.text) {
-                  addTerm(step.text);
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-
-  const collator = new Intl.Collator('ru');
-  const termList = [...autoTerms.values()].sort((a, b) => collator.compare(a.name, b.name));
-  const byLetter = new Map<string, GlossaryTerm[]>();
-  for (const term of termList) {
-    const letter = term.name[0].toUpperCase();
-    const bucket = byLetter.get(letter);
-    if (bucket) {
-      bucket.push(term);
-    } else {
-      byLetter.set(letter, [term]);
-    }
-  }
-  return [...sections, ...[...byLetter.entries()].map(([letter, terms]) => ({ header: letter, terms }))];
 }
