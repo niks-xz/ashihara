@@ -1,0 +1,92 @@
+---
+import { getCollection, render } from 'astro:content';
+import { Image } from 'astro:assets';
+import PageLayout from '../../layouts/PageLayout.astro';
+import { withBase } from '../../lib/utils';
+
+const coaches = (await getCollection('coaches')).sort((a, b) => a.data.sortOrder - b.data.sortOrder);
+const gyms = (await getCollection('gyms')).sort((a, b) => a.data.sortOrder - b.data.sortOrder);
+
+// Обратный lookup: тренер -> названия залов, в которых он указан в gym.coaches
+function gymNamesFor(coachId: string): string {
+  const names = gyms
+    .filter((gym) => gym.data.coaches.some((ref) => ref.id === coachId))
+    .map((gym) => gym.data.name);
+
+  return [...new Set(names)].join(' · ');
+}
+
+const cards = await Promise.all(
+  coaches.map(async (coach) => {
+    const { Content } = await render(coach);
+
+    return {
+      coach,
+      Content,
+      hasBio: Boolean(coach.body?.trim()),
+      gymNames: gymNamesFor(coach.id),
+    };
+  }),
+);
+---
+
+<PageLayout
+  title="Тренеры"
+  description="Тренерский состав Федерации Ашихара-каратэ г. Краснодара: аттестованные тренеры с рангами и соревновательным опытом."
+>
+  <section class="mx-auto max-w-[1180px] px-[22px] py-[clamp(36px,5vw,60px)]">
+    <h1 class="mb-[10px] text-[clamp(30px,4.2vw,46px)] font-black tracking-[-0.025em]">Тренеры федерации</h1>
+    <p class="mb-8 max-w-[620px] text-base leading-[1.6] text-neutral-800">С детскими и взрослыми группами работают аттестованные тренеры с рангами и соревновательным опытом.</p>
+
+    <div class="flex flex-col gap-5">
+      {cards.map(({ coach, Content, hasBio, gymNames }) => (
+        <div class="flex flex-wrap items-stretch overflow-hidden rounded-[24px] border border-line bg-white">
+          <div class="relative aspect-[2/3] min-h-[340px] min-w-[230px] flex-[0_1_280px]">
+            {coach.data.photo ? (
+              <Image
+                src={coach.data.photo}
+                alt={coach.data.fullName}
+                width={640}
+                height={960}
+                class="absolute inset-0 h-full w-full object-cover"
+              />
+            ) : (
+              <div class="absolute inset-0 flex items-center justify-center bg-neutral-200">
+                <svg class="h-20 w-20 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0" />
+                </svg>
+              </div>
+            )}
+          </div>
+
+          <div class="flex flex-[1_1_340px] flex-col justify-center p-[clamp(22px,3vw,32px)]">
+            <div class="mb-3.5 flex flex-wrap gap-2">
+              <span class="rounded-full bg-primary-tint px-3.5 py-1.5 text-[13px] font-extrabold text-primary">{coach.data.rank}</span>
+              {gymNames && (
+                <span class="rounded-full bg-neutral-200 px-3.5 py-1.5 text-[13px] font-bold text-neutral-800">{gymNames}</span>
+              )}
+            </div>
+
+            <a
+              href={withBase(`/coaches/${coach.id}`)}
+              class="mb-1 text-[clamp(21px,2.4vw,25px)] font-extrabold leading-[1.2] tracking-[-0.015em] text-dark transition-colors hover:text-primary"
+            >
+              {coach.data.fullName}
+            </a>
+            <div class="mb-[13px] text-[14.5px] font-bold text-primary">{coach.data.title}</div>
+
+            {coach.data.achievements && (
+              <p class="mb-[11px] max-w-[560px] text-sm leading-[1.6] text-dark-surface">{coach.data.achievements}</p>
+            )}
+
+            {hasBio && (
+              <div class="max-w-[560px] space-y-2 text-sm leading-[1.6] text-neutral-600">
+                <Content />
+              </div>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+</PageLayout>

@@ -9,6 +9,17 @@ import sitemap from '@astrojs/sitemap';
 export default defineConfig({
   site: 'https://ashihara23.ru',
   output: 'static',
+  redirects: {
+    '/kids': '/',
+    '/about': '/',
+    '/faq': '/',
+    '/contacts': '/gyms',
+    '/schedule': '/gyms',
+    '/calendar': '/events',
+    '/student-path': '/education',
+    '/methodology': '/education',
+    '/methodology/[slug]': '/education/[slug]',
+  },
   vite: {
     plugins: [tailwindcss()],
   },

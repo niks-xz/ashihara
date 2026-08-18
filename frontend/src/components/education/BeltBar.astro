@@ -1,0 +1,28 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { getBeltVisual } from '../../lib/belts';
+
+interface Props {
+  belt: CollectionEntry<'belts'>;
+  big?: boolean;
+}
+
+const { belt, big = false } = Astro.props;
+const visual = getBeltVisual(belt);
+const stripes = visual.stripe ? Array.from({ length: visual.stripeCount }) : [];
+---
+
+<div
+  class:list={['relative overflow-hidden rounded-[2px]', big ? 'h-[30px]' : 'h-5']}
+  style={`background: ${visual.base}; background-image: linear-gradient(rgba(255,255,255,0.14), rgba(0,0,0,0.06) 45%, rgba(0,0,0,0.14)); border: 1px solid ${visual.border ?? 'rgba(0,0,0,0.12)'}; box-shadow: inset 0 1px 0 rgba(255,255,255,0.15);`}
+  aria-hidden="true"
+>
+  <div class:list={['absolute top-0 bottom-0 flex', big ? 'right-[18px] gap-[6px]' : 'right-3 gap-1']}>
+    {stripes.map(() => (
+      <div
+        class:list={['h-full', big ? 'w-[7px]' : 'w-[5px]']}
+        style={`background: ${visual.stripe}; box-shadow: 0 0 0 0.5px rgba(0,0,0,0.15);`}
+      ></div>
+    ))}
+  </div>
+</div>

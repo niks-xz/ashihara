@@ -1,0 +1,48 @@
+---
+import { getCollection } from 'astro:content';
+import PageLayout from '../../layouts/PageLayout.astro';
+import EducationTabs from '../../components/education/EducationTabs.astro';
+import BeltBar from '../../components/education/BeltBar.astro';
+import { getBeltDescription, getBeltGroups } from '../../lib/belts';
+import { withBase } from '../../lib/utils';
+
+const belts = (await getCollection('belts')).sort((a, b) => a.data.sortOrder - b.data.sortOrder);
+const groups = getBeltGroups(belts);
+---
+
+<PageLayout
+  title="Обучение"
+  description="Система рангов Ашихара-каратэ: десять ученических ступеней (кю) и мастерские степени (даны). Силовые нормативы и программа техники каждой ступени."
+>
+  <section class="mx-auto max-w-[1180px] px-[22px] py-[clamp(36px,5vw,60px)]">
+    <h1 class="mb-[18px] text-[clamp(28px,3.6vw,40px)] font-bold tracking-[-0.02em]">Обучение</h1>
+    <EducationTabs active="belts" />
+    <p class="mb-8 max-w-[660px] text-base leading-[1.6] text-neutral-800 [text-wrap:pretty]">Система рангов Ашихара-каратэ: десять ученических ступеней (кю) — от белого пояса к коричневому — и мастерские степени (даны, чёрный пояс). У каждой ступени свой силовой норматив и набор техники.</p>
+    <div class="flex flex-col gap-[30px]">
+      {groups.map((group) => (
+        <div>
+          <div class="mb-[14px] flex items-center gap-3">
+            <span class="h-4 w-4 shrink-0 rounded-[4px] border border-black/15" style={`background: ${group.swatch};`}></span>
+            <span class="text-base font-extrabold tracking-[-0.01em]">{group.label}</span>
+            <span class="text-[13.5px] font-semibold text-neutral-600">{group.range}</span>
+          </div>
+          <div class="grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-[14px]">
+            {group.belts.map((belt) => (
+              <a
+                href={withBase(`/education/${belt.id}`)}
+                class="rounded-[18px] border border-line bg-white p-5 transition-[box-shadow,transform] duration-[180ms] hover:-translate-y-[2px] hover:shadow-[0_14px_34px_rgba(27,27,34,0.1)]"
+              >
+                <div class="mb-[13px] flex items-baseline justify-between gap-[10px]">
+                  <span class="text-[19px] font-extrabold tracking-[-0.01em]">{belt.data.name}</span>
+                  <span class="font-extrabold text-primary">→</span>
+                </div>
+                <BeltBar belt={belt} />
+                <div class="mt-[10px] text-[13px] text-neutral-600">{getBeltDescription(belt)}</div>
+              </a>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+</PageLayout>

@@ -1,29 +1,53 @@
 @import "tailwindcss";
 
+/* Golos Text - self-hosted (кириллица + латиница), веса по макету Ashihara Site v3 */
+@import "@fontsource/golos-text/400.css";
+@import "@fontsource/golos-text/500.css";
+@import "@fontsource/golos-text/600.css";
+@import "@fontsource/golos-text/700.css";
+@import "@fontsource/golos-text/800.css";
+@import "@fontsource/golos-text/900.css";
+
 @theme {
-  --color-primary: #C41E3A;
+  /* Палитра из макета Claude Design «Ashihara Site v3» */
+  --color-primary: #B92136;
   --color-primary-light: #E8344F;
-  --color-primary-dark: #8B1528;
+  --color-primary-dark: #9C1B2D;
+  --color-primary-deep: #8B1528;
+  --color-primary-tint: #FBEDEF;
 
-  --color-dark: #1A1A2E;
-  --color-dark-light: #2D2D44;
-  --color-dark-surface: #16213E;
+  --color-dark: #1B1B22;
+  --color-dark-light: #2A2A32;
+  --color-dark-surface: #33333A;
 
-  --color-accent: #D4A843;
-  --color-accent-light: #E8C76A;
+  --color-cream: #F7F6F2;
+  --color-cream-dark: #ECEAE2;
 
-  --color-neutral-50: #F8F9FA;
-  --color-neutral-100: #F1F3F5;
-  --color-neutral-200: #E9ECEF;
-  --color-neutral-300: #DEE2E6;
-  --color-neutral-400: #CED4DA;
-  --color-neutral-500: #ADB5BD;
-  --color-neutral-600: #868E96;
-  --color-neutral-700: #495057;
-  --color-neutral-800: #343A40;
-  --color-neutral-900: #212529;
+  --color-line: #E7E5DD;
+  --color-line-soft: #F0EEE8;
 
-  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --color-neutral-50: #FBFAF7;
+  --color-neutral-100: #FAF9F5;
+  --color-neutral-200: #F0EEE8;
+  --color-neutral-300: #E7E5DD;
+  --color-neutral-400: #C9C7BE;
+  --color-neutral-500: #B8B6AD;
+  --color-neutral-600: #8A8A90;
+  --color-neutral-700: #6E6E76;
+  --color-neutral-800: #55555C;
+  --color-neutral-900: #1B1B22;
+
+  /* Бейджи типов событий */
+  --color-badge-competition-bg: #FBEDEF;
+  --color-badge-competition-fg: #B92136;
+  --color-badge-exam-bg: #F7EEDC;
+  --color-badge-exam-fg: #8A6A1F;
+  --color-badge-news-bg: #EDF0F7;
+  --color-badge-news-fg: #3D5384;
+  --color-badge-event-bg: #EDF4EE;
+  --color-badge-event-fg: #3A6B44;
+
+  --font-sans: "Golos Text", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }
 
 @layer base {
@@ -32,7 +56,7 @@
   }
 
   body {
-    @apply bg-neutral-50 text-neutral-900 antialiased font-sans;
+    @apply bg-cream text-dark antialiased font-sans;
   }
 
   h1, h2, h3, h4 {

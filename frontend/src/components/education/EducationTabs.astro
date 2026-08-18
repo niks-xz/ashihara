@@ -1,0 +1,30 @@
+---
+import { withBase } from '../../lib/utils';
+
+interface Props {
+  active: 'belts' | 'glossary';
+}
+
+const { active } = Astro.props;
+
+const tabs = [
+  { id: 'belts', label: 'Пояса', href: '/education' },
+  { id: 'glossary', label: 'Глоссарий', href: '/education/glossary' },
+];
+---
+
+<div class="mb-[26px] flex gap-[6px] border-b border-line">
+  {tabs.map((tab) => (
+    <a
+      href={withBase(tab.href)}
+      class:list={[
+        'mr-[18px] px-1 py-[10px] text-[15px] font-bold transition-colors',
+        tab.id === active
+          ? 'text-dark shadow-[inset_0_-2px_0_var(--color-primary)]'
+          : 'text-neutral-600 hover:text-dark',
+      ]}
+    >
+      {tab.label}
+    </a>
+  ))}
+</div>

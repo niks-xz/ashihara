@@ -1,0 +1,31 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { withBase, eventTypeLabel } from '../../lib/utils';
+import { badgeClasses, eventDateParts } from '../../lib/events';
+
+interface Props {
+  event: CollectionEntry<'events'>;
+}
+
+const { event } = Astro.props;
+const { day, month, year } = eventDateParts(event.data.eventDate);
+---
+
+<a
+  href={withBase(`/events/${event.id}`)}
+  data-type={event.data.eventType}
+  class="flex flex-wrap items-center gap-[clamp(16px,2.5vw,28px)] px-[22px] py-[18px] border-b border-line-soft last:border-b-0 hover:bg-neutral-50"
+>
+  <div class="flex w-[62px] shrink-0 flex-col items-center overflow-hidden rounded-[16px] border border-line bg-cream">
+    <div class="pt-[9px] pb-[3px] text-[21px] font-black leading-none">{day}</div>
+    <div class="text-[12px] font-bold uppercase tracking-[0.04em] text-neutral-800">{month}</div>
+    <div class="mt-[6px] w-full bg-primary py-[3px] text-center text-[10.5px] font-bold tracking-[0.05em] text-white">{year}</div>
+  </div>
+  <div class="min-w-[220px] flex-1">
+    <div class="text-[15.5px] font-bold leading-[1.4]">{event.data.title}</div>
+    <div class="mt-[3px] text-[13.5px] leading-[1.5] text-neutral-600">{event.data.excerpt}</div>
+  </div>
+  <span class={`inline-block whitespace-nowrap rounded-full px-3 py-1.5 text-[12.5px] font-bold ${badgeClasses(event.data.eventType)}`}>
+    {eventTypeLabel(event.data.eventType)}
+  </span>
+</a>

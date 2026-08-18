@@ -39,15 +39,15 @@ const yandexMapWidgetUrl = `https://yandex.ru/map-widget/v1/?mode=search&text=${
   title={gym.data.name}
   description={pageDescription}
 >
-  <article class="py-16 md:py-20">
-    <div class="max-w-5xl mx-auto px-4">
+  <article class="py-[clamp(36px,5vw,60px)]">
+    <div class="max-w-[1180px] mx-auto px-[22px]">
       <div class="mb-8">
         <a href={withBase('/gyms')} class="text-sm text-primary hover:underline">&larr; Все залы</a>
       </div>
 
       <div class="grid gap-8 lg:grid-cols-[1fr_20rem] lg:items-start">
         <div class="min-w-0 space-y-6">
-          <section class="rounded-xl border border-neutral-200 bg-white overflow-hidden shadow-sm">
+          <section class="rounded-[20px] border border-line bg-white overflow-hidden">
             {gym.data.photo && (
               <div class="aspect-video bg-neutral-100">
                 <Image
@@ -61,8 +61,8 @@ const yandexMapWidgetUrl = `https://yandex.ru/map-widget/v1/?mode=search&text=${
               </div>
             )}
             <div class="p-6 md:p-8">
-              <div class="text-sm font-semibold uppercase tracking-wide text-primary">{gym.data.district}</div>
-              <h1 class="mt-2 text-3xl md:text-4xl font-bold text-dark">{gym.data.name}</h1>
+              <div class="text-[13px] font-bold text-primary">{gym.data.district}</div>
+              <h1 class="mt-2 text-3xl md:text-4xl font-black tracking-[-0.025em] text-dark">{gym.data.name}</h1>
               <div class="mt-4 flex items-start gap-3 text-neutral-700">
                 <svg class="w-5 h-5 text-primary shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -78,22 +78,22 @@ const yandexMapWidgetUrl = `https://yandex.ru/map-widget/v1/?mode=search&text=${
           </section>
 
           {marketing && (
-            <section class="rounded-xl border border-neutral-200 bg-white p-6 md:p-8 shadow-sm">
+            <section class="rounded-[20px] border border-line bg-white p-6 md:p-8">
               <div class="grid gap-5 md:grid-cols-2">
-                <div class="rounded-lg bg-primary/5 p-5">
-                  <h2 class="text-lg font-bold text-dark">Кому удобно</h2>
+                <div class="rounded-[14px] bg-primary-tint p-5">
+                  <h2 class="text-lg font-extrabold text-dark">Кому удобно</h2>
                   <p class="mt-3 text-neutral-700 leading-relaxed">{marketing.audience}</p>
                   <div class="mt-4 flex flex-wrap gap-2">
                     {marketing.nearby.map((item) => (
-                      <span class="rounded-md bg-white px-3 py-1 text-sm font-medium text-neutral-700 border border-neutral-200">
+                      <span class="rounded-full bg-white px-3 py-1 text-sm font-medium text-neutral-700 border border-line">
                         {item}
                       </span>
                     ))}
                   </div>
                 </div>
 
-                <div class="rounded-lg bg-neutral-50 p-5">
-                  <h2 class="text-lg font-bold text-dark">Первое посещение</h2>
+                <div class="rounded-[14px] bg-neutral-50 p-5">
+                  <h2 class="text-lg font-extrabold text-dark">Первое посещение</h2>
                   <ul class="mt-3 space-y-3 text-neutral-700">
                     <li class="flex gap-3">
                       <span class="mt-2 h-2 w-2 shrink-0 rounded-full bg-primary"></span>
@@ -114,20 +114,20 @@ const yandexMapWidgetUrl = `https://yandex.ru/map-widget/v1/?mode=search&text=${
           )}
 
           {trialRows.length > 0 && (
-            <section class="rounded-xl border border-neutral-200 bg-white p-6 md:p-8 shadow-sm">
+            <section class="rounded-[20px] border border-line bg-white p-6 md:p-8">
               <div class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
                 <div>
-                  <h2 class="text-xl font-bold text-dark">Детские и подростковые группы</h2>
+                  <h2 class="text-xl font-extrabold text-dark">Детские и подростковые группы</h2>
                   <p class="mt-2 text-neutral-700">
                     Для пробного занятия лучше заранее согласовать группу с тренером. Ниже показаны ближайшие варианты из расписания этого зала.
                   </p>
                 </div>
-                <Button href={`/contacts?gym=${gym.id}`} size="sm">Записать ребёнка</Button>
+                <Button href="/gyms" size="sm">Записать ребёнка</Button>
               </div>
 
               <div class="mt-6 grid gap-4 md:grid-cols-2">
                 {trialRows.slice(0, 4).map((row) => (
-                  <div class="rounded-lg border border-neutral-200 bg-neutral-50 p-4">
+                  <div class="rounded-[14px] border border-line bg-neutral-50 p-4">
                     <div class="text-sm font-semibold text-primary">{row.day}</div>
                     <div class="mt-1 text-lg font-bold text-dark">
                       {row.start} - {row.end}
@@ -141,13 +141,13 @@ const yandexMapWidgetUrl = `https://yandex.ru/map-widget/v1/?mode=search&text=${
               </div>
 
               {trialCoaches.length > 0 && (
-                <div class="mt-6 border-t border-neutral-200 pt-5">
+                <div class="mt-6 border-t border-line pt-5">
                   <div class="text-sm font-semibold text-dark">Тренеры, которые ведут эти группы</div>
                   <div class="mt-3 flex flex-wrap gap-2">
                     {trialCoaches.map((coach) => (
                       <a
                         href={withBase(`/coaches/${coach.id}`)}
-                        class="rounded-md bg-primary/10 px-3 py-1 text-sm font-medium text-primary hover:bg-primary hover:text-white transition-colors"
+                        class="rounded-full bg-primary-tint px-3 py-1 text-sm font-medium text-primary hover:bg-primary hover:text-white transition-colors"
                       >
                         {coach.data.fullName}
                       </a>
@@ -158,9 +158,9 @@ const yandexMapWidgetUrl = `https://yandex.ru/map-widget/v1/?mode=search&text=${
             </section>
           )}
 
-          <section class="rounded-xl border border-neutral-200 bg-white overflow-hidden shadow-sm">
+          <section class="rounded-[20px] border border-line bg-white overflow-hidden">
             <div class="p-6 md:p-8 pb-4 md:pb-4">
-              <h2 class="text-xl font-bold text-dark">Карта и адрес</h2>
+              <h2 class="text-xl font-extrabold text-dark">Карта и адрес</h2>
             </div>
             <div>
               <div class="aspect-video bg-neutral-100">
@@ -173,7 +173,7 @@ const yandexMapWidgetUrl = `https://yandex.ru/map-widget/v1/?mode=search&text=${
                   allowfullscreen
                 />
               </div>
-              <div class="flex items-start gap-3 border-t border-neutral-200 bg-neutral-50 px-6 py-4 text-neutral-800">
+              <div class="flex items-start gap-3 border-t border-line bg-neutral-50 px-6 py-4 text-neutral-800">
                 <svg class="w-5 h-5 text-primary shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
                   <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
@@ -184,15 +184,15 @@ const yandexMapWidgetUrl = `https://yandex.ru/map-widget/v1/?mode=search&text=${
           </section>
 
           {sortedRows.length > 0 && (
-            <section class="rounded-xl border border-neutral-200 bg-white overflow-hidden shadow-sm">
+            <section class="rounded-[20px] border border-line bg-white overflow-hidden">
               <div class="p-6 md:p-8 pb-4 md:pb-4">
-                <h2 class="text-xl font-bold text-dark">Расписание</h2>
+                <h2 class="text-xl font-extrabold text-dark">Расписание</h2>
               </div>
               <div class="overflow-x-auto">
                 <table class="w-full min-w-[40rem] text-sm">
                   <thead>
-                    <tr class="border-y border-neutral-200 bg-neutral-50">
-                      <th class="sticky left-0 z-20 bg-neutral-50 text-left px-6 py-3 font-semibold text-neutral-700 border-r border-neutral-200">День</th>
+                    <tr class="border-y border-line bg-neutral-50">
+                      <th class="sticky left-0 z-20 bg-neutral-50 text-left px-6 py-3 font-semibold text-neutral-700 border-r border-line">День</th>
                       <th class="text-left px-6 py-3 font-semibold text-neutral-700">Время</th>
                       <th class="text-left px-6 py-3 font-semibold text-neutral-700">Группа</th>
                       <th class="text-left px-6 py-3 font-semibold text-neutral-700">Тренер</th>
@@ -201,10 +201,10 @@ const yandexMapWidgetUrl = `https://yandex.ru/map-widget/v1/?mode=search&text=${
                   <tbody>
                     {[...groupedRows.entries()].map(([day, rows]) =>
                       rows.map((row, index) => (
-                        <tr class="border-b border-neutral-100">
+                        <tr class="border-b border-line-soft">
                           {index === 0 && (
                             <td
-                              class="sticky left-0 z-10 bg-primary/5 px-6 py-3 font-semibold text-dark align-middle whitespace-nowrap border-r border-neutral-200 border-t-2 border-t-primary/20"
+                              class="sticky left-0 z-10 bg-primary-tint px-6 py-3 font-semibold text-dark align-middle whitespace-nowrap border-r border-line border-t-2 border-t-primary/20"
                               rowspan={rows.length}
                             >
                               <span class="hidden sm:inline">{day}</span>
@@ -226,8 +226,8 @@ const yandexMapWidgetUrl = `https://yandex.ru/map-widget/v1/?mode=search&text=${
           )}
         </div>
 
-        <aside class="min-w-0 rounded-xl border border-neutral-200 bg-white p-6 shadow-sm">
-          <h2 class="text-lg font-bold text-dark">Контакты зала</h2>
+        <aside class="min-w-0 rounded-[20px] border border-line bg-white p-6">
+          <h2 class="text-lg font-extrabold text-dark">Контакты зала</h2>
           <div class="mt-4 space-y-4">
             <div>
               <div class="text-sm font-semibold text-neutral-600">Адрес</div>
@@ -248,7 +248,7 @@ const yandexMapWidgetUrl = `https://yandex.ru/map-widget/v1/?mode=search&text=${
           </div>
 
           {gymCoaches.length > 0 && (
-            <div class="mt-6 pt-6 border-t border-neutral-200">
+            <div class="mt-6 pt-6 border-t border-line">
               <h2 class="text-sm font-semibold text-dark uppercase tracking-wide">Тренеры</h2>
               <div class="mt-3 space-y-2">
                 {gymCoaches.map((coach) => (
@@ -260,8 +260,8 @@ const yandexMapWidgetUrl = `https://yandex.ru/map-widget/v1/?mode=search&text=${
             </div>
           )}
 
-          <div class="mt-6 pt-6 border-t border-neutral-200">
-            <Button href={`/contacts?gym=${gym.id}`} size="sm">Записать ребёнка в этот зал</Button>
+          <div class="mt-6 pt-6 border-t border-line">
+            <Button href="/gyms" size="sm">Записать ребёнка в этот зал</Button>
           </div>
         </aside>
       </div>

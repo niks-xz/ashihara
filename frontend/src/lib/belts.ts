@@ -47,6 +47,34 @@ export function getBeltVisual(belt: Belt): BeltVisual {
   return beltVisuals[belt.id] ?? { base: belt.data.colorHex, stripeCount: 0 };
 }
 
+export interface BeltGroup {
+  label: string;
+  swatch: string;
+  range: string;
+  belts: Belt[];
+}
+
+const beltGroupDefs: { key: string; label: string }[] = [
+  { key: '#FFFFFF', label: 'Белый пояс' },
+  { key: '#2563EB', label: 'Синий пояс' },
+  { key: '#EAB308', label: 'Жёлтый пояс' },
+  { key: '#16A34A', label: 'Зелёный пояс' },
+  { key: '#92400E', label: 'Коричневый пояс' },
+  { key: '#1A1A2E', label: 'Чёрный пояс — даны' },
+];
+
+// Группы списка поясов: по базовому цвету пояса; belts передавать отсортированными по sortOrder
+export function getBeltGroups(belts: Belt[]): BeltGroup[] {
+  return beltGroupDefs
+    .map(({ key, label }) => {
+      const groupBelts = belts.filter((belt) => getBeltVisual(belt).base === key);
+      const names = groupBelts.map((belt) => belt.data.name);
+      const range = names.length > 1 ? `${names[0]} — ${names[names.length - 1]}` : (names[0] ?? '');
+      return { label, swatch: key, range, belts: groupBelts };
+    })
+    .filter((group) => group.belts.length > 0);
+}
+
 export function getBeltDescription(belt: Belt): string {
   const visual = getBeltVisual(belt);
   const baseName = baseColorNames[visual.base] ?? belt.data.beltColor;

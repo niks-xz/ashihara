@@ -1,43 +1,70 @@
 ---
 import { getCollection } from 'astro:content';
 import PageLayout from '../../layouts/PageLayout.astro';
-import SectionHeading from '../../components/ui/SectionHeading.astro';
-import EventCard from '../../components/events/EventCard.astro';
+import EventRow from '../../components/events/EventRow.astro';
 
 const events = (await getCollection('events'))
   .sort((a, b) => b.data.eventDate.valueOf() - a.data.eventDate.valueOf());
 
-// Группировка по годам: свежие годы сверху, внутри года - по убыванию даты
-const years = [...new Set(events.map((e) => e.data.eventDate.getFullYear()))];
-const byYear = years.map((year) => ({
-  year,
-  items: events.filter((e) => e.data.eventDate.getFullYear() === year),
-}));
+const chips = [
+  { id: 'all', label: 'Все' },
+  { id: 'competition', label: 'Соревнования' },
+  { id: 'exam', label: 'Аттестации' },
+  { id: 'event', label: 'Сборы и лагеря' },
+  { id: 'news', label: 'Новости федерации' },
+];
 ---
 
 <PageLayout
   title="События"
-  description="Соревнования, семинары, аттестации и другие мероприятия Федерации Ашихара-каратэ г. Краснодара."
+  description="Соревнования, аттестации, сборы и новости Федерации Ашихара-каратэ Краснодарского края."
 >
-  <section class="py-16 md:py-20">
-    <div class="max-w-7xl mx-auto px-4">
-      <SectionHeading
-        title="События и новости"
-        subtitle="Соревнования, семинары, аттестации и другие мероприятия федерации"
-      />
+  <section class="mx-auto max-w-[920px] px-[22px] py-[clamp(36px,5vw,60px)]">
+    <h1 class="mb-[10px] text-[clamp(30px,4.2vw,46px)] font-black tracking-[-0.025em]">События</h1>
+    <p class="mb-[22px] text-[16px] text-neutral-800">Соревнования, аттестации, сборы и новости федерации.</p>
 
-      {events.length > 0 ? (
-        byYear.map(({ year, items }) => (
-          <div class="mb-12">
-            <h3 class="text-2xl font-bold text-dark mb-6">{year}</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {items.map((event) => <EventCard event={event} />)}
-            </div>
-          </div>
-        ))
-      ) : (
-        <p class="text-center text-neutral-600">Скоро здесь появятся события</p>
-      )}
+    <div class="mb-[22px] flex flex-wrap gap-2">
+      {chips.map(({ id, label }) => (
+        <button
+          type="button"
+          data-filter={id}
+          class:list={[
+            'cursor-pointer rounded-full border px-4 py-2 text-[14px] font-bold',
+            id === 'all' ? 'border-dark bg-dark text-white' : 'border-line bg-white text-neutral-800',
+          ]}
+        >{label}</button>
+      ))}
+    </div>
+
+    <div class="overflow-hidden rounded-[20px] border border-line bg-white">
+      {events.map((event) => <EventRow event={event} />)}
     </div>
   </section>
 </PageLayout>
+
+<script>
+  const chips = Array.from(document.querySelectorAll<HTMLButtonElement>('button[data-filter]'));
+  const rows = Array.from(document.querySelectorAll<HTMLElement>('a[data-type]'));
+
+  function applyFilter(filter: string) {
+    for (const chip of chips) {
+      const active = chip.dataset.filter === filter;
+      chip.classList.toggle('bg-dark', active);
+      chip.classList.toggle('text-white', active);
+      chip.classList.toggle('border-dark', active);
+      chip.classList.toggle('bg-white', !active);
+      chip.classList.toggle('text-neutral-800', !active);
+      chip.classList.toggle('border-line', !active);
+    }
+
+    for (const row of rows) {
+      row.classList.toggle('hidden', filter !== 'all' && row.dataset.type !== filter);
+    }
+  }
+
+  for (const chip of chips) {
+    chip.addEventListener('click', () => {
+      applyFilter(chip.dataset.filter ?? 'all');
+    });
+  }
+</script>

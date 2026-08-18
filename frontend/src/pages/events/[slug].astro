@@ -1,8 +1,8 @@
 ---
 import { getCollection, render, type CollectionEntry } from 'astro:content';
 import PageLayout from '../../layouts/PageLayout.astro';
-import Button from '../../components/ui/Button.astro';
 import { formatDate, eventTypeLabel, isoDate, withBase } from '../../lib/utils';
+import { badgeClasses, eventMetaFromExcerpt } from '../../lib/events';
 
 export async function getStaticPaths() {
   const events = await getCollection('events');
@@ -20,6 +20,22 @@ interface Props {
 const { event } = Astro.props;
 const { Content } = await render(event);
 const eventDateIso = isoDate(event.data.eventDate);
+const dateLabel = formatDate(event.data.eventDate);
+const { place, categories } = eventMetaFromExcerpt(event.data.excerpt);
+
+// Как в макете: тело, целиком дублирующее excerpt (события-заглушки календаря),
+// не показываем - вся информация уже в карточках меты
+const hasBody = (event.body ?? '').trim() !== event.data.excerpt.trim();
+
+// Блок «Хотите участвовать?» - только для будущих соревнований и аттестаций
+const today = isoDate(new Date());
+const isJoinable = (event.data.eventType === 'competition' || event.data.eventType === 'exam')
+  && eventDateIso >= today;
+
+const others = (await getCollection('events'))
+  .filter((e) => e.id !== event.id)
+  .sort((a, b) => b.data.eventDate.valueOf() - a.data.eventDate.valueOf())
+  .slice(0, 3);
 ---
 
 <PageLayout
@@ -29,50 +45,200 @@ const eventDateIso = isoDate(event.data.eventDate);
   eventData={{
     name: event.data.title,
     startDate: eventDateIso,
-    location: 'Краснодар',
+    location: place || 'Краснодар',
     description: event.data.excerpt,
   }}
 >
-  <article class="py-16 md:py-20">
-    <div class="max-w-3xl mx-auto px-4">
-      <div class="mb-8">
-        <a href={withBase('/events')} class="text-sm text-primary hover:underline">&larr; Все события</a>
+  <article class="mx-auto max-w-[840px] px-[22px] py-[clamp(32px,4.5vw,52px)]">
+    <a href={withBase('/events')} class="text-[14.5px] font-bold text-primary">← Все события</a>
+
+    <div class="mt-6 mb-[14px] flex flex-wrap items-center gap-3">
+      <span class={`inline-block whitespace-nowrap rounded-full px-3 py-1.5 text-[12.5px] font-bold ${badgeClasses(event.data.eventType)}`}>
+        {eventTypeLabel(event.data.eventType)}
+      </span>
+      <time class="text-[14px] font-semibold text-neutral-600" datetime={eventDateIso}>{dateLabel}</time>
+    </div>
+
+    <h1 class="mb-[22px] text-[clamp(26px,4vw,40px)] font-black leading-[1.15] tracking-[-0.02em] text-pretty">{event.data.title}</h1>
+
+    <div class="mb-[26px] grid grid-cols-[repeat(auto-fit,minmax(160px,1fr))] gap-[10px]">
+      <div class="rounded-[16px] border border-line bg-white px-[18px] py-[14px]">
+        <div class="mb-1 text-[12px] font-bold uppercase tracking-[0.05em] text-neutral-600">Дата</div>
+        <div class="text-[15px] font-bold">{dateLabel}</div>
       </div>
-
-      <div class="flex items-center gap-3 mb-4">
-        <span class="text-sm font-medium text-primary bg-primary/10 px-3 py-1 rounded">
-          {eventTypeLabel(event.data.eventType)}
-        </span>
-        <time class="text-sm text-neutral-600" datetime={eventDateIso}>
-          {formatDate(event.data.eventDate)}
-        </time>
-      </div>
-
-      <h1 class="text-3xl md:text-4xl font-bold text-dark mb-8">{event.data.title}</h1>
-
-      <div class="prose prose-lg max-w-none">
-        <Content />
-      </div>
-
-      {event.data.video && (
-        <div class="mt-10">
-          <video
-            controls
-            preload="metadata"
-            playsinline
-            poster={event.data.videoPoster ? withBase(event.data.videoPoster) : undefined}
-            class="w-full max-h-[80vh] object-contain rounded-lg bg-dark"
-          >
-            <source src={withBase(event.data.video)} type="video/mp4" />
-            Ваш браузер не поддерживает воспроизведение видео.
-            <a href={withBase(event.data.video)}>Скачать видео</a>
-          </video>
+      {place && (
+        <div class="rounded-[16px] border border-line bg-white px-[18px] py-[14px]">
+          <div class="mb-1 text-[12px] font-bold uppercase tracking-[0.05em] text-neutral-600">Место</div>
+          <div class="text-[15px] font-bold">{place}</div>
         </div>
       )}
+      {categories && (
+        <div class="rounded-[16px] border border-line bg-white px-[18px] py-[14px]">
+          <div class="mb-1 text-[12px] font-bold uppercase tracking-[0.05em] text-neutral-600">Категории</div>
+          <div class="text-[15px] font-bold">{categories}</div>
+        </div>
+      )}
+    </div>
 
-      <div class="mt-12 pt-8 border-t border-neutral-200">
-        <Button href="/events" variant="outline">&larr; Все события</Button>
+    {hasBody && (
+      <div
+        id="event-body"
+        class:list={[
+          'grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-[10px]',
+          '[&>*]:col-span-full',
+          '[&>p]:mb-[6px] [&>p]:text-[16px] [&>p]:leading-[1.7] [&>p]:text-neutral-800 [&>p]:text-pretty',
+          '[&>p:first-of-type]:mb-2 [&>p:first-of-type]:text-[clamp(17px,2vw,19px)] [&>p:first-of-type]:leading-[1.65] [&>p:first-of-type]:font-medium [&>p:first-of-type]:text-dark',
+          '[&>p:has(img)]:[grid-column:auto] [&>p:has(img)]:m-0',
+          '[&>h2]:mt-6 [&>h2]:border-t [&>h2]:border-line [&>h2]:pt-[22px] [&>h2]:text-[15px] [&>h2]:font-extrabold',
+          '[&_img]:aspect-[4/3] [&_img]:w-full [&_img]:cursor-zoom-in [&_img]:rounded-[14px] [&_img]:object-cover',
+        ]}
+      >
+        <Content />
+      </div>
+    )}
+
+    {event.data.video && (
+      <video
+        controls
+        preload="metadata"
+        playsinline
+        poster={event.data.videoPoster ? withBase(event.data.videoPoster) : undefined}
+        class="mt-[26px] max-h-[80vh] w-full rounded-[20px] bg-dark object-contain"
+      >
+        <source src={withBase(event.data.video)} type="video/mp4" />
+        Ваш браузер не поддерживает воспроизведение видео.
+        <a href={withBase(event.data.video)}>Скачать видео</a>
+      </video>
+    )}
+
+    {isJoinable && (
+      <div class="mt-[30px] flex flex-wrap items-center gap-[22px] rounded-[20px] bg-dark px-7 py-[26px]">
+        <div class="min-w-[240px] flex-1">
+          <div class="mb-[6px] text-[18px] font-extrabold text-white">Хотите участвовать?</div>
+          <div class="text-[14px] leading-[1.6] text-[#B9B9C0]">Заявки идут через тренера зала: он расскажет о требованиях, справках и подготовке к старту.</div>
+        </div>
+        <a href={withBase('/gyms')} class="rounded-full bg-primary px-6 py-3 text-[15px] font-bold text-white hover:bg-primary-dark">Связаться с тренером</a>
+      </div>
+    )}
+
+    <div class="mt-[clamp(36px,5vw,52px)]">
+      <div class="mb-[14px] flex flex-wrap items-baseline justify-between gap-[14px]">
+        <h2 class="text-[20px] font-extrabold tracking-[-0.015em]">Другие события</h2>
+        <a href={withBase('/events')} class="text-[14px] font-bold text-primary">Все события →</a>
+      </div>
+      <div class="overflow-hidden rounded-[18px] border border-line bg-white">
+        {others.map((other) => (
+          <a
+            href={withBase(`/events/${other.id}`)}
+            class="flex flex-wrap items-baseline gap-4 border-b border-line-soft px-5 py-[14px] last:border-b-0 hover:bg-neutral-50"
+          >
+            <span class="min-w-[116px] text-[13.5px] font-extrabold text-neutral-600">{formatDate(other.data.eventDate)}</span>
+            <span class="min-w-[200px] flex-1 text-[14.5px] font-bold leading-[1.4]">{other.data.title}</span>
+            <span class="font-extrabold text-primary">→</span>
+          </a>
+        ))}
       </div>
     </div>
   </article>
+
+  <div id="lightbox" class="fixed inset-0 z-[200] hidden flex-col items-center justify-center bg-[rgba(16,16,22,0.94)] p-5">
+    <img id="lightbox-image" class="max-h-[78vh] w-[min(1100px,94vw)] flex-auto self-center object-contain" alt="" />
+    <div class="mt-4 flex items-center gap-[18px]">
+      <button
+        type="button"
+        id="lightbox-prev"
+        aria-label="Предыдущее фото"
+        class="flex h-[42px] w-[42px] cursor-pointer select-none items-center justify-center rounded-full border-[1.5px] border-white/30 pb-[5px] text-[20px] leading-none text-white hover:bg-white/10"
+      >‹</button>
+      <span id="lightbox-counter" class="min-w-[56px] text-center text-[13.5px] font-semibold text-[#C6C6CC]"></span>
+      <button
+        type="button"
+        id="lightbox-next"
+        aria-label="Следующее фото"
+        class="flex h-[42px] w-[42px] cursor-pointer select-none items-center justify-center rounded-full border-[1.5px] border-white/30 pb-[5px] text-[20px] leading-none text-white hover:bg-white/10"
+      >›</button>
+    </div>
+    <button
+      type="button"
+      id="lightbox-close"
+      aria-label="Закрыть"
+      class="absolute top-[18px] right-[22px] flex h-[42px] w-[42px] cursor-pointer items-center justify-center rounded-full border-[1.5px] border-white/30 text-[18px] leading-none text-white hover:bg-white/10"
+    >✕</button>
+  </div>
 </PageLayout>
+
+<script>
+  const body = document.getElementById('event-body');
+  const overlay = document.getElementById('lightbox');
+  const imageEl = document.getElementById('lightbox-image') as HTMLImageElement | null;
+  const counterEl = document.getElementById('lightbox-counter');
+  const prevBtn = document.getElementById('lightbox-prev');
+  const nextBtn = document.getElementById('lightbox-next');
+  const closeBtn = document.getElementById('lightbox-close');
+  const images = body ? Array.from(body.querySelectorAll('img')) : [];
+  let current = 0;
+
+  function isOpen(): boolean {
+    return overlay !== null && !overlay.classList.contains('hidden');
+  }
+
+  function show(index: number) {
+    if (images.length === 0 || !imageEl || !counterEl) {
+      return;
+    }
+    current = (index + images.length) % images.length;
+    const img = images[current];
+    imageEl.src = img.currentSrc || img.src;
+    imageEl.alt = img.alt;
+    counterEl.textContent = `${current + 1} / ${images.length}`;
+  }
+
+  function openAt(index: number) {
+    if (!overlay || images.length === 0) {
+      return;
+    }
+    show(index);
+    overlay.classList.remove('hidden');
+    overlay.classList.add('flex');
+  }
+
+  function close() {
+    if (!overlay) {
+      return;
+    }
+    overlay.classList.add('hidden');
+    overlay.classList.remove('flex');
+  }
+
+  images.forEach((img, index) => {
+    img.addEventListener('click', () => {
+      openAt(index);
+    });
+  });
+
+  overlay?.addEventListener('click', close);
+  closeBtn?.addEventListener('click', close);
+  prevBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    show(current - 1);
+  });
+  nextBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    show(current + 1);
+  });
+
+  window.addEventListener('keydown', (e) => {
+    if (!isOpen()) {
+      return;
+    }
+    if (e.key === 'Escape') {
+      close();
+    }
+    if (e.key === 'ArrowLeft') {
+      show(current - 1);
+    }
+    if (e.key === 'ArrowRight') {
+      show(current + 1);
+    }
+  });
+</script>

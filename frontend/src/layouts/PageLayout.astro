@@ -1,7 +1,6 @@
 ---
 import BaseLayout from './BaseLayout.astro';
 import Header from '../components/layout/Header.astro';
-import MobileMenu from '../components/layout/MobileMenu.astro';
 import Footer from '../components/layout/Footer.astro';
 
 interface Props {
@@ -22,7 +21,6 @@ const { title, description, ogImage, schemaType, eventData } = Astro.props;
 
 <BaseLayout title={title} description={description} ogImage={ogImage} schemaType={schemaType} eventData={eventData}>
   <Header />
-  <MobileMenu />
   <main class="min-h-[60vh]">
     <slot />
   </main>

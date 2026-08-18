@@ -1,102 +1,60 @@
 ---
+import { Image } from 'astro:assets';
+import nikoLogo from '../../assets/niko-logo.png';
 import { withBase } from '../../lib/utils';
 
-const currentYear = new Date().getFullYear();
-
-const navColumns = [
-  {
-    title: 'Навигация',
-    links: [
-      { href: '/about', label: 'О федерации' },
-      { href: '/kids', label: 'Детям' },
-      { href: '/coaches', label: 'Тренеры' },
-    ],
-  },
-  {
-    title: 'Информация',
-    links: [
-      { href: '/gyms', label: 'Адреса залов' },
-      { href: '/student-path', label: 'Путь ученика' },
-      { href: '/events', label: 'События' },
-      { href: '/calendar', label: 'Календарь' },
-      { href: '/methodology', label: 'Методичка' },
-      { href: '/contacts', label: 'Контакты' },
-    ],
-  },
+const year = new Date().getFullYear();
+const sections = [
+  { href: '/gyms', label: 'Залы и запись' },
+  { href: '/events', label: 'События' },
+  { href: '/coaches', label: 'Тренеры' },
+  { href: '/education', label: 'Обучение' },
 ];
 ---
 
-<footer class="bg-dark text-neutral-300">
-  <div class="max-w-7xl mx-auto px-4 py-12">
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-      <div class="md:col-span-2">
-        <div class="flex items-center gap-3 mb-4">
-          <div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-white font-bold text-lg">
-            A
-          </div>
-          <div>
-            <div class="text-white font-bold">Ашихара-каратэ</div>
-            <div class="text-sm text-neutral-400">г. Краснодар</div>
-          </div>
-        </div>
-        <p class="text-sm text-neutral-400 max-w-md mb-4">
-          Федерация Ашихара-каратэ г. Краснодара. Член организации NIKO (Новая Международная Организация Ашихара Каратэ Кайкан).
-        </p>
+<footer class="bg-dark text-[#C6C6CC] mt-auto">
+  <div class="max-w-[1180px] mx-auto px-[22px] pt-12 md:pt-14 pb-8 grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+    <div>
+      <div class="flex items-center gap-2.5 mb-3.5">
+        <Image src={nikoLogo} alt="Эмблема Ашихара кайкан" width={64} height={64} class="w-8 h-8" />
+        <span class="font-extrabold text-[15px] text-white">Ашихара-каратэ · Краснодарский край</span>
       </div>
-
-      {navColumns.map((col) => (
-        <div>
-          <h3 class="text-white font-semibold mb-4">{col.title}</h3>
-          <ul class="space-y-2">
-            {col.links.map(({ href, label }) => (
-              <li>
-                <a href={withBase(href)} class="text-sm text-neutral-400 hover:text-white transition-colors">
-                  {label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
+      <p class="m-0 text-[13px] leading-relaxed text-[#8A8A94] max-w-xs">
+        Федерация Ашихара-каратэ Краснодарского края. Краснодарское региональное отделение Всестилевого каратэ России.
+      </p>
     </div>
-
-    <div class="mt-10 border-t border-dark-light pt-6">
-      <h3 class="text-sm font-semibold text-neutral-300">Реквизиты</h3>
-      <dl class="mt-3 grid gap-x-8 gap-y-2 text-sm text-neutral-500 sm:grid-cols-2">
-        <div class="sm:col-span-2">
-          <dt class="inline text-neutral-400">Организация: </dt>
-          <dd class="inline">Общественная организация Федерация «Ашихара-каратэ» г. Краснодара</dd>
-        </div>
-        <div class="sm:col-span-2">
-          <dt class="inline text-neutral-400">Адрес: </dt>
-          <dd class="inline">350000, г. Краснодар, ул. Уральская, 112</dd>
-        </div>
-        <div>
-          <dt class="inline text-neutral-400">ОГРН: </dt>
-          <dd class="inline">1032335019122</dd>
-        </div>
-        <div>
-          <dt class="inline text-neutral-400">ИНН / КПП: </dt>
-          <dd class="inline">2312080189 / 231201001</dd>
-        </div>
-        <div>
-          <dt class="inline text-neutral-400">Президент: </dt>
-          <dd class="inline">Шихов Андрей Владимирович</dd>
-        </div>
-        <div>
-          <dt class="inline text-neutral-400">Email: </dt>
-          <dd class="inline">
-            <a href="mailto:ashiharakarate23@mail.ru" class="hover:text-neutral-300 transition-colors">
-              ashiharakarate23@mail.ru
-            </a>
-          </dd>
-        </div>
-      </dl>
+    <div>
+      <div class="font-extrabold text-[13px] tracking-wider uppercase text-white mb-3.5">Разделы</div>
+      <div class="flex flex-col gap-2 text-sm">
+        {sections.map(({ href, label }) => (
+          <a href={withBase(href)} class="text-[#C6C6CC] hover:text-white transition-colors">{label}</a>
+        ))}
+      </div>
     </div>
-
-    <div class="mt-8 pt-6 border-t border-dark-light flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-neutral-600">
-      <span>&copy; {currentYear} Федерация Ашихара-каратэ г. Краснодара</span>
-      <span>Организация NIKO</span>
+    <div>
+      <div class="font-extrabold text-[13px] tracking-wider uppercase text-white mb-3.5">Запись на пробное</div>
+      <p class="m-0 mb-2.5 text-[13px] leading-relaxed text-[#8A8A94]">
+        Позвоните в выбранный зал — телефоны на странице залов. Общие вопросы:
+      </p>
+      <a href="tel:+79184483558" class="font-extrabold text-lg text-white hover:text-primary-light transition-colors">+7 (918) 448-35-58</a>
     </div>
   </div>
+
+  <div class="border-t border-dark-light">
+    <div class="max-w-[1180px] mx-auto px-[22px] pt-[22px] pb-1">
+      <div class="font-extrabold text-[13px] tracking-wider uppercase text-white mb-3">Реквизиты</div>
+      <div class="flex flex-col gap-[5px] text-[13px] leading-relaxed">
+        <div><span class="text-[#6E6E76]">Организация:</span> <span class="text-[#A9A9B2]">Общественная организация Федерация «Ашихара-каратэ» г. Краснодара</span></div>
+        <div><span class="text-[#6E6E76]">Адрес:</span> <span class="text-[#A9A9B2]">350000, г. Краснодар, ул. Уральская, 112</span></div>
+        <div>
+          <span class="text-[#6E6E76]">ОГРН:</span> <span class="text-[#A9A9B2]">1032335019122</span>
+          <span class="text-[#3A3A44] px-1.5">·</span>
+          <span class="text-[#6E6E76]">ИНН / КПП:</span> <span class="text-[#A9A9B2]">2312080189 / 231201001</span>
+        </div>
+        <div><span class="text-[#6E6E76]">Президент:</span> <span class="text-[#A9A9B2]">Шихов Андрей Владимирович</span></div>
+        <div><span class="text-[#6E6E76]">Email:</span> <a href="mailto:ashiharakarate23@mail.ru" class="text-[#A9A9B2] hover:text-white transition-colors">ashiharakarate23@mail.ru</a></div>
+      </div>
+    </div>
+  </div>
+  <div class="max-w-[1180px] mx-auto px-[22px] py-4 text-xs text-[#6E6E76]">© {year} Федерация Ашихара-каратэ Краснодарского края · ashihara23.ru</div>
 </footer>
