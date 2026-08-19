@@ -29,13 +29,13 @@ export interface GlossaryTerm {
   audio?: string;
 }
 
-// Имя аудиофайла произношения: тот же slug, что у генератора озвучки
+// Имя аудиофайла произношения: тот же slug, что у генератора озвучки -
+// из ПОЛНОГО ромадзи, включая вариант в скобках: «shi (yon)» -> shi-yon.mp3
 function audioSlug(romaji: string): string | undefined {
-  const main = romaji.split('(')[0].trim();
-  if (/^[A-Z]{2,}$/.test(main)) {
+  if (/^[A-Z]{2,}$/.test(romaji.split('(')[0].trim())) {
     return undefined;
   }
-  const slug = main
+  const slug = romaji
     .toLowerCase()
     .replace(/[()]/g, '')
     .replace(/[^a-z0-9]+/g, '-')
