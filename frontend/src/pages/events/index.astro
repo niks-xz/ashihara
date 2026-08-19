@@ -6,6 +6,13 @@ import EventRow from '../../components/events/EventRow.astro';
 const events = (await getCollection('events'))
   .sort((a, b) => b.data.eventDate.valueOf() - a.data.eventDate.valueOf());
 
+// Группировка по годам: свежие сверху, внутри года - по убыванию даты
+const years = [...new Set(events.map((e) => e.data.eventDate.getUTCFullYear()))];
+const yearGroups = years.map((year) => ({
+  year,
+  events: events.filter((e) => e.data.eventDate.getUTCFullYear() === year),
+}));
+
 const chips = [
   { id: 'all', label: 'Все' },
   { id: 'competition', label: 'Соревнования' },
@@ -23,7 +30,7 @@ const chips = [
     <h1 class="mb-[10px] text-[clamp(30px,4.2vw,46px)] font-black tracking-[-0.025em]">События</h1>
     <p class="mb-[22px] text-[16px] text-neutral-800">Соревнования, аттестации, сборы и новости федерации.</p>
 
-    <div class="mb-[22px] flex flex-wrap gap-2">
+    <div class="mb-[14px] flex flex-wrap gap-2">
       {chips.map(({ id, label }) => (
         <button
           type="button"
@@ -36,8 +43,25 @@ const chips = [
       ))}
     </div>
 
-    <div class="overflow-hidden rounded-[20px] border border-line bg-white">
-      {events.map((event) => <EventRow event={event} />)}
+    <div class="sticky top-[66px] z-[5] -mx-[22px] mb-5 flex flex-wrap gap-[6px] border-b border-line bg-cream/95 px-[22px] py-[10px] backdrop-blur-sm">
+      {yearGroups.map(({ year }) => (
+        <button
+          type="button"
+          data-jump={year}
+          class="cursor-pointer rounded-full border border-line bg-white px-[13px] py-[5px] text-[13px] font-bold text-neutral-800 transition-colors hover:border-primary hover:text-primary"
+        >{year}</button>
+      ))}
+    </div>
+
+    <div class="flex flex-col gap-7">
+      {yearGroups.map(({ year, events: yearEvents }) => (
+        <div id={`evy-${year}`} data-year-group>
+          <div class="mb-[10px] text-2xl font-black tracking-[-0.02em]">{year}</div>
+          <div class="overflow-hidden rounded-[20px] border border-line bg-white">
+            {yearEvents.map((event) => <EventRow event={event} />)}
+          </div>
+        </div>
+      ))}
     </div>
   </section>
 </PageLayout>
@@ -45,6 +69,8 @@ const chips = [
 <script>
   const chips = Array.from(document.querySelectorAll<HTMLButtonElement>('button[data-filter]'));
   const rows = Array.from(document.querySelectorAll<HTMLElement>('a[data-type]'));
+  const groups = Array.from(document.querySelectorAll<HTMLElement>('[data-year-group]'));
+  const yearButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('button[data-jump]'));
 
   function applyFilter(filter: string) {
     for (const chip of chips) {
@@ -60,11 +86,29 @@ const chips = [
     for (const row of rows) {
       row.classList.toggle('hidden', filter !== 'all' && row.dataset.type !== filter);
     }
+
+    // Год без подходящих событий скрывается вместе со своей кнопкой в навигации
+    for (const group of groups) {
+      const visible = group.querySelectorAll('a[data-type]:not(.hidden)').length;
+      group.classList.toggle('hidden', visible === 0);
+      const year = group.id.replace('evy-', '');
+      const button = yearButtons.find((b) => b.dataset.jump === year);
+      button?.classList.toggle('hidden', visible === 0);
+    }
   }
 
   for (const chip of chips) {
     chip.addEventListener('click', () => {
       applyFilter(chip.dataset.filter ?? 'all');
+    });
+  }
+
+  for (const button of yearButtons) {
+    button.addEventListener('click', () => {
+      const el = document.getElementById(`evy-${button.dataset.jump}`);
+      if (el) {
+        window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 126, behavior: 'smooth' });
+      }
     });
   }
 </script>

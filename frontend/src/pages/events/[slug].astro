@@ -98,17 +98,31 @@ const others = (await getCollection('events'))
     )}
 
     {event.data.video && (
-      <video
-        controls
-        preload="metadata"
-        playsinline
-        poster={event.data.videoPoster ? withBase(event.data.videoPoster) : undefined}
-        class="mt-[26px] max-h-[80vh] w-full rounded-[20px] bg-dark object-contain"
-      >
-        <source src={withBase(event.data.video)} type="video/mp4" />
-        Ваш браузер не поддерживает воспроизведение видео.
-        <a href={withBase(event.data.video)}>Скачать видео</a>
-      </video>
+      <div class="group relative mt-[26px]">
+        <video
+          id="event-video"
+          controls
+          preload="metadata"
+          playsinline
+          poster={event.data.videoPoster ? withBase(event.data.videoPoster) : undefined}
+          class="max-h-[80vh] w-full rounded-[20px] bg-dark object-contain"
+        >
+          <source src={withBase(event.data.video)} type="video/mp4" />
+          Ваш браузер не поддерживает воспроизведение видео.
+          <a href={withBase(event.data.video)}>Скачать видео</a>
+        </video>
+        <button
+          type="button"
+          id="event-video-play"
+          aria-label="Смотреть видеорепортаж"
+          class="absolute inset-0 flex cursor-pointer items-center justify-center rounded-[20px] bg-[rgba(16,16,22,0.28)] transition-opacity"
+        >
+          <span class="flex h-16 w-16 items-center justify-center rounded-full bg-white/95 shadow-[0_10px_30px_rgba(0,0,0,0.3)]">
+            <span class="ml-1 text-[22px] text-primary">▶</span>
+          </span>
+          <span class="absolute bottom-[10px] right-3 rounded-md bg-[rgba(16,16,22,0.55)] px-2 py-[3px] font-mono text-[11px] text-white/85">видеорепортаж</span>
+        </button>
+      </div>
     )}
 
     {isJoinable && (
@@ -168,6 +182,19 @@ const others = (await getCollection('events'))
 </PageLayout>
 
 <script>
+  // Обложка видеорепортажа: по клику запускает видео и уходит
+  const video = document.getElementById('event-video') as HTMLVideoElement | null;
+  const playCover = document.getElementById('event-video-play');
+  playCover?.addEventListener('click', () => {
+    playCover.classList.add('hidden');
+    void video?.play();
+  });
+  video?.addEventListener('pause', () => {
+    if (video.currentTime === 0) {
+      playCover?.classList.remove('hidden');
+    }
+  });
+
   const body = document.getElementById('event-body');
   const overlay = document.getElementById('lightbox');
   const imageEl = document.getElementById('lightbox-image') as HTMLImageElement | null;
