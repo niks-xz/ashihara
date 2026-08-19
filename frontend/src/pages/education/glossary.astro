@@ -50,16 +50,31 @@ const glossary = buildGlossary(belts);
 </PageLayout>
 
 <script>
-  const player = new Audio();
+  // Safari разрешает воспроизведение только элементу, «разбуженному» жестом пользователя,
+  // поэтому Audio создаётся при первом клике, а после смены src обязателен load().
+  let player: HTMLAudioElement | null = null;
+  let playingSrc = '';
+
   document.querySelectorAll<HTMLButtonElement>('button[data-audio]').forEach((btn) => {
     btn.addEventListener('click', () => {
       const src = btn.dataset.audio ?? '';
-      if (!player.paused && player.src.endsWith(src)) {
+      if (!src) {
+        return;
+      }
+      if (!player) {
+        player = new Audio();
+        player.preload = 'auto';
+        player.addEventListener('ended', () => { playingSrc = ''; });
+      }
+      if (playingSrc === src && !player.paused) {
         player.pause();
+        playingSrc = '';
         return;
       }
       player.src = src;
-      void player.play();
+      player.load();
+      playingSrc = src;
+      player.play().catch(() => { playingSrc = ''; });
     });
   });
 </script>
