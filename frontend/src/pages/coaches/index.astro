@@ -42,17 +42,18 @@ const cards = await Promise.all(
     <div class="flex flex-col gap-5">
       {cards.map(({ coach, Content, hasBio, gymNames }) => (
         <div class="flex flex-wrap items-stretch overflow-hidden rounded-[24px] border border-line bg-white">
-          <div class="relative aspect-[2/3] min-h-[340px] min-w-[230px] flex-[0_1_280px]">
+          {/* До sm карточка переносит колонки: фото занимает всю ширину, иначе справа остаётся пустое поле */}
+          <div class="relative h-[360px] w-full sm:h-auto sm:w-auto sm:aspect-[2/3] sm:min-h-[340px] sm:min-w-[230px] sm:flex-[0_1_280px]">
             <Image
               src={coachPhoto(coach)}
               alt={coach.data.photo ? coach.data.fullName : ''}
               width={640}
               height={960}
-              class="absolute inset-0 h-full w-full object-cover"
+              class="absolute inset-0 h-full w-full object-cover object-top"
             />
           </div>
 
-          <div class="flex flex-[1_1_340px] flex-col justify-center p-[clamp(22px,3vw,32px)]">
+          <div class="flex flex-[1_1_100%] flex-col justify-center p-[clamp(22px,3vw,32px)] sm:flex-[1_1_300px]">
             <div class="mb-3.5 flex flex-wrap gap-2">
               <span class="rounded-full bg-primary-tint px-3.5 py-1.5 text-[13px] font-extrabold text-primary">{coach.data.rank}</span>
               {gymNames && (
