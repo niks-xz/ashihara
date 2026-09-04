@@ -1,5 +1,5 @@
 ---
-fullName: Шевчук К. Ю.
+fullName: Шевчук Каролина Юрьевна
 rank: 2 кю
 gender: female
 title: Тренер СК «Сэнсэй»

@@ -1,8 +1,9 @@
 ---
-fullName: Мальцев Д. С.
+fullName: Мальцев Дмитрий Сергеевич
 rank: 2 кю
 gender: male
 title: Тренер СК «Сэнсэй»
+photo: ../../assets/coaches/maltsev.jpg
 sortOrder: 6
 ---
 
