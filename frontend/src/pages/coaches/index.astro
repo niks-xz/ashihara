@@ -1,5 +1,6 @@
 ---
 import { getCollection, render } from 'astro:content';
+import { coachPhoto } from '../../lib/coaches';
 import { Image } from 'astro:assets';
 import PageLayout from '../../layouts/PageLayout.astro';
 import { withBase } from '../../lib/utils';
@@ -42,21 +43,13 @@ const cards = await Promise.all(
       {cards.map(({ coach, Content, hasBio, gymNames }) => (
         <div class="flex flex-wrap items-stretch overflow-hidden rounded-[24px] border border-line bg-white">
           <div class="relative aspect-[2/3] min-h-[340px] min-w-[230px] flex-[0_1_280px]">
-            {coach.data.photo ? (
-              <Image
-                src={coach.data.photo}
-                alt={coach.data.fullName}
-                width={640}
-                height={960}
-                class="absolute inset-0 h-full w-full object-cover"
-              />
-            ) : (
-              <div class="absolute inset-0 flex items-center justify-center bg-neutral-200">
-                <svg class="h-20 w-20 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0" />
-                </svg>
-              </div>
-            )}
+            <Image
+              src={coachPhoto(coach)}
+              alt={coach.data.photo ? coach.data.fullName : ''}
+              width={640}
+              height={960}
+              class="absolute inset-0 h-full w-full object-cover"
+            />
           </div>
 
           <div class="flex flex-[1_1_340px] flex-col justify-center p-[clamp(22px,3vw,32px)]">

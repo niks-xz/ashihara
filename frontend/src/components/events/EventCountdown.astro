@@ -1,0 +1,56 @@
+---
+// Живая подпись к предстоящему событию: «Через 3 дня», «Завтра», «Сегодня», «Идёт сейчас».
+// Сайт статический и пересобирается только при пуше, поэтому подпись считается в браузере
+// от текущей даты и сама исчезает, когда событие прошло. Внешний вид задаёт вызывающая страница.
+interface Props {
+  start: string;
+  end?: string;
+  class?: string;
+}
+
+const { start, end, class: className = '' } = Astro.props;
+---
+
+<span data-event-countdown data-start={start} data-end={end ?? start} hidden class={className}></span>
+
+<script>
+  function daysWord(n: number): string {
+    const mod10 = n % 10;
+    const mod100 = n % 100;
+    if (mod10 === 1 && mod100 !== 11) {
+      return 'день';
+    }
+    if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) {
+      return 'дня';
+    }
+    return 'дней';
+  }
+
+  function dayNumber(iso: string): number {
+    const [y, m, d] = iso.split('-').map(Number);
+    return Math.round(Date.UTC(y, m - 1, d) / 86_400_000);
+  }
+
+  const now = new Date();
+  const today = Math.round(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) / 86_400_000);
+
+  document.querySelectorAll<HTMLElement>('[data-event-countdown]').forEach((el) => {
+    const start = dayNumber(el.dataset.start ?? '');
+    const end = dayNumber(el.dataset.end ?? el.dataset.start ?? '');
+    const untilStart = start - today;
+    let label = '';
+    if (untilStart === 1) {
+      label = 'Завтра';
+    } else if (untilStart > 1 && untilStart <= 14) {
+      label = `Через ${untilStart} ${daysWord(untilStart)}`;
+    } else if (untilStart === 0) {
+      label = end > start ? 'Сегодня, первый день' : 'Сегодня';
+    } else if (untilStart < 0 && today <= end) {
+      label = 'Идёт сейчас';
+    }
+    if (label) {
+      el.textContent = label;
+      el.hidden = false;
+    }
+  });
+</script>

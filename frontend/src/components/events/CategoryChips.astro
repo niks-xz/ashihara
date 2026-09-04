@@ -1,0 +1,23 @@
+---
+// Чипы возрастных категорий события
+interface Props {
+  items: string[];
+  bg?: 'white' | 'cream';
+  size?: 'md' | 'sm';
+  class?: string;
+}
+
+const { items, bg = 'white', size = 'md', class: className = '' } = Astro.props;
+---
+
+<div class:list={['flex flex-wrap gap-[6px]', className]}>
+  {items.map((item) => (
+    <span
+      class:list={[
+        'rounded-full border border-line font-semibold text-neutral-800',
+        bg === 'cream' ? 'bg-cream' : 'bg-white',
+        size === 'sm' ? 'px-[9px] py-[3px] text-[12px]' : 'px-[10px] py-1 text-[12.5px]',
+      ]}
+    >{item}</span>
+  ))}
+</div>

@@ -1,4 +1,7 @@
 // Общие помощники для строк событий (главная и страница «События»)
+import type { CollectionEntry } from 'astro:content';
+
+type EventEntry = CollectionEntry<'events'>;
 
 const BADGE_CLASSES: Record<string, string> = {
   competition: 'bg-badge-competition-bg text-badge-competition-fg',
@@ -30,6 +33,27 @@ export function eventDateParts(date: Date): EventDateParts {
   };
 }
 
+const MONTHS_GENITIVE = [
+  'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
+  'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря',
+];
+
+// «5-6 сентября 2026», «30 октября - 1 ноября 2026», без endDate - «5 сентября 2026»
+export function eventDateRange(start: Date, end?: Date): string {
+  const startDay = start.getUTCDate();
+  const startMonth = MONTHS_GENITIVE[start.getUTCMonth()];
+  const year = start.getUTCFullYear();
+  if (!end || end.valueOf() <= start.valueOf()) {
+    return `${startDay} ${startMonth} ${year}`;
+  }
+  const endDay = end.getUTCDate();
+  const endMonth = MONTHS_GENITIVE[end.getUTCMonth()];
+  if (startMonth === endMonth) {
+    return `${startDay}-${endDay} ${startMonth} ${year}`;
+  }
+  return `${startDay} ${startMonth} - ${endDay} ${endMonth} ${year}`;
+}
+
 export interface EventMeta {
   place: string;
   categories: string;
@@ -44,5 +68,38 @@ export function eventMetaFromExcerpt(excerpt: string): EventMeta {
   return {
     place: placeMatch ? placeMatch[1] : '',
     categories: catsMatch ? catsMatch[1] : '',
+  };
+}
+
+const WEEKDAYS_SHORT = ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'];
+
+export function weekdayShort(date: Date): string {
+  return WEEKDAYS_SHORT[date.getUTCDay()];
+}
+
+// Площадка и категории: явные поля, иначе хвост excerpt
+export function eventPlace(event: EventEntry): string {
+  return event.data.place ?? eventMetaFromExcerpt(event.data.excerpt).place;
+}
+
+export function eventCategories(event: EventEntry): string[] {
+  if (event.data.categories) {
+    return event.data.categories;
+  }
+  return eventMetaFromExcerpt(event.data.excerpt).categories.split(/,\s*/).filter(Boolean);
+}
+
+export interface MapLinks {
+  open: string;
+  widget: string;
+}
+
+// Ссылки на Яндекс Карты по площадке и адресу: открыть в картах и встроить виджет
+export function mapLinks(place: string, address: string): MapLinks {
+  const city = /Краснодар/i.test(address) ? '' : 'Краснодар';
+  const text = encodeURIComponent([place, address, city].filter(Boolean).join(', '));
+  return {
+    open: `https://yandex.ru/maps/?text=${text}`,
+    widget: `https://yandex.ru/map-widget/v1/?mode=search&text=${text}&z=16`,
   };
 }

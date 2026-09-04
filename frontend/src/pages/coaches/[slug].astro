@@ -1,5 +1,6 @@
 ---
 import { getCollection, render, type CollectionEntry } from 'astro:content';
+import { coachPhoto } from '../../lib/coaches';
 import { Image } from 'astro:assets';
 import PageLayout from '../../layouts/PageLayout.astro';
 import Button from '../../components/ui/Button.astro';
@@ -51,22 +52,14 @@ const pageDescription = coach.data.title
     <div class="grid gap-8 lg:grid-cols-[20rem_1fr] lg:items-start">
       <aside class="overflow-hidden rounded-[24px] border border-line bg-white">
         <div class="aspect-[2/3] overflow-hidden bg-neutral-200">
-          {coach.data.photo ? (
-            <Image
-              src={coach.data.photo}
-              alt={coach.data.fullName}
-              width={640}
-              height={960}
-              class="h-full w-full object-cover"
-              loading="eager"
-            />
-          ) : (
-            <div class="flex h-full w-full items-center justify-center">
-              <svg class="h-20 w-20 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0" />
-              </svg>
-            </div>
-          )}
+          <Image
+            src={coachPhoto(coach)}
+            alt={coach.data.photo ? coach.data.fullName : ''}
+            width={640}
+            height={960}
+            class="h-full w-full object-cover"
+            loading="eager"
+          />
         </div>
 
         <div class="p-6 text-center">

@@ -1,0 +1,30 @@
+---
+// Линейные иконки страницы события, 24px сетка, обводка 2px
+interface Props {
+  name: 'clock' | 'pin' | 'people';
+  size?: number;
+  class?: string;
+}
+
+const { name, size = 20, class: className = '' } = Astro.props;
+
+const paths: Record<Props['name'], string> = {
+  clock: '<circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path>',
+  pin: '<path d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"></path><path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"></path>',
+  people: '<circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20a6.5 6.5 0 0113 0"></path><path d="M16 5a3 3 0 010 6"></path><path d="M17.5 14.5a5.5 5.5 0 014 5.5"></path>',
+};
+---
+
+<svg
+  width={size}
+  height={size}
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+  class:list={['shrink-0', className]}
+  set:html={paths[name]}
+/>

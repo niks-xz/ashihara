@@ -22,6 +22,8 @@ const coaches = defineCollection({
     title: z.string(),
     achievements: z.string().default(''),
     photo: image().optional(),
+    // Пол нужен только для рисованной заглушки, пока нет фото
+    gender: z.enum(['male', 'female']).default('male'),
     sortOrder: z.number(),
   }),
 });
@@ -60,11 +62,27 @@ const schedule = defineCollection({
 
 const events = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/events' }),
-  schema: z.object({
+  schema: ({ image }) => z.object({
     title: z.string(),
     eventDate: z.coerce.date(),
+    // Последний день многодневного события
+    endDate: z.coerce.date().optional(),
     eventType: z.enum(['news', 'competition', 'event', 'exam', 'other']),
     excerpt: z.string(),
+    // Анонс предстоящего события: время, площадка, категории, программа по дням, афиша.
+    // Без place и categories значения берутся из хвоста excerpt («Категории: ... Место: ...»)
+    startTime: z.string().regex(/^\d{2}:\d{2}$/).optional(),
+    registration: z.string().optional(),
+    place: z.string().optional(),
+    address: z.string().optional(),
+    categories: z.array(z.string()).optional(),
+    days: z.array(z.object({
+      date: z.coerce.date(),
+      discipline: z.string(),
+      categories: z.array(z.string()).default([]),
+    })).optional(),
+    organizers: z.string().optional(),
+    poster: image().optional(),
     // Видеорепортаж: пути от корня сайта, файлы лежат в public/videos/
     video: z.string().optional(),
     videoPoster: z.string().optional(),

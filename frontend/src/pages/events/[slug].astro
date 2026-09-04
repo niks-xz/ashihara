@@ -1,8 +1,13 @@
 ---
 import { getCollection, render, type CollectionEntry } from 'astro:content';
+import { Image } from 'astro:assets';
 import PageLayout from '../../layouts/PageLayout.astro';
+import EventCountdown from '../../components/events/EventCountdown.astro';
+import DateBadge from '../../components/events/DateBadge.astro';
+import CategoryChips from '../../components/events/CategoryChips.astro';
+import EventIcon from '../../components/events/EventIcon.astro';
 import { formatDate, eventTypeLabel, isoDate, withBase } from '../../lib/utils';
-import { badgeClasses, eventMetaFromExcerpt } from '../../lib/events';
+import { badgeClasses, eventCategories, eventDateRange, eventPlace, mapLinks, weekdayShort } from '../../lib/events';
 
 export async function getStaticPaths() {
   const events = await getCollection('events');
@@ -19,18 +24,28 @@ interface Props {
 
 const { event } = Astro.props;
 const { Content } = await render(event);
+const { title, startTime, registration, address, poster, organizers } = event.data;
 const eventDateIso = isoDate(event.data.eventDate);
-const dateLabel = formatDate(event.data.eventDate);
-const { place, categories } = eventMetaFromExcerpt(event.data.excerpt);
+const endDateIso = event.data.endDate ? isoDate(event.data.endDate) : undefined;
+const dateLabel = eventDateRange(event.data.eventDate, event.data.endDate);
+const place = eventPlace(event);
+const categories = eventCategories(event);
+const days = event.data.days ?? [];
 
-// Как в макете: тело, целиком дублирующее excerpt (события-заглушки календаря),
-// не показываем - вся информация уже в карточках меты
-const hasBody = (event.body ?? '').trim() !== event.data.excerpt.trim();
+// Тело показываем, только если оно не пустое и не дублирует excerpt (события-заглушки календаря)
+const body = (event.body ?? '').trim();
+const hasBody = body !== '' && body !== event.data.excerpt.trim();
 
-// Блок «Хотите участвовать?» - только для будущих соревнований и аттестаций
+// Маршрут и телефон нужны, пока событие не прошло
 const today = isoDate(new Date());
-const isJoinable = (event.data.eventType === 'competition' || event.data.eventType === 'exam')
-  && eventDateIso >= today;
+const isUpcoming = (endDateIso ?? eventDateIso) >= today;
+const map = address && isUpcoming ? mapLinks(place, address) : undefined;
+
+// «10:00, оба дня» у двухдневных стартов
+const startLabel = startTime
+  ? `${startTime}${days.length === 2 ? ', оба дня' : days.length > 2 ? ', все дни' : ''}`
+  : '';
+const hasFacts = Boolean(startLabel || place || categories.length > 0);
 
 const others = (await getCollection('events'))
   .filter((e) => e.id !== event.id)
@@ -39,105 +54,198 @@ const others = (await getCollection('events'))
 ---
 
 <PageLayout
-  title={event.data.title}
-  description={event.data.excerpt || `${event.data.title} — Федерация Ашихара-каратэ г. Краснодара`}
+  title={title}
+  description={event.data.excerpt || `${title} — Федерация Ашихара-каратэ г. Краснодара`}
   schemaType="event"
   eventData={{
-    name: event.data.title,
+    name: title,
     startDate: eventDateIso,
-    location: place || 'Краснодар',
+    location: [place, address].filter(Boolean).join(', ') || 'Краснодар',
     description: event.data.excerpt,
   }}
 >
-  <article class="mx-auto max-w-[840px] px-[22px] py-[clamp(32px,4.5vw,52px)]">
+  <article class="mx-auto max-w-[1180px] px-[22px] pt-[clamp(28px,4vw,40px)] pb-[clamp(44px,5vw,60px)]">
     <a href={withBase('/events')} class="text-[14.5px] font-bold text-primary">← Все события</a>
 
-    <div class="mt-6 mb-[14px] flex flex-wrap items-center gap-3">
-      <span class={`inline-block whitespace-nowrap rounded-full px-3 py-1.5 text-[12.5px] font-bold ${badgeClasses(event.data.eventType)}`}>
-        {eventTypeLabel(event.data.eventType)}
-      </span>
-      <time class="text-[14px] font-semibold text-neutral-600" datetime={eventDateIso}>{dateLabel}</time>
-    </div>
-
-    <h1 class="mb-[22px] text-[clamp(26px,4vw,40px)] font-black leading-[1.15] tracking-[-0.02em] text-pretty">{event.data.title}</h1>
-
-    <div class="mb-[26px] grid grid-cols-[repeat(auto-fit,minmax(160px,1fr))] gap-[10px]">
-      <div class="rounded-[16px] border border-line bg-white px-[18px] py-[14px]">
-        <div class="mb-1 text-[12px] font-bold uppercase tracking-[0.05em] text-neutral-600">Дата</div>
-        <div class="text-[15px] font-bold">{dateLabel}</div>
-      </div>
-      {place && (
-        <div class="rounded-[16px] border border-line bg-white px-[18px] py-[14px]">
-          <div class="mb-1 text-[12px] font-bold uppercase tracking-[0.05em] text-neutral-600">Место</div>
-          <div class="text-[15px] font-bold">{place}</div>
-        </div>
-      )}
-      {categories && (
-        <div class="rounded-[16px] border border-line bg-white px-[18px] py-[14px]">
-          <div class="mb-1 text-[12px] font-bold uppercase tracking-[0.05em] text-neutral-600">Категории</div>
-          <div class="text-[15px] font-bold">{categories}</div>
-        </div>
-      )}
-    </div>
-
-    {hasBody && (
-      <div
-        id="event-body"
-        class:list={[
-          'grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-[10px]',
-          '[&>*]:col-span-full',
-          '[&>p]:mb-[6px] [&>p]:text-[16px] [&>p]:leading-[1.7] [&>p]:text-neutral-800 [&>p]:text-pretty',
-          '[&>p:first-of-type]:mb-2 [&>p:first-of-type]:text-[clamp(17px,2vw,19px)] [&>p:first-of-type]:leading-[1.65] [&>p:first-of-type]:font-medium [&>p:first-of-type]:text-dark',
-          '[&>p:has(img)]:[grid-column:auto] [&>p:has(img)]:m-0',
-          '[&>h2]:mt-6 [&>h2]:border-t [&>h2]:border-line [&>h2]:pt-[22px] [&>h2]:text-[15px] [&>h2]:font-extrabold',
-          '[&_img]:aspect-[4/3] [&_img]:w-full [&_img]:cursor-zoom-in [&_img]:rounded-[14px] [&_img]:object-cover',
-        ]}
-      >
-        <Content />
-      </div>
-    )}
-
-    {event.data.video && (
-      <div class="group relative mt-[26px]">
-        <video
-          id="event-video"
-          controls
-          preload="metadata"
-          playsinline
-          poster={event.data.videoPoster ? withBase(event.data.videoPoster) : undefined}
-          class="max-h-[80vh] w-full rounded-[20px] bg-dark object-contain"
-        >
-          <source src={withBase(event.data.video)} type="video/mp4" />
-          Ваш браузер не поддерживает воспроизведение видео.
-          <a href={withBase(event.data.video)}>Скачать видео</a>
-        </video>
-        <button
-          type="button"
-          id="event-video-play"
-          aria-label="Смотреть видеорепортаж"
-          class="absolute inset-0 flex cursor-pointer items-center justify-center rounded-[20px] bg-[rgba(16,16,22,0.28)] transition-opacity"
-        >
-          <span class="flex h-16 w-16 items-center justify-center rounded-full bg-white/95 shadow-[0_10px_30px_rgba(0,0,0,0.3)]">
-            <span class="ml-1 text-[22px] text-primary">▶</span>
+    <div class:list={['mt-5 grid gap-8 md:mt-[26px] md:items-start', poster && 'md:grid-cols-[1fr_300px] md:gap-12']}>
+      <div class="min-w-0">
+        <div class="flex flex-wrap items-center gap-[10px] md:gap-3">
+          <span class={`inline-block whitespace-nowrap rounded-full px-3 py-1.5 text-[12.5px] font-bold ${badgeClasses(event.data.eventType)}`}>
+            {eventTypeLabel(event.data.eventType)}
           </span>
-          <span class="absolute bottom-[10px] right-3 rounded-md bg-[rgba(16,16,22,0.55)] px-2 py-[3px] font-mono text-[11px] text-white/85">видеорепортаж</span>
-        </button>
-      </div>
-    )}
-
-    {isJoinable && (
-      <div class="mt-[30px] flex flex-wrap items-center gap-[22px] rounded-[20px] bg-dark px-7 py-[26px]">
-        <div class="min-w-[240px] flex-1">
-          <div class="mb-[6px] text-[18px] font-extrabold text-white">Хотите участвовать?</div>
-          <div class="text-[14px] leading-[1.6] text-[#B9B9C0]">Заявки идут через тренера зала: он расскажет о требованиях, справках и подготовке к старту.</div>
+          <time class="text-[14px] font-semibold text-neutral-600" datetime={eventDateIso}>{dateLabel}{startTime && ` · начало в ${startTime}`}</time>
         </div>
-        <a href={withBase('/gyms')} class="rounded-full bg-primary px-6 py-3 text-[15px] font-bold text-white hover:bg-primary-dark">Связаться с тренером</a>
+        <EventCountdown
+          start={eventDateIso}
+          end={endDateIso}
+          class="mt-[14px] block text-[clamp(56px,6vw,76px)] font-black leading-none tracking-[-0.035em] text-primary md:mt-[18px]"
+        />
+        <h1 class="mt-3 max-w-[760px] text-[clamp(26px,3vw,36px)] font-black leading-[1.15] tracking-[-0.02em] text-pretty md:mt-4">{title}</h1>
+
+        {(hasFacts || poster) && (
+          <div class:list={['mt-[22px] grid gap-[18px] md:mt-7 md:block', poster && 'grid-cols-[1fr_120px]']}>
+            {hasFacts && (
+              <div class="flex flex-col justify-between gap-[14px] border-y border-line py-4 md:grid md:grid-cols-[repeat(3,auto)] md:justify-start md:gap-x-10 md:gap-y-3 md:py-[22px]">
+                {startLabel && (
+                  <div class="flex items-start gap-[10px] md:gap-3">
+                    <EventIcon name="clock" size={20} class="mt-[2px] text-primary" />
+                    <div>
+                      <div class="hidden text-[12px] font-bold uppercase tracking-[0.05em] text-neutral-600 md:block">Начало</div>
+                      <div class="text-[15px] font-bold md:mt-[3px] md:text-[16px]">{startLabel}</div>
+                      {registration && <div class="mt-[2px] text-[13px] text-neutral-700 md:text-[13.5px]">{registration}</div>}
+                    </div>
+                  </div>
+                )}
+                {place && (
+                  <div class="flex items-start gap-[10px] md:gap-3">
+                    <EventIcon name="pin" size={20} class="mt-[2px] text-primary" />
+                    <div>
+                      <div class="hidden text-[12px] font-bold uppercase tracking-[0.05em] text-neutral-600 md:block">Место</div>
+                      <div class="text-[15px] font-bold md:mt-[3px] md:text-[16px]">{place}</div>
+                      {address && <div class="mt-[2px] text-[13px] text-neutral-700 md:text-[13.5px]">{address}</div>}
+                    </div>
+                  </div>
+                )}
+                {categories.length > 0 && (
+                  <div class="flex items-start gap-[10px] md:gap-3">
+                    <EventIcon name="people" size={20} class="mt-[2px] hidden text-primary md:block" />
+                    <div>
+                      <div class="hidden text-[12px] font-bold uppercase tracking-[0.05em] text-neutral-600 md:block">Категории</div>
+                      <CategoryChips items={categories} class="md:mt-[6px]" />
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+            {poster && (
+              <a
+                href={poster.src}
+                target="_blank"
+                rel="noopener"
+                aria-label="Открыть афишу"
+                class="relative block aspect-[2/3] overflow-hidden rounded-[16px] border border-line bg-cream-dark md:hidden"
+              >
+                <Image src={poster} alt="" width={240} class="absolute inset-0 h-full w-full object-cover" />
+              </a>
+            )}
+          </div>
+        )}
+
+      </div>
+
+      {poster && (
+        <a
+          href={poster.src}
+          target="_blank"
+          rel="noopener"
+          aria-label="Открыть афишу в полном размере"
+          class="relative hidden aspect-[2/3] overflow-hidden rounded-[20px] border border-line bg-cream-dark shadow-[0_14px_34px_rgba(27,27,34,0.1)] md:block"
+        >
+          <Image src={poster} alt={`Афиша: ${title}`} width={600} class="absolute inset-0 h-full w-full object-cover" loading="eager" />
+        </a>
+      )}
+    </div>
+
+    {(days.length > 0 || hasBody || event.data.video || organizers || map) && (
+      <div class:list={['mt-9 grid gap-9 md:mt-12 md:gap-10 lg:items-start', map && 'lg:grid-cols-[1fr_440px]']}>
+        {days.length > 0 && (
+          <section class="min-w-0">
+            <h2 class="mb-[14px] text-[19px] font-extrabold tracking-[-0.015em] md:mb-4 md:text-[20px]">Программа по дням</h2>
+            <div class="overflow-hidden rounded-[20px] border border-line bg-white">
+              {days.map((day) => (
+                <div class="flex items-start gap-4 border-b border-line-soft px-[18px] py-4 last:border-b-0 md:items-center md:gap-[22px] md:px-[22px] md:py-[18px]">
+                  <DateBadge date={day.date} stripe={weekdayShort(day.date)} />
+                  <div class="min-w-0 flex-1">
+                    <div class="text-[15px] font-bold leading-[1.4] md:text-[16px]">{day.discipline}</div>
+                    {startTime && <div class="mt-[3px] hidden text-[13.5px] text-neutral-600 md:block">Начало в {startTime}</div>}
+                    {day.categories.length > 0 && <CategoryChips items={day.categories} bg="cream" size="sm" class="mt-[6px] md:hidden" />}
+                  </div>
+                  {day.categories.length > 0 && <CategoryChips items={day.categories} bg="cream" class="hidden justify-end md:flex" />}
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {map && (
+          <section class="overflow-hidden rounded-[20px] border border-line bg-white lg:sticky lg:top-[90px] lg:col-start-2 lg:row-span-4 lg:row-start-1 lg:self-start">
+            <div class="flex items-baseline justify-between gap-3 px-[18px] pt-5 pb-[14px] md:px-[22px]">
+              <h2 class="text-[19px] font-extrabold tracking-[-0.015em] md:text-[20px]">Как добраться</h2>
+              <a href={map.open} target="_blank" rel="noopener" class="whitespace-nowrap text-[14px] font-bold text-primary">Открыть в Яндекс Картах →</a>
+            </div>
+            <div class="aspect-[4/3] bg-neutral-100">
+              <iframe
+                src={map.widget}
+                title={`Карта: ${place}`}
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"
+                class="block h-full w-full border-0"
+              ></iframe>
+            </div>
+            <div class="flex items-start gap-3 border-t border-line bg-neutral-50 px-[18px] py-4 text-[14.5px] leading-[1.5] text-neutral-800 md:px-[22px]">
+              <EventIcon name="pin" size={20} class="mt-[2px] text-primary" />
+              <div><b class="font-bold text-dark">{place}</b><br />{address}, Краснодар</div>
+            </div>
+          </section>
+        )}
+
+        {hasBody && (
+          <div
+            id="event-body"
+            class:list={[
+              'min-w-0 grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-[10px]',
+              '[&>*]:col-span-full',
+              '[&>p]:mb-[6px] [&>p]:text-[16px] [&>p]:leading-[1.7] [&>p]:text-neutral-800 [&>p]:text-pretty',
+              '[&>p:first-of-type]:mb-2 [&>p:first-of-type]:text-[clamp(17px,2vw,19px)] [&>p:first-of-type]:leading-[1.65] [&>p:first-of-type]:font-medium [&>p:first-of-type]:text-dark',
+              '[&>p:has(img)]:[grid-column:auto] [&>p:has(img)]:m-0',
+              '[&>h2]:mt-6 [&>h2]:border-t [&>h2]:border-line [&>h2]:pt-[22px] [&>h2]:text-[15px] [&>h2]:font-extrabold',
+              '[&_img]:aspect-[4/3] [&_img]:w-full [&_img]:cursor-zoom-in [&_img]:rounded-[14px] [&_img]:object-cover',
+            ]}
+          >
+            <Content />
+          </div>
+        )}
+
+        {event.data.video && (
+          <div class="group relative min-w-0">
+            <video
+              id="event-video"
+              controls
+              preload="metadata"
+              playsinline
+              poster={event.data.videoPoster ? withBase(event.data.videoPoster) : undefined}
+              class="max-h-[80vh] w-full rounded-[20px] bg-dark object-contain"
+            >
+              <source src={withBase(event.data.video)} type="video/mp4" />
+              Ваш браузер не поддерживает воспроизведение видео.
+              <a href={withBase(event.data.video)}>Скачать видео</a>
+            </video>
+            <button
+              type="button"
+              id="event-video-play"
+              aria-label="Смотреть видеорепортаж"
+              class="absolute inset-0 flex cursor-pointer items-center justify-center rounded-[20px] bg-[rgba(16,16,22,0.28)] transition-opacity"
+            >
+              <span class="flex h-16 w-16 items-center justify-center rounded-full bg-white/95 shadow-[0_10px_30px_rgba(0,0,0,0.3)]">
+                <span class="ml-1 text-[22px] text-primary">▶</span>
+              </span>
+              <span class="absolute bottom-[10px] right-3 rounded-md bg-[rgba(16,16,22,0.55)] px-2 py-[3px] font-mono text-[11px] text-white/85">видеорепортаж</span>
+            </button>
+          </div>
+        )}
+
+        {organizers && (
+          <section class="min-w-0">
+            <h2 class="mb-[10px] text-[19px] font-extrabold tracking-[-0.015em] md:mb-3 md:text-[20px]">Организаторы</h2>
+            <p class="max-w-[620px] text-[14.5px] leading-[1.65] text-neutral-800 text-pretty md:text-[15px]">{organizers}</p>
+          </section>
+        )}
       </div>
     )}
 
-    <div class="mt-[clamp(36px,5vw,52px)]">
+    <div class="mt-10 md:mt-14">
       <div class="mb-[14px] flex flex-wrap items-baseline justify-between gap-[14px]">
-        <h2 class="text-[20px] font-extrabold tracking-[-0.015em]">Другие события</h2>
+        <h2 class="text-[19px] font-extrabold tracking-[-0.015em] md:text-[20px]">Другие события</h2>
         <a href={withBase('/events')} class="text-[14px] font-bold text-primary">Все события →</a>
       </div>
       <div class="overflow-hidden rounded-[18px] border border-line bg-white">
