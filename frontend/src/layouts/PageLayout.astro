@@ -7,19 +7,34 @@ interface Props {
   title: string;
   description: string;
   ogImage?: string;
-  schemaType?: 'organization' | 'event';
+  titleSuffix?: boolean;
+  schemaType?: 'organization' | 'event' | 'gym';
   eventData?: {
     name: string;
     startDate: string;
     location?: string;
     description?: string;
   };
+  gymData?: {
+    name: string;
+    address: string;
+    telephone?: string;
+    image?: string;
+  };
 }
 
-const { title, description, ogImage, schemaType, eventData } = Astro.props;
+const { title, description, ogImage, titleSuffix, schemaType, eventData, gymData } = Astro.props;
 ---
 
-<BaseLayout title={title} description={description} ogImage={ogImage} schemaType={schemaType} eventData={eventData}>
+<BaseLayout
+  title={title}
+  description={description}
+  ogImage={ogImage}
+  titleSuffix={titleSuffix}
+  schemaType={schemaType}
+  eventData={eventData}
+  gymData={gymData}
+>
   <Header />
   <main class="min-h-[60vh]">
     <slot />

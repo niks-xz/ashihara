@@ -1,17 +1,33 @@
 ---
 interface Props {
-  type?: 'organization' | 'event';
+  type?: 'organization' | 'event' | 'gym';
   eventData?: {
     name: string;
     startDate: string;
     location?: string;
     description?: string;
   };
+  // Зал: собственный адрес и телефон площадки для локального поиска
+  gymData?: {
+    name: string;
+    address: string;
+    telephone?: string;
+    image?: string;
+  };
   phone?: string;
   email?: string;
 }
 
-const { type = 'organization', eventData, phone, email } = Astro.props;
+const { type = 'organization', eventData, gymData, phone, email } = Astro.props;
+
+// «г. Краснодар, ул. Димитрова, 95» -> улица и город отдельно
+function splitAddress(address: string): { street: string; locality: string } {
+  const match = address.match(/^(?:г\.|ст\.)\s*([^,]+),\s*(.+)$/);
+  if (match) {
+    return { locality: match[1].trim(), street: match[2].trim() };
+  }
+  return { locality: 'Краснодар', street: address };
+}
 const siteUrl = new URL(import.meta.env.BASE_URL, Astro.site).href;
 
 const orgSchema = {
@@ -64,7 +80,38 @@ const eventSchema = eventData
     }
   : null;
 
-const schema = type === 'event' && eventSchema ? eventSchema : orgSchema;
+const gymSchema = gymData
+  ? (() => {
+      const { street, locality } = splitAddress(gymData.address);
+      return {
+        '@context': 'https://schema.org',
+        '@type': 'SportsActivityLocation',
+        name: `${gymData.name} - Ашихара-каратэ`,
+        url: Astro.url.href,
+        ...(gymData.telephone && { telephone: gymData.telephone }),
+        ...(gymData.image && { image: new URL(gymData.image, Astro.site).href }),
+        address: {
+          '@type': 'PostalAddress',
+          streetAddress: street,
+          addressLocality: locality,
+          addressRegion: 'Краснодарский край',
+          addressCountry: 'RU',
+        },
+        sport: 'Karate',
+        parentOrganization: {
+          '@type': 'SportsOrganization',
+          name: 'Федерация Ашихара-каратэ г. Краснодара',
+          url: siteUrl,
+        },
+      };
+    })()
+  : null;
+
+const schema = type === 'event' && eventSchema
+  ? eventSchema
+  : type === 'gym' && gymSchema
+    ? gymSchema
+    : orgSchema;
 ---
 
 <script type="application/ld+json" set:html={JSON.stringify(schema)} />

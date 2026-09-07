@@ -28,16 +28,26 @@ const youthRows = sortedRows.filter(isYouthRow);
 const trialRows = youthRows.length > 0 ? youthRows : sortedRows;
 const gymCoaches = await getEntries(gym.data.coaches);
 const trialCoaches = uniqueCoaches(trialRows);
+// Заголовок под районный запрос: «каратэ в Черемушках»
+const pageTitle = `Каратэ в ${gym.data.areaLocative} - ${gym.data.name}, Краснодар`;
 const pageDescription = gym.data.description
-  ? `${gym.data.name}: ${gym.data.address}. ${gym.data.description}`
-  : `${gym.data.name}: ${gym.data.address}. Зал Федерации Ашихара-каратэ г. Краснодара.`;
+  ? `Каратэ в ${gym.data.areaLocative}: ${gym.data.name}, ${gym.data.address}. ${gym.data.description} Запись на пробное по телефону зала.`
+  : `Каратэ в ${gym.data.areaLocative}: ${gym.data.name}, ${gym.data.address}. Зал Федерации Ашихара-каратэ. Запись на пробное по телефону зала.`;
 const mapSearchText = `${gym.data.name}, ${gym.data.address}`;
 const yandexMapWidgetUrl = `https://yandex.ru/map-widget/v1/?mode=search&text=${encodeURIComponent(mapSearchText)}&z=16`;
 ---
 
 <PageLayout
-  title={gym.data.name}
+  title={pageTitle}
+  titleSuffix={false}
   description={pageDescription}
+  schemaType="gym"
+  gymData={{
+    name: gym.data.name,
+    address: gym.data.address,
+    telephone: gym.data.phone,
+    image: gym.data.photo?.src,
+  }}
 >
   <article class="py-[clamp(36px,5vw,60px)]">
     <div class="max-w-[1180px] mx-auto px-[22px]">

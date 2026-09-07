@@ -35,6 +35,8 @@ const gyms = defineCollection({
     photo: image().optional(),
     photoAlt: z.string().optional(),
     district: z.string(),
+    // Район в предложном падеже для заголовков: «Каратэ в Черемушках»
+    areaLocative: z.string(),
     address: z.string(),
     phone: z.string().optional(),
     phoneNote: z.string().optional(),

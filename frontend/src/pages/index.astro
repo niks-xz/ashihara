@@ -12,6 +12,7 @@ import { badgeClasses, eventCategories, eventDateRange, eventPlace, weekdayShort
 import { firstMonthSteps, parentQuestions } from '../data/marketing';
 import { withBase, eventTypeLabel, isoDate } from '../lib/utils';
 import nikoLogo from '../assets/niko-logo.png';
+import FaqSchema from '../components/seo/FaqSchema.astro';
 
 const gyms = (await getCollection('gyms')).sort((a, b) => a.data.sortOrder - b.data.sortOrder);
 const coaches = (await getCollection('coaches')).sort((a, b) => a.data.sortOrder - b.data.sortOrder);
@@ -44,8 +45,9 @@ function shortName(fullName: string): string {
 ---
 
 <PageLayout
-  title="Главная"
-  description="Федерация Ашихара-каратэ Краснодарского края: залы, тренеры, программа поясов от 10 кю до данов, соревнования и аттестации. Член международной организации NIKO."
+  title="Каратэ в Краснодаре для детей и взрослых - Ашихара-каратэ"
+  titleSuffix={false}
+  description="Секции каратэ в Краснодаре: шесть залов, аттестованные тренеры, занятия для детей примерно с 5 лет и для взрослых. Тренируем с 1996 года."
 >
   <section class="mx-auto grid max-w-[1180px] grid-cols-[repeat(auto-fit,minmax(320px,1fr))] items-center gap-[clamp(28px,4.5vw,64px)] px-[22px] pt-[clamp(40px,6vw,80px)] pb-[clamp(36px,5vw,64px)]">
     <div>
@@ -260,6 +262,8 @@ function shortName(fullName: string): string {
       ))}
     </div>
   </section>
+
+  <FaqSchema items={parentQuestions} />
 
   <section class="mx-auto max-w-[1180px] px-[22px] pb-[clamp(48px,7vw,84px)]">
     <div class="flex flex-wrap items-center gap-7 rounded-[28px] bg-[linear-gradient(135deg,var(--color-primary),var(--color-primary-deep))] p-[clamp(32px,5vw,56px)] shadow-[0_24px_60px_rgba(185,33,54,0.25)]">

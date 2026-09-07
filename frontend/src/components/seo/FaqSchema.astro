@@ -1,0 +1,24 @@
+---
+// Разметка вопросов и ответов: даёт расширенный сниппет в выдаче.
+// Вопросы обязаны совпадать с тем, что реально видно на странице.
+interface Props {
+  items: { title: string; text: string }[];
+}
+
+const { items } = Astro.props;
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: items.map((item) => ({
+    '@type': 'Question',
+    name: item.title,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: item.text,
+    },
+  })),
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(schema)} />

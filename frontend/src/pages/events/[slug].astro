@@ -55,7 +55,8 @@ const others = (await getCollection('events'))
 
 <PageLayout
   title={title}
-  description={event.data.excerpt || `${title} — Федерация Ашихара-каратэ г. Краснодара`}
+  titleSuffix={false}
+  description={event.data.excerpt || `${title} - Федерация Ашихара-каратэ г. Краснодара`}
   schemaType="event"
   eventData={{
     name: title,
