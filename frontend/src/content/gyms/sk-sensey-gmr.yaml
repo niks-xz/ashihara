@@ -5,6 +5,13 @@ photo: ../../assets/gyms/sk-sensey-gmr.jpg
 photoAlt: Зал спортивного клуба «Сэнсэй» на улице Мачуги
 address: г. Краснодар, ул. Мачуги, 68/4
 phone: +7 (918) 294-40-90
+hours:
+  - days: Пн, Ср, Пт
+    time: '17:00-19:30'
+  - days: Вт, Чт
+    time: '09:00-10:30 и 17:00-18:30'
+  - days: Сб
+    time: '09:30-11:00'
 coaches:
   - gogolevskiy-dmitriy
   - maltsev
