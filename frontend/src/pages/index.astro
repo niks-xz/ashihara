@@ -68,7 +68,7 @@ function shortName(fullName: string): string {
       </div>
     </div>
     <div class="flex aspect-[5/4] flex-col items-center justify-center gap-[18px] rounded-[24px] bg-dark p-7 shadow-[0_24px_60px_rgba(27,27,34,0.2)]">
-      <Image src={nikoLogo} alt="Логотип федерации" width={420} class="block h-[clamp(150px,17vw,210px)] w-[clamp(150px,17vw,210px)] rounded-full object-contain" />
+      <Image src={nikoLogo} alt="Логотип федерации" width={420} loading="eager" fetchpriority="high" class="block h-[clamp(150px,17vw,210px)] w-[clamp(150px,17vw,210px)] rounded-full object-contain" />
       <div class="text-center">
         <div class="mb-[6px] text-[19px] font-bold tracking-[0.32em] text-white">芦原会館</div>
         <div class="text-[12.5px] font-semibold uppercase tracking-[0.14em] text-[#8A8A94]">Ашихара кайкан · New International Karate Organization</div>
