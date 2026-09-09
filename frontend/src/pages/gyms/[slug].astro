@@ -93,6 +93,7 @@ const yandexMapWidgetUrl = `https://yandex.ru/map-widget/v1/?mode=search&text=${
                 <div class="rounded-[14px] bg-primary-tint p-5">
                   <h2 class="text-lg font-extrabold text-dark">Кому удобно</h2>
                   <p class="mt-3 text-neutral-700 leading-relaxed">{marketing.audience}</p>
+                  <p class="mt-2 text-neutral-700 leading-relaxed">Взрослые тренируются в этом зале наравне с детьми - возрастных ограничений нет.</p>
                   <div class="mt-4 flex flex-wrap gap-2">
                     {marketing.nearby.map((item) => (
                       <span class="rounded-full bg-white px-3 py-1 text-sm font-medium text-neutral-700 border border-line">
@@ -271,7 +272,7 @@ const yandexMapWidgetUrl = `https://yandex.ru/map-widget/v1/?mode=search&text=${
           )}
 
           <div class="mt-6 pt-6 border-t border-line">
-            <Button href="/gyms" size="sm">Записать ребёнка в этот зал</Button>
+            <Button href="/gyms" size="sm">Записаться в этот зал</Button>
           </div>
         </aside>
       </div>
