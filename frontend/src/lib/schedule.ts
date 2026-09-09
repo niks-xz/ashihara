@@ -22,6 +22,28 @@ export const SHORT_DAY: Record<string, string> = {
   'Воскресенье': 'Вс',
 };
 
+const DAY_CODES: Record<string, string> = {
+  'Пн': 'Mo', 'Вт': 'Tu', 'Ср': 'We', 'Чт': 'Th', 'Пт': 'Fr', 'Сб': 'Sa', 'Вс': 'Su',
+};
+
+export interface GymHours {
+  days: string;
+  time: string;
+}
+
+// Часы работы в формате schema.org: перечисление и диапазон дней, интервалы через «и» разбиваются
+export function toOpeningHours(hours: GymHours[]): string[] {
+  return hours.flatMap(({ days, time }) => {
+    const codes = days.includes('-')
+      ? days.split('-').map((d) => DAY_CODES[d.trim()]).filter(Boolean).join('-')
+      : days.split(',').map((d) => DAY_CODES[d.trim()]).filter(Boolean).join(',');
+    if (!codes) {
+      return [];
+    }
+    return time.split(/\s+и\s+/).map((interval) => `${codes} ${interval.trim()}`);
+  });
+}
+
 export async function getGymSchedule(gymId: string): Promise<ScheduleRow[]> {
   const schedule = await getEntry('schedule', gymId);
 

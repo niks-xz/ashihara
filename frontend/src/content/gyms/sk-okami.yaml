@@ -5,6 +5,9 @@ photo: ../../assets/gyms/sk-okami.jpg
 photoAlt: Зал спортивного клуба «Оками» с флагом Ашихара Кайкан
 address: г. Краснодар, ул. Филатова, 68, 3/1
 phone: +7 (918) 438-41-21
+hours:
+  - days: Пн, Ср, Пт
+    time: '19:30-21:00'
 coaches:
   - chernega-grigoriy
 sortOrder: 5

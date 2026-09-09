@@ -5,6 +5,9 @@ photo: ../../assets/gyms/sk-fanat.jpg
 photoAlt: Зал спортивного клуба «Фанат» в микрорайоне Гидростроителей
 address: г. Краснодар, проспект писателя Знаменского, 16
 phone: +7 (989) 811-17-65
+hours:
+  - days: Пн, Ср, Пт
+    time: '08:30-18:45'
 coaches:
   - rerekin-dmitriy
 sortOrder: 2

@@ -40,6 +40,11 @@ const gyms = defineCollection({
     address: z.string(),
     phone: z.string().optional(),
     phoneNote: z.string().optional(),
+    // Часы работы зала: время занятий, а не расписание конкретных групп
+    hours: z.array(z.object({
+      days: z.string(),
+      time: z.string(),
+    })).optional(),
     description: z.string().optional(),
     coaches: z.array(reference('coaches')).default([]),
     sortOrder: z.number(),

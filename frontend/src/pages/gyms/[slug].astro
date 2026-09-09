@@ -4,7 +4,7 @@ import { Image } from 'astro:assets';
 import PageLayout from '../../layouts/PageLayout.astro';
 import Button from '../../components/ui/Button.astro';
 import { gymMarketingBySlug } from '../../data/marketing';
-import { getGymSchedule, groupByDay, isYouthRow, uniqueCoaches, SHORT_DAY } from '../../lib/schedule';
+import { getGymSchedule, groupByDay, isYouthRow, toOpeningHours, uniqueCoaches, SHORT_DAY } from '../../lib/schedule';
 import { withBase } from '../../lib/utils';
 
 export async function getStaticPaths() {
@@ -47,6 +47,7 @@ const yandexMapWidgetUrl = `https://yandex.ru/map-widget/v1/?mode=search&text=${
     address: gym.data.address,
     telephone: gym.data.phone,
     image: gym.data.photo?.src,
+    openingHours: gym.data.hours ? toOpeningHours(gym.data.hours) : undefined,
   }}
 >
   <article class="py-[clamp(36px,5vw,60px)]">
@@ -244,6 +245,18 @@ const yandexMapWidgetUrl = `https://yandex.ru/map-widget/v1/?mode=search&text=${
               <div class="text-sm font-semibold text-neutral-600">Адрес</div>
               <p class="mt-1 text-neutral-800">{gym.data.address}</p>
             </div>
+
+            {gym.data.hours && gym.data.hours.length > 0 && (
+              <div>
+                <div class="text-sm font-semibold text-neutral-600">Часы работы</div>
+                <div class="mt-1 space-y-1">
+                  {gym.data.hours.map((row) => (
+                    <p class="text-neutral-800"><span class="font-semibold">{row.days}:</span> {row.time}</p>
+                  ))}
+                </div>
+                <p class="mt-1 text-sm text-neutral-600">Время своей группы уточните у тренера.</p>
+              </div>
+            )}
 
             {gym.data.phone && (
               <div>

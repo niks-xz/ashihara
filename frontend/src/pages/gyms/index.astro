@@ -54,6 +54,11 @@ const safetyNote =
               <a href={withBase(`/gyms/${gym.id}`)} class="hover:text-primary transition-colors">{gym.data.name}</a>
             </div>
             <div class="mb-3 text-[15px] font-semibold">{gym.data.address}</div>
+            {gym.data.hours && gym.data.hours.length > 0 && (
+              <div class="mb-3 text-[13.5px] leading-[1.55] text-neutral-600">
+                {gym.data.hours.map((row) => <div>{row.days}: {row.time}</div>)}
+              </div>
+            )}
             {coachNames && (
               <div class="mb-[18px] text-[13.5px] text-neutral-600 leading-[1.55]">Тренирует: {coachNames}</div>
             )}

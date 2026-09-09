@@ -13,6 +13,7 @@ interface Props {
     address: string;
     telephone?: string;
     image?: string;
+    openingHours?: string[];
   };
   phone?: string;
   email?: string;
@@ -90,6 +91,7 @@ const gymSchema = gymData
         url: Astro.url.href,
         ...(gymData.telephone && { telephone: gymData.telephone }),
         ...(gymData.image && { image: new URL(gymData.image, Astro.site).href }),
+        ...(gymData.openingHours?.length && { openingHours: gymData.openingHours }),
         address: {
           '@type': 'PostalAddress',
           streetAddress: street,
