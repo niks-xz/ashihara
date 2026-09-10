@@ -1,0 +1,251 @@
+---
+import BeltBar from '../education/BeltBar.astro';
+import { plural, withBase } from '../../lib/utils';
+import type { QuizSet } from '../../lib/quiz';
+import { QUESTIONS_PER_SESSION, type QuizTerm } from '../../lib/quiz-shared';
+
+interface Props {
+  sets: QuizSet[];
+  terms: QuizTerm[];
+}
+
+const { sets, terms } = Astro.props;
+const baseSet = sets.find((s) => s.id === 'base');
+const levelSets = sets.filter((s) => s.id !== 'base');
+
+// icon - path иконки режима из макета, обводка currentColor
+const modes = [
+  { id: 'meanings', title: 'Значения', note: 'Термин → перевод', icon: 'M4 7h16M4 12h10M4 17h13' },
+  { id: 'audio', title: 'На слух', note: 'Слушай и узнавай', icon: 'M4 10v4a1 1 0 001 1h2l4 3V6L7 9H5a1 1 0 00-1 1zM15 9a4 4 0 010 6M18 6a8 8 0 010 12' },
+];
+
+const cardBase = 'cursor-pointer rounded-[14px] border border-line bg-white text-left transition-[border-color,box-shadow]';
+const glossaryHref = withBase('/education/glossary');
+// JSON терминов встаёт внутрь <script>: «<» экранируется, чтобы «</script» в данных не закрыл тег
+const termsJson = JSON.stringify({ terms }).replace(/</g, '\\u003c');
+---
+
+<div id="quiz" data-audio-base={withBase('/audio/glossary/')}>
+  <script type="application/json" set:html={termsJson} id="quiz-terms"></script>
+  <p id="q-live" class="sr-only" aria-live="polite"></p>
+
+  {/* --- Старт --- */}
+  <section id="q-start" class="lg:grid lg:grid-cols-[1fr_360px] lg:items-start lg:gap-10">
+    <div>
+      <h2 id="q-start-title" tabindex="-1" class="text-[clamp(24px,3vw,32px)] font-extrabold tracking-[-0.02em] outline-none">Проверь себя</h2>
+      <p class="mt-2 max-w-[560px] text-[14.5px] leading-[1.55] text-neutral-800">
+        {QUESTIONS_PER_SESSION} {plural(QUESTIONS_PER_SESSION, 'вопрос', 'вопроса', 'вопросов')}, пара минут. Выбери набор слов и как хочешь тренироваться. Результаты сохраняются в этом браузере.
+      </p>
+
+      <div class="mt-6 mb-[10px] text-[12px] font-extrabold uppercase tracking-[0.06em] text-primary">Набор слов</div>
+      {baseSet && (
+        <button type="button" data-set={baseSet.id} data-title={baseSet.title} class={`${cardBase} flex w-full items-center gap-3 rounded-[18px] px-4 py-[14px]`}>
+          <span class="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-[12px] bg-primary-tint text-primary">
+            <svg class="h-[22px] w-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M4 19V6a2 2 0 012-2h12a2 2 0 012 2v13"></path>
+              <path d="M4 19a2 2 0 002 2h14"></path>
+              <path d="M9 8h6M9 12h4"></path>
+            </svg>
+          </span>
+          <span class="min-w-0 flex-1">
+            <span class="block text-[16px] font-extrabold">{baseSet.title}</span>
+            <span class="block text-[13px] leading-[1.4] text-neutral-800">{baseSet.note}</span>
+          </span>
+          <span class="mark flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full text-[12px] font-bold text-white" aria-hidden="true">✓</span>
+        </button>
+      )}
+
+      <div class="mt-4 mb-2 text-[13px] font-bold text-neutral-600">По ступеням</div>
+      <div class="grid grid-cols-2 gap-2 lg:grid-cols-3">
+        {levelSets.map((set) => (
+          <button type="button" data-set={set.id} data-title={set.title} class={`${cardBase} px-[14px] py-3`}>
+            <span class="mb-[6px] flex items-baseline justify-between gap-2">
+              <span class="text-[15px] font-extrabold">{set.title}</span>
+              <span class="text-[11.5px] text-neutral-600">{set.count} {plural(set.count, 'слово', 'слова', 'слов')}</span>
+            </span>
+            {set.belt && <BeltBar belt={set.belt} size="small" />}
+          </button>
+        ))}
+      </div>
+    </div>
+
+    {/* На мобильном обёртка режимов прозрачна для раскладки (contents), и порядок
+        задаёт order: режимы, статистика, кнопка. На десктопе она становится карточкой */}
+    <div class="mt-7 flex flex-col lg:sticky lg:top-[90px] lg:mt-0 lg:gap-[14px]">
+      <div class="contents lg:block lg:rounded-[20px] lg:border lg:border-line lg:bg-white lg:p-5">
+        <div class="mb-[10px] text-[12px] font-extrabold uppercase tracking-[0.06em] text-primary lg:mb-3">Как тренируемся</div>
+        <div class="grid grid-cols-2 gap-2 lg:grid-cols-1">
+          {modes.map((mode) => (
+            <button type="button" data-mode={mode.id} class={`${cardBase} rounded-[16px] px-3 py-[14px] lg:flex lg:items-center lg:gap-3 lg:rounded-[14px]`}>
+              <svg class="mode-icon block h-6 w-6 text-neutral-600 lg:shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d={mode.icon}></path>
+              </svg>
+              <span class="block lg:min-w-0">
+                <span class="mt-[6px] block text-[14px] font-extrabold lg:mt-0">{mode.title}</span>
+                <span class="block text-[12px] leading-[1.35] text-neutral-600">{mode.note}</span>
+              </span>
+            </button>
+          ))}
+        </div>
+
+        <button
+          type="button"
+          id="q-begin"
+          class="order-1 mt-5 w-full cursor-pointer rounded-full bg-primary py-4 text-[16px] font-extrabold text-white shadow-[0_10px_24px_rgba(185,33,54,0.3)] transition-colors hover:bg-primary-dark lg:order-none lg:mt-4"
+        >Начать</button>
+      </div>
+
+      <div id="q-stats" hidden class="mt-4 flex rounded-[16px] border border-line bg-white px-4 py-3 lg:mt-0">
+        <div class="flex-1">
+          <div class="text-[11.5px] font-bold uppercase tracking-[0.05em] text-neutral-600">Лучший результат</div>
+          <div class="mt-[2px] text-[18px] font-extrabold"><span id="q-best"></span> <span id="q-best-of" class="text-[13px] font-semibold text-neutral-600"></span></div>
+        </div>
+        <div class="mx-4 w-px bg-line"></div>
+        <div class="flex-1">
+          <div class="text-[11.5px] font-bold uppercase tracking-[0.05em] text-neutral-600">Серия</div>
+          <div class="mt-[2px] text-[18px] font-extrabold text-primary" id="q-streak"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* --- Вопрос --- */}
+  <section id="q-play" hidden class="mx-auto max-w-[600px]">
+    <div class="flex items-center gap-3">
+      <button type="button" id="q-close" aria-label="Закончить тренировку" class="relative flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-full border border-line bg-white text-[18px] text-neutral-800 before:absolute before:-inset-[2px]">×</button>
+      <div class="min-w-0 flex-1">
+        <div class="flex items-baseline justify-between gap-3 text-[13px] font-bold text-neutral-800">
+          <span id="q-label" class="truncate"></span>
+          <span id="q-counter" class="shrink-0"></span>
+        </div>
+        <div class="mt-[6px] h-[6px] overflow-hidden rounded-full bg-line">
+          <div id="q-progress" class="h-full rounded-full bg-primary transition-[width] duration-200 motion-reduce:transition-none" style="width:0%"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="q-card" tabindex="-1" class="mt-4 rounded-[20px] border border-line bg-white px-[22px] pt-[30px] pb-[26px] text-center outline-none lg:rounded-[24px] lg:px-7 lg:pt-10 lg:pb-[34px]"></div>
+    <div id="q-answers" class="mt-3 flex flex-col gap-[10px] lg:grid lg:grid-cols-2"></div>
+    <p id="q-hint" class="mt-3 text-center text-[13px] text-neutral-600"></p>
+  </section>
+
+  {/* --- Разбор ответа --- */}
+  <div
+    id="q-sheet"
+    hidden
+    class="fixed inset-x-0 bottom-0 z-30 mx-auto max-h-[calc(100dvh-16px)] max-w-[600px] overflow-y-auto overscroll-contain rounded-t-[24px] border-t border-line bg-white px-[22px] pb-6 pt-5 shadow-[0_-18px_50px_rgba(27,27,34,0.12)]"
+  >
+    <div class="flex items-center gap-[10px]">
+      <span id="q-sheet-mark" class="flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-full text-[15px] font-bold text-white"></span>
+      <span id="q-sheet-title" class="text-[20px] font-black tracking-[-0.02em]"></span>
+    </div>
+    <div class="mt-3 flex items-start gap-3">
+      <button type="button" id="q-sheet-play" aria-label="Послушать произношение" class="relative mt-[2px] flex h-[34px] w-[34px] shrink-0 cursor-pointer items-center justify-center rounded-full bg-primary-tint text-[12px] text-primary before:absolute before:-inset-[6px]">▶</button>
+      <div class="min-w-0 flex-1">
+        <div id="q-sheet-term" class="text-[14.5px] leading-[1.5] text-neutral-800"></div>
+        <div id="q-sheet-parts" class="mt-2"></div>
+        <div id="q-sheet-wrong" class="mt-2 text-[13px] leading-[1.5] text-neutral-800"></div>
+      </div>
+    </div>
+    <div class="mt-4 flex items-center gap-2">
+      <button type="button" id="q-next" class="flex-1 cursor-pointer rounded-full bg-dark py-4 text-[15px] font-extrabold text-white">Дальше →</button>
+      <a id="q-to-glossary" href={glossaryHref} data-href={glossaryHref} hidden class="shrink-0 rounded-full border border-line bg-white px-4 py-4 text-[14px] font-bold text-primary">В глоссарий</a>
+    </div>
+  </div>
+
+  {/* --- Итог --- */}
+  <section id="q-result" hidden class="mx-auto max-w-[600px]">
+    <div class="flex justify-end">
+      <button type="button" id="q-result-close" aria-label="Закрыть" class="relative flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-line bg-white text-[18px] text-neutral-800 before:absolute before:-inset-[2px]">×</button>
+    </div>
+    <div class="text-center">
+      <div id="q-result-set" class="text-[13px] font-bold text-neutral-600"></div>
+      <div class="relative mx-auto mt-3 h-[168px] w-[168px]">
+        <svg viewBox="0 0 168 168" class="h-full w-full -rotate-90">
+          <circle cx="84" cy="84" r="78" fill="none" stroke="var(--color-line)" stroke-width="12"></circle>
+          <circle id="q-ring" cx="84" cy="84" r="78" fill="none" stroke="var(--color-primary)" stroke-width="12" stroke-linecap="round" stroke-dasharray="490" stroke-dashoffset="490" class="transition-[stroke-dashoffset] duration-600 ease-out motion-reduce:transition-none"></circle>
+        </svg>
+        <div class="absolute inset-0 flex flex-col items-center justify-center">
+          <span id="q-score" class="text-[54px] font-black leading-none text-primary">0</span>
+          <span id="q-score-of" class="mt-1 text-[14px] text-neutral-600"></span>
+        </div>
+      </div>
+      <h2 id="q-verdict" tabindex="-1" class="mt-4 text-[22px] font-black outline-none"></h2>
+      <p id="q-result-note" class="mt-1 text-[13.5px] text-neutral-800"></p>
+    </div>
+
+    <div id="q-review-wrap" class="mt-6">
+      <div class="mb-[10px] text-[12px] font-extrabold uppercase tracking-[0.06em] text-primary">Стоит повторить</div>
+      <div id="q-review" class="overflow-hidden rounded-[18px] border border-line bg-white"></div>
+    </div>
+    <p id="q-clean" hidden class="mt-6 rounded-[18px] border border-line bg-white px-4 py-4 text-center text-[14px] text-neutral-800">Без ошибок - можно брать следующую ступень.</p>
+
+    <div class="mt-5 flex flex-col gap-2">
+      <button type="button" id="q-redo" hidden class="cursor-pointer rounded-full bg-primary py-4 text-[15px] font-extrabold text-white">Разобрать ошибки</button>
+      <button type="button" id="q-again" class="cursor-pointer rounded-full border border-line bg-white py-4 text-[15px] font-extrabold text-dark">Ещё раз</button>
+      <button type="button" id="q-other" class="-my-2 cursor-pointer py-3 text-[14px] font-bold text-primary">Другой набор</button>
+    </div>
+  </section>
+</div>
+
+<style is:global>
+  /* Во время тренировки страница остаётся только под вопросом:
+     шапка, футер и вкладки раздела убираются, чтобы ничего не отвлекало */
+  body.quiz-playing > header,
+  body.quiz-playing > footer,
+  body.quiz-playing .quiz-chrome {
+    display: none;
+  }
+</style>
+
+<style>
+  /* Выбранная карточка набора или режима */
+  #quiz [data-set].is-on,
+  #quiz [data-mode].is-on {
+    border-color: var(--color-primary);
+    box-shadow: inset 0 0 0 1px var(--color-primary);
+  }
+  /* У выбранной «Базы» в макете ещё и внешняя тень */
+  #quiz [data-set="base"].is-on {
+    box-shadow: inset 0 0 0 1px var(--color-primary), 0 10px 24px rgba(185, 33, 54, 0.12);
+  }
+  #quiz [data-set].is-on .mark {
+    background: var(--color-primary);
+    color: #fff;
+  }
+  #quiz [data-set] .mark {
+    background: var(--color-line);
+    color: transparent;
+  }
+  #quiz [data-mode].is-on .mode-icon {
+    color: var(--color-primary);
+  }
+  /* Заливка выбранного режима есть только в десктопном макете */
+  @media (min-width: 64rem) {
+    #quiz [data-mode].is-on {
+      background: var(--color-primary-tint);
+    }
+  }
+
+  /* Шторка разбора выезжает снизу при каждом показе: пока стоит hidden,
+     элемент не рендерится, и анимация стартует заново при снятии атрибута */
+  @keyframes quiz-sheet-in {
+    from {
+      transform: translateY(100%);
+    }
+  }
+  #q-sheet {
+    animation: quiz-sheet-in 200ms ease-out;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    #q-sheet {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  import { initQuiz } from '../../scripts/quiz-trainer';
+
+  initQuiz();
+</script>

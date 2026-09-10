@@ -4,9 +4,19 @@ import { parseTechniqueList, type TranslateTerm } from './techniques';
 type Belt = CollectionEntry<'belts'>;
 
 // Ручной глоссарий src/data/glossary.json (необязательный):
-// { "sections": [{ "title": "...", "rows": [{ "romaji", "japanese", "ru", "ruCommon", "meaning", "note" }] }] }
+// { "sections": [{ "title": "...", "rows": [{ "romaji", "japanese", "ru", "ruCommon", "meaning", "note", "level" }] }] }
 // ru - транслитерация по Поливанову, ruCommon - привычное написание из методички федерации.
 // Если файла нет, глоссарий строится только из автоизвлечённых терминов методички.
+
+// Ступень, на которой термин впервые встречается в программе аттестации; id совпадает
+// с ключами коллекции belts. base - термины вне ступеней (счёт, этикет, звания,
+// устройство додзё): они звучат с первого занятия. Поле необязательное: у части
+// терминов (ката, кумитэ, броски, сабаки) ступень не определена.
+export type TermLevel =
+  | 'base'
+  | '10-kyu' | '9-kyu' | '8-kyu' | '7-kyu' | '6-kyu'
+  | '5-kyu' | '4-kyu' | '3-kyu' | '2-kyu' | '1-kyu';
+
 interface GlossaryFileRow {
   romaji: string;
   japanese?: string;
@@ -14,6 +24,7 @@ interface GlossaryFileRow {
   ruCommon?: string;
   meaning: string;
   note?: string;
+  level?: TermLevel;
 }
 
 interface GlossaryFile {
@@ -22,11 +33,14 @@ interface GlossaryFile {
 
 export interface GlossaryTerm {
   name: string;
+  romaji: string;
+  meaning: string;
   detail: string;
   japanese?: string;
   common?: string;
   note?: string;
   audio?: string;
+  level?: TermLevel;
 }
 
 // Слово составного термина с переводом: «Уракэн Гаммэн Ути» -> уракэн + гаммэн + ути
@@ -78,7 +92,7 @@ function dedupeKey(s: string): string {
 }
 
 function rowDetail(row: GlossaryFileRow): string {
-  return [row.romaji, row.meaning].filter(Boolean).join(' — ');
+  return [row.romaji, row.meaning].filter(Boolean).join(' - ');
 }
 
 // Перевод ищется и по Поливанову, и по написанию из методички
@@ -95,7 +109,7 @@ const rowsBySpelling = new Map<string, SpelledRow[]>();
 const ACTION_SECTIONS = /удары|блоки|броски|перемещения|стойки/i;
 
 // Написание со скобкой даёт три ключа: «гэри (кэри)» -> «гэри (кэри)», «гэри», «кэри»
-function spellingVariants(spelling: string): string[] {
+export function spellingVariants(spelling: string): string[] {
   const variants = [spelling];
   const match = spelling.match(/^(.*?)\s*\(([^)]+)\)\s*$/);
   if (match) {
@@ -328,6 +342,20 @@ function canonTerm(name: string): string | null {
   return tokens.map((token) => canonSpellings[tokenKey(token)] ?? titleCase(token)).join(' ');
 }
 
+// Якорь секции на странице глоссария: «Удары ногами» -> «удары-ногами»
+export function anchor(header: string): string {
+  return header
+    .toLowerCase()
+    .replace(/[^а-яёa-z0-9]+/gi, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+// Якорь карточки термина. С префиксом секции, потому что одно написание («ути»)
+// встречается в разных разделах; на него ведёт ссылка «В глоссарий» из тренажёра
+export function termAnchor(sectionHeader: string, name: string): string {
+  return `${anchor(sectionHeader)}-${anchor(name)}`;
+}
+
 // Глоссарий страницы: только выверенные тематические секции ручного глоссария.
 // Автоизвлечение терминов методички осталось у translateTerm - оно питает тултипы
 // на страницах поясов, но не попадает на страницу глоссария.
@@ -336,11 +364,14 @@ export function buildGlossary(_belts: Belt[]): GlossarySection[] {
     header: section.title,
     terms: section.rows.map((row) => ({
       name: row.ru,
+      romaji: row.romaji,
+      meaning: row.meaning,
       detail: rowDetail(row),
       japanese: row.japanese || undefined,
       common: row.ruCommon && dedupeKey(row.ruCommon) !== dedupeKey(row.ru) ? row.ruCommon : undefined,
       note: row.note || undefined,
       audio: audioSlug(row.romaji),
+      level: row.level,
     })),
   }));
 }

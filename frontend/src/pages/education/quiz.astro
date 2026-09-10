@@ -1,0 +1,25 @@
+---
+import { getCollection } from 'astro:content';
+import PageLayout from '../../layouts/PageLayout.astro';
+import EducationTabs from '../../components/education/EducationTabs.astro';
+import QuizTrainer from '../../components/quiz/QuizTrainer.astro';
+import { buildQuizSets, buildQuizTerms } from '../../lib/quiz';
+
+const belts = (await getCollection('belts')).sort((a, b) => a.data.sortOrder - b.data.sortOrder);
+const terms = buildQuizTerms(belts);
+const sets = buildQuizSets(terms, belts);
+---
+
+<PageLayout
+  title="Проверь себя: тренажёр японских терминов каратэ"
+  titleSuffix={false}
+  description="Тренажёр японских терминов Ашихара-каратэ: значения и узнавание на слух, с озвучкой. Наборы по ступеням от 10 кю до 1 кю."
+>
+  <section class="mx-auto max-w-[1180px] px-[22px] py-[clamp(36px,5vw,60px)]">
+    <div class="quiz-chrome">
+      <h1 class="mb-[18px] text-[clamp(28px,3.6vw,40px)] font-bold tracking-[-0.02em]">Обучение</h1>
+      <EducationTabs active="quiz" />
+    </div>
+    <QuizTrainer sets={sets} terms={terms} />
+  </section>
+</PageLayout>

@@ -2,19 +2,12 @@
 import { getCollection } from 'astro:content';
 import PageLayout from '../../layouts/PageLayout.astro';
 import EducationTabs from '../../components/education/EducationTabs.astro';
-import { buildGlossary } from '../../lib/glossary';
+import QuizPromo from '../../components/quiz/QuizPromo.astro';
+import { anchor, buildGlossary, termAnchor } from '../../lib/glossary';
 import { withBase } from '../../lib/utils';
 
 const belts = (await getCollection('belts')).sort((a, b) => a.data.sortOrder - b.data.sortOrder);
 const glossary = buildGlossary(belts);
-
-// Якорь секции для оглавления
-function anchor(header: string): string {
-  return header
-    .toLowerCase()
-    .replace(/[^а-яёa-z0-9]+/gi, '-')
-    .replace(/^-+|-+$/g, '');
-}
 
 // Короткая подпись в оглавлении: «Части тела и ударные поверхности» -> «Части тела»
 function tocLabel(header: string): string {
@@ -54,6 +47,8 @@ const totalTerms = glossary.reduce((sum, section) => sum + section.terms.length,
       ))}
     </div>
 
+    <QuizPromo />
+
     <div class="flex flex-col gap-7">
       {glossary.map((section) => (
         <div id={`gl-${anchor(section.header)}`} data-section>
@@ -61,7 +56,8 @@ const totalTerms = glossary.reduce((sum, section) => sum + section.terms.length,
           <div class="grid grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-2">
             {section.terms.map((term) => (
               <div
-                class="flex items-start gap-3 rounded-xl border border-line bg-white px-[15px] py-3"
+                id={termAnchor(section.header, term.name)}
+                class="flex scroll-mt-[126px] items-start gap-3 rounded-xl border border-line bg-white px-[15px] py-3"
                 data-term-card
                 data-search={[term.name, term.detail, term.common, term.japanese].filter(Boolean).join(' ').toLowerCase()}
               >
@@ -90,7 +86,7 @@ const totalTerms = glossary.reduce((sum, section) => sum + section.terms.length,
     </div>
 
     <div id="gloss-empty" class="hidden py-10 text-center text-neutral-600">
-      Ничего не нашлось. Попробуйте другое написание — например, «маваси» или «маваши».
+      Ничего не нашлось. Попробуйте другое написание - например, «маваси» или «маваши».
     </div>
 
     <p class="mt-8 text-[12px] text-neutral-500">Озвучка терминов: VOICEVOX (голос 青山龍星 / Аояма Рюсэй)</p>

@@ -1,0 +1,42 @@
+---
+import { plural, withBase } from '../../lib/utils';
+import { QUESTIONS_PER_SESSION } from '../../lib/quiz-shared';
+---
+
+<div class="relative mb-[22px] overflow-hidden rounded-[20px] bg-dark p-5 text-white">
+  <span lang="ja" aria-hidden="true" class="pointer-events-none absolute -top-[18px] right-4 text-[104px] font-black leading-none text-white/[0.06]">押忍</span>
+  <div class="relative">
+    <div class="text-[11.5px] font-extrabold uppercase tracking-[0.06em] text-[#F4A7B3]">Новое</div>
+    <div class="mt-1 text-[22px] font-black tracking-[-0.01em]">Проверь себя</div>
+    <p class="mt-1 max-w-[420px] text-[14px] leading-[1.5] text-[#C6C6CC]">
+      {QUESTIONS_PER_SESSION} {plural(QUESTIONS_PER_SESSION, 'вопрос', 'вопроса', 'вопросов')} по словам из глоссария: узнай значение или угадай на слух. Пара минут.
+    </p>
+    <div class="mt-4 flex flex-wrap items-center gap-3">
+      <a
+        href={withBase('/education/quiz')}
+        class="rounded-full bg-primary px-5 py-[10px] text-[14px] font-extrabold text-white transition-colors hover:bg-primary-dark"
+      >Начать</a>
+      <span id="quiz-promo-best" hidden class="text-[12.5px] text-[#8A8A94]"></span>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { QUESTIONS_PER_SESSION, STORE_KEY } from '../../lib/quiz-shared';
+
+  // Лучший результат читается из того же хранилища, что и тренажёр
+  try {
+    const raw = localStorage.getItem(STORE_KEY);
+    const best = raw ? Object.values(JSON.parse(raw).best ?? {}) : [];
+    const top = best.length ? Math.max(...(best as number[])) : 0;
+    if (top > 0) {
+      const label = document.getElementById('quiz-promo-best');
+      if (label) {
+        label.textContent = `Лучший: ${top} из ${QUESTIONS_PER_SESSION}`;
+        label.hidden = false;
+      }
+    }
+  } catch {
+    // приватный режим - просто не показываем строку
+  }
+</script>

@@ -60,7 +60,7 @@ const beltGroupDefs: { key: string; label: string }[] = [
   { key: '#EAB308', label: 'Жёлтый пояс' },
   { key: '#16A34A', label: 'Зелёный пояс' },
   { key: '#92400E', label: 'Коричневый пояс' },
-  { key: '#1A1A2E', label: 'Чёрный пояс — даны' },
+  { key: '#1A1A2E', label: 'Чёрный пояс - даны' },
 ];
 
 // Группы списка поясов: по базовому цвету пояса; belts передавать отсортированными по sortOrder
@@ -69,7 +69,7 @@ export function getBeltGroups(belts: Belt[]): BeltGroup[] {
     .map(({ key, label }) => {
       const groupBelts = belts.filter((belt) => getBeltVisual(belt).base === key);
       const names = groupBelts.map((belt) => belt.data.name);
-      const range = names.length > 1 ? `${names[0]} — ${names[names.length - 1]}` : (names[0] ?? '');
+      const range = names.length > 1 ? `${names[0]} - ${names[names.length - 1]}` : (names[0] ?? '');
       return { label, swatch: key, range, belts: groupBelts };
     })
     .filter((group) => group.belts.length > 0);

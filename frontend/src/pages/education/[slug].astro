@@ -85,14 +85,14 @@ for (const section of sections) {
 ---
 
 <PageLayout
-  title={`${belt.data.name} — Обучение`}
+  title={`${belt.data.name} - Обучение`}
   description={`Программа аттестации на ${belt.data.name} (${belt.data.beltColor.toLowerCase()} пояс) по Ашихара-каратэ: силовой норматив и набор техники ступени.`}
 >
   <section class="mx-auto max-w-[840px] px-[22px] py-[clamp(32px,4.5vw,52px)]">
     <a href={withBase('/education')} class="text-[14.5px] font-bold text-primary hover:underline">← Все пояса</a>
     <h1 class="mt-[22px] mb-[14px] text-[clamp(30px,4.5vw,46px)] font-bold tracking-[-0.02em]">{belt.data.name}</h1>
     <div class="max-w-[360px]">
-      <BeltBar belt={belt} big />
+      <BeltBar belt={belt} size="big" />
     </div>
     <div class="mt-3 mb-8 text-[15px] text-neutral-600">{getBeltDescription(belt)}</div>
     <div class="flex flex-col gap-4">
@@ -270,7 +270,7 @@ for (const section of sections) {
       if (part.meaning) {
         const meaning = document.createElement('span');
         meaning.className = 'text-neutral-600';
-        meaning.textContent = `— ${part.meaning}`;
+        meaning.textContent = `- ${part.meaning}`;
         row.append(meaning);
       }
       partsEl.append(row);

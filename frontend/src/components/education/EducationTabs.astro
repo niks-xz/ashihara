@@ -2,7 +2,7 @@
 import { withBase } from '../../lib/utils';
 
 interface Props {
-  active: 'belts' | 'glossary';
+  active: 'belts' | 'glossary' | 'quiz';
 }
 
 const { active } = Astro.props;
@@ -10,6 +10,7 @@ const { active } = Astro.props;
 const tabs = [
   { id: 'belts', label: 'Пояса', href: '/education' },
   { id: 'glossary', label: 'Глоссарий', href: '/education/glossary' },
+  { id: 'quiz', label: 'Проверь себя', href: '/education/quiz' },
 ];
 ---
 
