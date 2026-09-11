@@ -8,6 +8,7 @@ interface Props {
   description: string;
   ogImage?: string;
   titleSuffix?: boolean;
+  noindex?: boolean;
   schemaType?: 'organization' | 'event' | 'gym';
   eventData?: {
     name: string;
@@ -23,13 +24,13 @@ interface Props {
   };
 }
 
-const { title, description, ogImage, titleSuffix, schemaType, eventData, gymData } = Astro.props;
+const { title, description, ogImage, titleSuffix, noindex, schemaType, eventData, gymData } = Astro.props;
 ---
 
 <!doctype html>
 <html lang="ru">
   <head>
-    <BaseHead title={title} description={description} ogImage={ogImage} titleSuffix={titleSuffix} />
+    <BaseHead title={title} description={description} ogImage={ogImage} titleSuffix={titleSuffix} noindex={noindex} />
     <SchemaOrg type={schemaType} eventData={eventData} gymData={gymData} />
   </head>
   <body>

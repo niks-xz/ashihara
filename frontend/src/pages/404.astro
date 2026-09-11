@@ -1,0 +1,67 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import { withBase } from '../lib/utils';
+
+// Куда вести человека, пришедшего по битой ссылке. Чаще всего он ищет запись
+// на пробное, поэтому главная кнопка героя ведёт на залы, а не на главную
+const destinations = [
+  { href: '/gyms', title: 'Залы и запись', note: 'Адреса, расписание групп и телефоны' },
+  { href: '/coaches', title: 'Тренеры', note: 'Кто ведёт группы: пояса и стаж' },
+  { href: '/events', title: 'События', note: 'Соревнования, экзамены и сборы' },
+  { href: '/education', title: 'Обучение', note: 'Пояса, глоссарий и тренажёр терминов' },
+];
+---
+
+<PageLayout
+  title="Страница не найдена - Ашихара-каратэ Краснодар"
+  titleSuffix={false}
+  description="Такой страницы нет: адрес устарел или в нём опечатка. Залы и запись на пробное, тренеры, события и обучение Федерации Ашихара-каратэ Краснодара."
+  noindex
+>
+  <section class="relative overflow-hidden bg-dark text-white">
+    <span
+      aria-hidden="true"
+      class="pointer-events-none absolute -top-[26px] right-2 text-[152px] font-black leading-none tracking-[-0.06em] text-white/[0.06] md:-top-[44px] md:right-10 md:text-[300px]"
+    >404</span>
+    <div class="relative mx-auto flex max-w-[1180px] flex-col gap-[10px] px-[22px] pt-[30px] pb-[32px] md:items-start md:gap-[14px] md:pt-[62px] md:pb-[66px]">
+      <div class="text-[11.5px] font-extrabold uppercase tracking-[0.06em] text-[#F4A7B3] md:text-[12px]">Ошибка 404</div>
+      <h1 class="text-[33px] font-black leading-[1.1] tracking-[-0.03em] [text-wrap:pretty] md:text-[56px] md:leading-[1.05] md:tracking-[-0.035em]">
+        Такой страницы нет
+      </h1>
+      <p class="max-w-[300px] text-[15px] leading-[1.5] text-[#C6C6CC] md:max-w-[520px] md:text-[17px] md:leading-[1.55]">
+        Адрес устарел или в нём опечатка.
+      </p>
+      <div class="mt-2 flex flex-col gap-[10px] md:mt-[10px] md:flex-row md:flex-wrap md:items-center md:gap-3">
+        <a
+          href={withBase('/gyms')}
+          class="rounded-full bg-primary px-[26px] py-[15px] text-center text-[16px] font-extrabold text-white shadow-[0_10px_24px_rgba(185,33,54,0.3)] transition-colors hover:bg-primary-dark md:px-[30px]"
+        >Выбрать зал</a>
+        <a
+          href={withBase('/')}
+          class="rounded-full border-[1.5px] border-[#3A3A44] px-[26px] py-[13.5px] text-center text-[16px] font-bold text-white transition-colors hover:border-white md:px-[28px]"
+        >На главную</a>
+        <span class="mt-1 text-[13px] leading-[1.5] text-neutral-600 md:mt-0 md:ml-[6px] md:text-[14px]">
+          Или позвоните: <a href="tel:+79184483558" class="font-bold text-white transition-colors hover:text-primary-light">+7 (918) 448-35-58</a>
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-[1180px] px-[22px] pt-6 pb-[30px] md:pt-10 md:pb-14">
+    <div class="mb-3 text-[11.5px] font-extrabold uppercase tracking-[0.06em] text-neutral-600 md:mb-4 md:text-[12px]">Куда дальше</div>
+    <div class="flex flex-col gap-3 md:grid md:grid-cols-2 md:gap-4 lg:grid-cols-4">
+      {destinations.map((item) => (
+        <a
+          href={withBase(item.href)}
+          class="flex min-h-[56px] items-center gap-[14px] rounded-[18px] border border-line bg-white px-[18px] py-[15px] text-dark transition-[border-color,box-shadow] duration-[180ms] hover:border-primary hover:shadow-[0_14px_34px_rgba(27,27,34,0.1)] md:flex-col md:items-start md:gap-2 md:rounded-[20px] md:p-[22px]"
+        >
+          <span class="flex flex-1 flex-col gap-[3px] md:gap-2">
+            <span class="text-[16.5px] font-extrabold tracking-[-0.01em] md:text-[19px] md:tracking-[-0.015em]">{item.title}</span>
+            <span class="text-[13.5px] leading-[1.45] text-neutral-800 md:text-[14px] md:leading-[1.5]">{item.note}</span>
+          </span>
+          <span aria-hidden="true" class="text-[18px] font-bold text-primary md:mt-[6px]">→</span>
+        </a>
+      ))}
+    </div>
+  </section>
+</PageLayout>

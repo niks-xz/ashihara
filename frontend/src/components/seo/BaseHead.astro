@@ -9,6 +9,9 @@ interface Props {
   // Заголовки, которые уже содержат «каратэ» и город, идут без суффикса,
   // иначе строка в выдаче обрезается
   titleSuffix?: boolean;
+  // Служебная страница (404) закрыта от индексации и идёт без canonical и og:url:
+  // иначе поисковик получил бы адрес, по которому такой страницы нет
+  noindex?: boolean;
 }
 
 const {
@@ -17,6 +20,7 @@ const {
   ogImage = '/og-image.jpg',
   canonicalUrl = Astro.url.href,
   titleSuffix = true,
+  noindex = false,
 } = Astro.props;
 
 const fullTitle = titleSuffix ? `${title} | Ашихара-каратэ Краснодар` : title;
@@ -32,7 +36,7 @@ const resolvedOgImage = new URL(withBase(ogImage), Astro.site).href;
 
 <title>{fullTitle}</title>
 <meta name="description" content={description} />
-<link rel="canonical" href={canonicalUrl} />
+{noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonicalUrl} />}
 
 <meta property="og:type" content="website" />
 <meta property="og:title" content={fullTitle} />
@@ -41,7 +45,7 @@ const resolvedOgImage = new URL(withBase(ogImage), Astro.site).href;
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta property="og:url" content={canonicalUrl} />
+{!noindex && <meta property="og:url" content={canonicalUrl} />}
 <meta property="og:locale" content="ru_RU" />
 <meta property="og:site_name" content="Федерация Ашихара-каратэ г. Краснодара" />
 
