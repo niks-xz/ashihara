@@ -1,11 +1,11 @@
 ---
 import { getCollection, render } from 'astro:content';
-import { coachPhoto } from '../../lib/coaches';
+import { coachPhoto, sortCoaches } from '../../lib/coaches';
 import { Image } from 'astro:assets';
 import PageLayout from '../../layouts/PageLayout.astro';
 import { withBase } from '../../lib/utils';
 
-const coaches = (await getCollection('coaches')).sort((a, b) => a.data.sortOrder - b.data.sortOrder);
+const coaches = sortCoaches(await getCollection('coaches'));
 const gyms = (await getCollection('gyms')).sort((a, b) => a.data.sortOrder - b.data.sortOrder);
 
 // Обратный lookup: тренер -> названия залов, в которых он указан в gym.coaches

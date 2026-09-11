@@ -1,6 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
-import { coachPhoto } from '../lib/coaches';
+import { coachPhoto, sortCoaches } from '../lib/coaches';
 import { Image } from 'astro:assets';
 import PageLayout from '../layouts/PageLayout.astro';
 import EventRow from '../components/events/EventRow.astro';
@@ -15,7 +15,7 @@ import nikoLogo from '../assets/niko-logo.png';
 import FaqSchema from '../components/seo/FaqSchema.astro';
 
 const gyms = (await getCollection('gyms')).sort((a, b) => a.data.sortOrder - b.data.sortOrder);
-const coaches = (await getCollection('coaches')).sort((a, b) => a.data.sortOrder - b.data.sortOrder);
+const coaches = sortCoaches(await getCollection('coaches'));
 
 const allEvents = (await getCollection('events'))
   .sort((a, b) => a.data.eventDate.valueOf() - b.data.eventDate.valueOf());
