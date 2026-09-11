@@ -4,7 +4,7 @@ import { parseTechniqueList, type TranslateTerm } from './techniques';
 type Belt = CollectionEntry<'belts'>;
 
 // Ручной глоссарий src/data/glossary.json (необязательный):
-// { "sections": [{ "title": "...", "rows": [{ "romaji", "japanese", "ru", "ruCommon", "meaning", "note", "level" }] }] }
+// { "sections": [{ "title": "...", "rows": [{ "romaji", "japanese", "ru", "ruCommon", "meaning", "note", "service", "level" }] }] }
 // ru - транслитерация по Поливанову, ruCommon - привычное написание из методички федерации.
 // Если файла нет, глоссарий строится только из автоизвлечённых терминов методички.
 
@@ -24,6 +24,9 @@ interface GlossaryFileRow {
   ruCommon?: string;
   meaning: string;
   note?: string;
+  // Служебное слово (частица, счётный суффикс): статья нужна подсказке к командам,
+  // но самостоятельным термином не является
+  service?: boolean;
   level?: TermLevel;
 }
 
@@ -40,6 +43,7 @@ export interface GlossaryTerm {
   common?: string;
   note?: string;
   audio?: string;
+  service?: boolean;
   level?: TermLevel;
 }
 
@@ -371,6 +375,7 @@ export function buildGlossary(_belts: Belt[]): GlossarySection[] {
       common: row.ruCommon && dedupeKey(row.ruCommon) !== dedupeKey(row.ru) ? row.ruCommon : undefined,
       note: row.note || undefined,
       audio: audioSlug(row.romaji),
+      service: row.service,
       level: row.level,
     })),
   }));

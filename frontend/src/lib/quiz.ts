@@ -66,18 +66,22 @@ export function buildQuizTerms(belts: Belt[]): QuizTerm[] {
     }
   }
 
+  // Служебные слова (частицы «ни» и «но», счётный суффикс «хон») в тренажёр не идут
+  // ни вопросом, ни вариантом ответа: на карточке частица «ни» неотличима от числа «ни»
   return sections.flatMap((section) =>
-    section.terms.map((term) => ({
-      ru: term.name,
-      romaji: term.romaji,
-      japanese: term.japanese ?? '',
-      meaning: term.meaning,
-      audio: term.audio ?? '',
-      section: section.header,
-      level: term.level ?? '',
-      anchor: termAnchor(section.header, term.name),
-      parts: partsOf(term.name, sectionsOfWord),
-    })),
+    section.terms
+      .filter((term) => !term.service)
+      .map((term) => ({
+        ru: term.name,
+        romaji: term.romaji,
+        japanese: term.japanese ?? '',
+        meaning: term.meaning,
+        audio: term.audio ?? '',
+        section: section.header,
+        level: term.level ?? '',
+        anchor: termAnchor(section.header, term.name),
+        parts: partsOf(term.name, sectionsOfWord),
+      })),
   );
 }
 
