@@ -143,6 +143,10 @@ const termsJson = JSON.stringify({ terms }).replace(/</g, '\\u003c');
       <button type="button" id="q-sheet-play" aria-label="Послушать произношение" class="relative mt-[2px] flex h-[34px] w-[34px] shrink-0 cursor-pointer items-center justify-center rounded-full bg-primary-tint text-[12px] text-primary before:absolute before:-inset-[6px]">▶</button>
       <div class="min-w-0 flex-1">
         <div id="q-sheet-term" class="text-[14.5px] leading-[1.5] text-neutral-800"></div>
+        <div id="q-sheet-pair" hidden class="mt-3 rounded-[14px] border border-line bg-cream px-[14px] py-3">
+          <div class="text-[11.5px] font-extrabold uppercase tracking-[0.06em] text-primary">Звучит так же</div>
+          <div id="q-sheet-pair-list" class="mt-[6px] flex flex-col gap-1"></div>
+        </div>
         <div id="q-sheet-parts" class="mt-2"></div>
         <div id="q-sheet-wrong" class="mt-2 text-[13px] leading-[1.5] text-neutral-800"></div>
       </div>

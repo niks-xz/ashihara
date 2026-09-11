@@ -68,7 +68,7 @@ export function buildQuizTerms(belts: Belt[]): QuizTerm[] {
 
   // Служебные слова (частицы «ни» и «но», счётный суффикс «хон») в тренажёр не идут
   // ни вопросом, ни вариантом ответа: на карточке частица «ни» неотличима от числа «ни»
-  return sections.flatMap((section) =>
+  const terms: QuizTerm[] = sections.flatMap((section) =>
     section.terms
       .filter((term) => !term.service)
       .map((term) => ({
@@ -81,8 +81,18 @@ export function buildQuizTerms(belts: Belt[]): QuizTerm[] {
         level: term.level ?? '',
         anchor: termAnchor(section.header, term.name),
         parts: partsOf(term.name, sectionsOfWord),
+        homonyms: [],
       })),
   );
+
+  // Омонимы - термины тренажёра с одинаковым написанием («ути» 内 и «ути» 打ち). Вопрос по такому
+  // слову получает пометку раздела, а разбор после ответа показывает встречное слово
+  for (const term of terms) {
+    term.homonyms = terms
+      .filter((other) => other !== term && other.ru === term.ru)
+      .map(({ ru, japanese, meaning, section }) => ({ ru, japanese, meaning, section }));
+  }
+  return terms;
 }
 
 export function buildQuizSets(terms: QuizTerm[], belts: Belt[]): QuizSet[] {

@@ -14,6 +14,14 @@ export const QUESTIONS_PER_SESSION = 12;
 // Ключ localStorage: тренажёр хранит там прогресс, затравка в глоссарии читает лучший результат
 export const STORE_KEY = 'ashihara.quiz';
 
+// Другой термин тренажёра с тем же написанием: «ути» 内 из направлений и «ути» 打ち из ударов
+export interface QuizHomonym {
+  ru: string;
+  japanese: string;
+  meaning: string;
+  section: string;
+}
+
 // Термин в том виде, в каком его получает браузер
 export interface QuizTerm {
   ru: string;
@@ -25,6 +33,7 @@ export interface QuizTerm {
   level: TermLevel | '';
   anchor: string;
   parts: TermPart[];
+  homonyms: QuizHomonym[];
 }
 
 // «База» по макету - счёт, поклоны и команды, устройство додзё: то, что звучит на первом

@@ -1,9 +1,9 @@
 ---
 fullName: Шевчук Каролина Юрьевна
 rank: 2 кю
-gender: female
+placeholder: female-fair
 title: Тренер СК «Сэнсэй»
-sortOrder: 7
+sortOrder: 8
 ---
 
 Ведёт занятия в СК «Сэнсэй» на улице Мачуги в микрорайоне Гидростроителей.

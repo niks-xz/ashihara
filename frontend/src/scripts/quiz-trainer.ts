@@ -386,6 +386,7 @@ export function initQuiz(): void {
         <div class="text-[13px] text-neutral-600">Что это значит?</div>
         <div class="mt-2 text-[34px] font-black leading-[1.15] tracking-[-0.02em] first-letter:uppercase lg:text-[44px]">${esc(q.term.ru)}</div>
         ${q.term.japanese ? `<div lang="ja" class="mt-1 text-[22px] text-neutral-600 lg:text-[26px]">${esc(q.term.japanese)}</div>` : ''}
+        ${homonymNote(q.term)}
         ${q.term.audio ? `<button type="button" id="q-play-pill" class="relative mt-4 inline-flex cursor-pointer items-center gap-2 rounded-full bg-primary-tint px-[14px] py-2 text-[13px] font-bold text-primary before:absolute before:-inset-[3px]"><span class="flex h-[22px] w-[22px] items-center justify-center rounded-full bg-primary text-[10px] text-white">▶</span>Послушать</button>` : ''}`;
       card.querySelector('#q-play-pill')?.addEventListener('click', () => playTerm(q.term));
     }
@@ -401,6 +402,22 @@ export function initQuiz(): void {
     // После «Дальше» кнопка уходит вместе со шторкой, и фокус упал бы на страницу:
     // переводим его на новый вопрос, чтобы клавиатура и скринридер не теряли место
     card.focus({ preventScroll: true });
+  }
+
+  // Пометка омонима под термином различает слова по написанию и разделу, а не по переводу:
+  // перевод и есть ответ. После ответа глагол меняется на «спрашивали»
+  function homonymNote(term: Term): string {
+    if (term.homonyms.length === 0) {
+      return '';
+    }
+    const kanji = term.japanese ? ` <span lang="ja" class="font-bold">${esc(term.japanese)}</span>` : '';
+    return `
+        <div class="mt-3 flex justify-center lg:mt-[14px]">
+          <div class="inline-flex max-w-[300px] items-center gap-[9px] rounded-full border border-[#F1CDD3] bg-primary-tint py-[5px] pr-[13px] pl-[5px] lg:max-w-none lg:gap-[10px] lg:pr-[15px]">
+            <span class="shrink-0 rounded-full bg-primary px-2 py-1 text-[9.5px] font-extrabold uppercase tracking-[0.05em] text-white lg:px-[9px] lg:py-[5px] lg:text-[10px]">Омоним</span>
+            <span class="text-left text-[12.5px] font-semibold leading-[1.35] text-[#7A2230] lg:text-[13.5px]"><span data-homonym-verb>спрашиваем</span>${kanji} из раздела «${esc(term.section)}»</span>
+          </div>
+        </div>`;
   }
 
   // --- Ответ ---
@@ -437,6 +454,11 @@ export function initQuiz(): void {
       }
     });
 
+    const verb = el('q-card').querySelector('[data-homonym-verb]');
+    if (verb) {
+      verb.textContent = 'спрашивали';
+    }
+
     if (progress.mode === 'audio') {
       el('q-card').innerHTML = `
         <div class="text-[13px] text-neutral-600">Это было</div>
@@ -469,7 +491,16 @@ export function initQuiz(): void {
     playBtn.hidden = !q.term.audio;
     playBtn.onclick = () => playTerm(q.term);
 
-    el('q-sheet-term').innerHTML = `<b class="text-dark">${esc(q.term.romaji)}</b> - ${esc(lowerFirst(q.term.meaning))}`;
+    // У омонима разбор ставит рядом оба слова: написание, значение и раздел. Пометка
+    // есть только в режиме «Значения»: на слух варианты ответа сами содержат слово
+    const homonyms = progress.mode === 'meanings' ? q.term.homonyms : [];
+    const kanji = homonyms.length > 0 && q.term.japanese ? ` <span lang="ja">${esc(q.term.japanese)}</span>` : '';
+    const section = homonyms.length > 0 ? `. ${esc(q.term.section)}` : '';
+    el('q-sheet-term').innerHTML = `<b class="text-dark">${esc(q.term.romaji)}</b>${kanji} - ${esc(lowerFirst(q.term.meaning))}${section}`;
+    el('q-sheet-pair').hidden = homonyms.length === 0;
+    el('q-sheet-pair-list').innerHTML = homonyms
+      .map((h) => `<div class="text-[13.5px] leading-[1.45] text-neutral-800"><b class="text-dark">${esc(h.ru)}</b>${h.japanese ? ` <span lang="ja">${esc(h.japanese)}</span>` : ''} - ${esc(lowerFirst(h.meaning))}. ${esc(h.section)}</div>`)
+      .join('');
 
     const parts = el('q-sheet-parts');
     if (q.term.parts.length >= 2) {

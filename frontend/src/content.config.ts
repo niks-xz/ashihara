@@ -22,8 +22,8 @@ const coaches = defineCollection({
     title: z.string(),
     achievements: z.string().default(''),
     photo: image().optional(),
-    // Пол нужен только для рисованной заглушки, пока нет фото
-    gender: z.enum(['male', 'female']).default('male'),
+    // Рисованная заглушка, пока нет фото: каратист или каратистка с русыми либо рыжими волосами
+    placeholder: z.enum(['male', 'female-fair', 'female-red']).default('male'),
     sortOrder: z.number(),
   }),
 });
